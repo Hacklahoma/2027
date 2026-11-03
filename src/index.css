@@ -135,7 +135,7 @@ a { color: inherit; }
   left: 0;
   bottom: 0;
   width: 100%;
-  height: 110px;
+  height: clamp(180px, 22vw, 320px);
 }
 
 .haze i {
@@ -419,17 +419,16 @@ a { color: inherit; }
 .boat {
   position: absolute;
   left: 50%;
-  bottom: -40px;
-  width: clamp(170px, 17vw, 240px);
-  transform: translateX(-50%);
+  bottom: 0;
+  width: clamp(250px, 26vw, 380px);
+  /* sink the hull to its waterline (134 of the drawing's 170 units) */
+  transform: translate(-50%, 21.2%);
   z-index: 3;
 }
 .boat-bob { position: relative; animation: rock 6s ease-in-out infinite; transform-origin: 50% 80%; }
-.boat svg { display: block; width: 100%; overflow: visible; }
+.boat canvas { display: block; width: 100%; }
 .boat-lantern {
   position: absolute;
-  left: 68.3%;
-  top: 26%;
   width: 6px;
   height: 6px;
   margin: -3px 0 0 -3px;
@@ -437,9 +436,9 @@ a { color: inherit; }
 .boat-lantern::before {
   content: '';
   position: absolute;
-  inset: -90px;
+  inset: -80px;
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(255, 230, 160, 0.85), rgba(255, 170, 70, 0.35) 35%, transparent);
+  background: radial-gradient(closest-side, rgba(255, 230, 160, 0.5), rgba(255, 170, 70, 0.22) 35%, transparent);
   animation: flicker 2.6s ease-in-out infinite;
 }
 

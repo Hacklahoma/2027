@@ -38,6 +38,8 @@ export default function App() {
     const hwTop = Math.min(W * (mobile ? 0.6 : 0.36), titleW / 2 / 0.74 + 24);
     const b = boatLanternRef.current.getBoundingClientRect();
     const end = { x: b.left + b.width / 2 - base.left, y: b.top + b.height / 2 - base.top };
+    // the hull's middle sits 62 of the boat's 300 units left of its lantern
+    const hullOffset = -(62 / 300) * boatLanternRef.current.closest('.boat').offsetWidth;
 
     const keys = [
       { y: 0, x: W / 2 },
@@ -55,7 +57,7 @@ export default function App() {
 
     setLayout((prev) => {
       if (prev && prev.W === W && prev.H === H && prev.end.y === end.y) return prev;
-      return { W, H, mobile, heroEnd, hwTop, keys, end };
+      return { W, H, mobile, heroEnd, hwTop, keys, end, hullOffset };
     });
   }, []);
 
@@ -163,6 +165,7 @@ export default function App() {
         <Water
           ref={waterRef}
           boatX={layout ? layout.end.x : '50%'}
+          hullOffset={layout?.hullOffset ?? 0}
           width={W}
           depth={WATER_DEPTH}
           paint={painters?.water}

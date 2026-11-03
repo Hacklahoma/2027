@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { paintLantern, rng } from '../lib/paint.js';
+import { useEffect, useMemo, useRef } from 'react';
+import { paintLantern, paintMountains, rng } from '../lib/paint.js';
 
 let sprite = null;
 // One small painted lantern, reused by every floater.
@@ -97,25 +97,20 @@ export function Sparkles({ count = 34, seed = 3 }) {
   );
 }
 
-// The far bank: a ragged treeline sitting on the horizon behind the boat.
+// The far shore: painted mountain ridges on the horizon behind the boat.
 export function Shore() {
-  const d = useMemo(() => {
-    const r = rng(5);
-    // rounded canopies along the bank, dipping low where the boat sits
-    let p = 'M0 100 L0 72';
-    let x = 0;
-    while (x < 1000) {
-      const w = 10 + r() * 22;
-      const low = Math.abs(x + w / 2 - 500) < 90;
-      const y = low ? 84 + r() * 4 : 52 + r() * 22 + Math.sin(x / 90) * 6;
-      p += ` L${x.toFixed(1)} ${(y + 6).toFixed(1)} Q${(x + w / 2).toFixed(1)} ${(y - w * 0.55).toFixed(1)} ${(x + w).toFixed(1)} ${(y + 6).toFixed(1)}`;
-      x += w * (0.6 + r() * 0.3);
-    }
-    return `${p} L1000 100 Z`;
+  const ref = useRef(null);
+  useEffect(() => {
+    const c = ref.current;
+    let w = 0;
+    const ro = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
+      if (!width || Math.round(width) === w) return;
+      w = Math.round(width);
+      paintMountains(c, w, Math.round(height), Math.min(window.devicePixelRatio || 1, 1.5));
+    });
+    ro.observe(c);
+    return () => ro.disconnect();
   }, []);
-  return (
-    <svg className="shore" viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true">
-      <path d={d} fill="#1A2853" />
-    </svg>
-  );
+  return <canvas ref={ref} className="shore" aria-hidden="true" />;
 }

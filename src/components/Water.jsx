@@ -7,7 +7,7 @@ const REFLECT_W = 420;
 const REFLECT_H = 560;
 
 // The lantern's light shimmering on the water under the boat.
-function Reflection({ x }) {
+function Reflection({ x, hullOffset }) {
   const ref = useRef(null);
   useEffect(() => {
     const c = ref.current;
@@ -24,27 +24,27 @@ function Reflection({ x }) {
       raf = visible && !still ? requestAnimationFrame(frame) : 0;
       if (now - last < 40) return;
       last = now;
-      drawReflection(ctx, REFLECT_W, REFLECT_H, now / 1000);
+      drawReflection(ctx, REFLECT_W, REFLECT_H, now / 1000, hullOffset);
     };
     const io = new IntersectionObserver(([e]) => {
       visible = e.isIntersecting;
       if (visible && !raf) raf = requestAnimationFrame(frame);
     });
     io.observe(c);
-    drawReflection(ctx, REFLECT_W, REFLECT_H, 0);
+    drawReflection(ctx, REFLECT_W, REFLECT_H, 0, hullOffset);
     return () => {
       io.disconnect();
       cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [hullOffset]);
   return <canvas ref={ref} className="reflection" style={{ left: x }} aria-hidden="true" />;
 }
 
-const Water = forwardRef(function Water({ boatX, width, paint, depth }, ref) {
+const Water = forwardRef(function Water({ boatX, hullOffset, width, paint, depth }, ref) {
   return (
     <section className="water" ref={ref} id="questions" aria-labelledby="faq-title">
       {paint && <PaintedLayer className="water-paint" width={width} height={depth} paint={paint} maxDpr={1} />}
-      <Reflection x={boatX} />
+      <Reflection x={boatX} hullOffset={hullOffset} />
 
       <div className="faq">
         <header className="faq-head">

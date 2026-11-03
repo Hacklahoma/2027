@@ -260,6 +260,101 @@ export function paintLantern(canvas, cssWidth, dpr, grain = 1.4) {
   );
 }
 
+/* ---------------- the boat and Hacksy ---------------- */
+
+// Units: a 300 x 170 box. The waterline is y = 134; the lantern hangs at (212, 50).
+export const BOAT_BOX = { w: 300, h: 170, waterline: 134, lantern: { x: 212, y: 50 } };
+
+const HULL = hex('#0F1733');
+const HULL_LIT = hex('#22336A');
+const PLANK = hex('#080D22');
+const HACKSY = ['#3F6FC4', '#5B9CF0', '#64C1F1', '#6EE7F2', '#C9F7FA'].map(hex);
+const WARM = hex('#FFC63A');
+
+function segDist(px, py, ax, ay, bx, by) {
+  const vx = bx - ax;
+  const vy = by - ay;
+  const t = clamp(((px - ax) * vx + (py - ay) * vy) / (vx * vx + vy * vy), 0, 1);
+  return Math.hypot(px - ax - vx * t, py - ay - vy * t);
+}
+
+function inRoundRect(u, v, x, y, w, h, r) {
+  if (u < x || u > x + w || v < y || v > y + h) return false;
+  const cx = clamp(u, x + r, x + w - r);
+  const cy = clamp(v, y + r, y + h - r);
+  return Math.hypot(u - cx, v - cy) <= r;
+}
+
+// Hacksy's H (the Hacksy repo's mascot.ts drawing, 100-unit box) with the app mark's happy eyes.
+const H_PARTS = [
+  [18, 16, 22, 70, 7],
+  [60, 14, 22, 72, 7],
+  [30, 37, 40, 24, 0],
+];
+
+export function paintBoat(canvas, cssWidth, dpr) {
+  const k = (cssWidth * dpr) / BOAT_BOX.w;
+  canvas.width = Math.round(BOAT_BOX.w * k);
+  canvas.height = Math.round(BOAT_BOX.h * k);
+  const cell = Math.max(1, Math.round(1.3 * dpr));
+  const { x: lx, y: ly } = BOAT_BOX.lantern;
+  const WL = BOAT_BOX.waterline;
+
+  dither(canvas, { cell, toX: (px) => px / k, toY: (py) => py / k }, (x, y, n, n2) => {
+    const light = Math.max(0, 1 - Math.hypot(x - lx, y - ly) / 170);
+
+    // hull, in front of everything
+    const dx = (x - 150) / 112;
+    const top = 114 - 15 * dx * dx;
+    const bottom = 131 + 24 * (1 - dx * dx);
+    if (Math.abs(dx) < 1 - Math.max(0, y - 108) / 70 && y >= top && y <= bottom) {
+      if (y > WL && n > 1 - (y - WL) / 16) return null;
+      if (y - top < 2.2) return n < 0.3 + light * 0.7 ? EMBER[n2 < 0.7 ? 0 : 2] : HULL_LIT;
+      if (Math.abs(y - top - 9) < 0.8 || Math.abs(y - top - 17) < 0.8) return PLANK;
+      return n < light * 0.65 ? HULL_LIT : HULL;
+    }
+
+    // Hacksy, peeking up out of the boat
+    const s = 0.8;
+    const u = (x - 58) / s;
+    const v = (y - 47) / s;
+    if (u > 10 && u < 90 && v > 8 && v < 92) {
+      for (const [ex, ey] of [[40, 46], [62, 45]]) {
+        if (segDist(u, v, ex - 4, ey + 2, ex, ey - 2) < 1.5 || segDist(u, v, ex, ey - 2, ex + 4, ey + 2) < 1.5) return HULL;
+      }
+      for (const [rx, ry, rw, rh, rr] of H_PARTS) {
+        if (!inRoundRect(u, v, rx, ry, rw, rh, rr)) continue;
+        const t = (v - 14) / 72;
+        let idx = (1 - t) * 3 + 0.4 + (n - 0.5) * 1.1;
+        if (rx + rw - u < 4) idx += 1;
+        if (u - rx < 3 && rr) idx -= 1;
+        if (rx === 60 && rx + rw - u < 3 && n2 < 0.45) return WARM;
+        return HACKSY[clamp(Math.round(idx), 0, 4)];
+      }
+    }
+
+    // the lantern
+    if (y >= ly - 11 && y <= ly + 13) {
+      const hw = 10.5 - (y - (ly - 11)) * 0.12 - (y < ly - 8 ? (ly - 8 - y) * 1.1 : 0);
+      if (Math.abs(x - lx) < hw) {
+        const vv = 1.2 - Math.hypot((x - lx) * 1.3, y - (ly + 11)) / 26 + (n - 0.5) * 0.26;
+        return PAPER[vv > 0.9 ? 5 : vv > 0.74 ? 4 : vv > 0.56 ? 3 : vv > 0.38 ? 2 : 1];
+      }
+    }
+    if (y > ly + 13 && y < ly + 15.5 && Math.abs(x - lx) < 7.5) return RIM;
+
+    // pole and hook
+    if (segDist(x, y, 196, WL - 16, 198, ly - 20) < 1.3) return PLANK;
+    if (segDist(x, y, 198, ly - 20, lx, ly - 22) < 1 || segDist(x, y, lx, ly - 22, lx, ly - 11) < 0.7) return PLANK;
+
+    // glow
+    const d = Math.hypot(x - lx, y - ly);
+    if (n < 0.55 * Math.exp(-Math.max(0, d - 13) / 6)) return EMBER[n2 < 0.6 ? 0 : n2 < 0.86 ? 1 : 2];
+    if (n2 < 0.12 * Math.exp(-d / 30) && n > 0.45) return HAZE;
+    return null;
+  });
+}
+
 /* ---------------- water ---------------- */
 
 const DEPTH = ['#3A5B95', '#2F4F8A', '#27447D', '#203A70', '#1A3163', '#162956', '#13234B', '#11214A'].map(hex);
@@ -314,7 +409,7 @@ export function makeWaterPainter({ W, depth, mobile }) {
 }
 
 // The lantern's light broken up on the water. Drawn every frame around x = 0.
-export function drawReflection(ctx, w, h, t) {
+export function drawReflection(ctx, w, h, t, hullOffset = 0) {
   ctx.clearRect(0, 0, w, h);
   const mid = w / 2;
   for (let row = 0; row * 5 < h; row++) {
@@ -337,10 +432,13 @@ export function drawReflection(ctx, w, h, t) {
     }
   }
   // the hull's dark reflection right under the boat
-  ctx.fillStyle = 'rgba(14,21,48,.85)';
-  for (let row = 0; row < 7; row++) {
-    const wv = 110 - row * 13 + Math.sin(t + row) * 6;
-    ctx.fillRect(mid - wv / 2 - 40 + Math.sin(t * 0.7 + row) * 4, row * 5, wv, 2.4);
+  ctx.fillStyle = 'rgba(14,21,48,.8)';
+  for (let row = 0; row < 10; row++) {
+    const rnd = rng(row * 31 + 7);
+    const wv = (200 - row * 18) * (0.9 + 0.1 * Math.sin(t + row));
+    const x0 = mid + hullOffset + Math.sin(t * 0.7 + row) * 4;
+    const dots = Math.round(wv * (1.6 - row * 0.12));
+    for (let i = 0; i < dots; i++) ctx.fillRect(x0 + (rnd() - 0.5) * wv, row * 4 + rnd() * 3, 1.6, 1.6);
   }
 }
 
@@ -440,4 +538,58 @@ export function paintForest(ctx, y0, h, dpr, { circles, trunks, cfg, ground }) {
       ctx.fillRect(c.x + nx * c.r, c.y + ny * c.r, 1.6, 1.6);
     }
   }
+}
+
+/* ---------------- mountains on the far shore ---------------- */
+
+// Three ridges, far to near, each a jagged fbm line. Slopes that face the
+// light in the middle catch it; the valley under the boat dips low so the
+// boat and Hacksy read against the sky. Units are CSS px of a W x H strip.
+const RIDGES = [
+  { base: 0.42, amp: 0.5, freq: 1 / 210, seed: 31, fill: '#34508A', lit: '#5C7DB6', warm: 0.05 },
+  { base: 0.6, amp: 0.36, freq: 1 / 140, seed: 57, fill: '#253D73', lit: '#3F5F9A', warm: 0.18 },
+  { base: 0.8, amp: 0.2, freq: 1 / 80, seed: 83, fill: '#18254E', lit: '#2A4278', warm: 0.4 },
+].map((r) => ({ ...r, fill: hex(r.fill), lit: hex(r.lit) }));
+const MIST = hex('#7F9CCF');
+
+function ridgeY(x, r, W, H) {
+  let v = 0;
+  let a = 1;
+  let f = r.freq;
+  for (let o = 0; o < 4; o++) {
+    const nv = vnoise(x * f, r.seed + o);
+    v += a * (1 - Math.abs(2 * nv - 1)); // sharpened: peaks, not hills
+    a *= 0.5;
+    f *= 2.1;
+  }
+  v /= 1.875;
+  const valley = 0.35 + 0.65 * smooth(0, W * 0.2, Math.abs(x - W / 2));
+  return H * (r.base + 0.08 - r.amp * v * valley);
+}
+
+export function paintMountains(canvas, W, H, dpr) {
+  canvas.width = Math.round(W * dpr);
+  canvas.height = Math.round(H * dpr);
+  const cell = Math.max(1, Math.round(1.6 * dpr));
+  dither(canvas, { cell, toX: (px) => px / dpr, toY: (py) => py / dpr }, (x, y, n, n2) => {
+    // nearest ridge first
+    for (let i = RIDGES.length - 1; i >= 0; i--) {
+      const r = RIDGES[i];
+      const top = ridgeY(x, r, W, H);
+      if (y < top + (n - 0.5) * 3) continue;
+      // which way the slope faces: toward the light in the middle catches it
+      const slope = ridgeY(x + 2, r, W, H) - ridgeY(x - 2, r, W, H);
+      const facing = (x < W / 2 ? -slope : slope) > 0;
+      const depth = y - top;
+      const near = Math.max(0, 1 - Math.abs(x - W / 2) / (W * 0.45));
+      if (facing && depth < 18 && n2 < (1 - depth / 18) * (0.25 + near * 0.35)) {
+        return n < r.warm * near ? EMBER[n2 < 0.5 ? 0 : 2] : r.lit;
+      }
+      // mist pooling at the foot of each ridge
+      const foot = H * (r.base + 0.08);
+      if (y > foot - 30 && n2 < ((y - (foot - 30)) / 30) * (i === RIDGES.length - 1 ? 0.06 : 0.14)) return MIST;
+      return r.fill;
+    }
+    return null;
+  });
 }
