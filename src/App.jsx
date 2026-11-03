@@ -1,19 +1,16 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { chapters, event } from './content.js';
-import { makeForest, makeRibbon, makeWaterPainter, paintForest, paintRibbonGlow } from './lib/paint.js';
+import { BOAT_BOX, makeForest, makeRibbon, paintForest, paintRibbonGlow } from './lib/paint.js';
 import Defs from './components/Defs.jsx';
 import LiveRibbon from './components/LiveRibbon.jsx';
 import PaintedLayer from './components/PaintedLayer.jsx';
 import Lantern from './components/Lantern.jsx';
 import { FloatingLanterns, Shore, Sparkles } from './components/SkyDecor.jsx';
-import Boat from './components/Boat.jsx';
-import Water from './components/Water.jsx';
-import Gold from './components/Gold.jsx';
+import Voyage from './components/Voyage.jsx';
+import Footer from './components/Footer.jsx';
 import Menu from './components/Menu.jsx';
 import Motes from './components/Motes.jsx';
 import useParallax from './useParallax.js';
-
-const WATER_DEPTH = 900;
 
 export default function App() {
   const skyRef = useRef(null);
@@ -21,8 +18,6 @@ export default function App() {
   const titleRef = useRef(null);
   const lanternRefs = useRef([]);
   const boatLanternRef = useRef(null);
-  const waterRef = useRef(null);
-  const goldRef = useRef(null);
   const [layout, setLayout] = useState(null);
 
   // Read where the title, lanterns and boat ended up, so the light can wind between them.
@@ -36,10 +31,11 @@ export default function App() {
     const heroEnd = heroRef.current.offsetHeight;
     const titleW = titleRef.current.getBoundingClientRect().width;
     const hwTop = Math.min(W * (mobile ? 0.6 : 0.36), titleW / 2 / 0.74 + 24);
-    const b = boatLanternRef.current.getBoundingClientRect();
-    const end = { x: b.left + b.width / 2 - base.left, y: b.top + b.height / 2 - base.top };
-    // the hull's middle sits 62 of the boat's 300 units left of its lantern
-    const hullOffset = -(62 / 300) * boatLanternRef.current.closest('.boat').offsetWidth;
+    // The voyage's boat starts at the horizon (the sky's bottom edge), centred
+    // on its lantern, with its waterline on that edge: the light ends at the lantern's top.
+    const bw = boatLanternRef.current.closest('.boat').offsetWidth;
+    const above = ((BOAT_BOX.waterline - (BOAT_BOX.lantern.y - 11)) / BOAT_BOX.h) * ((bw * BOAT_BOX.h) / BOAT_BOX.w);
+    const end = { x: W / 2, y: H - above };
 
     const keys = [
       { y: 0, x: W / 2 },
@@ -57,7 +53,7 @@ export default function App() {
 
     setLayout((prev) => {
       if (prev && prev.W === W && prev.H === H && prev.end.y === end.y) return prev;
-      return { W, H, mobile, heroEnd, hwTop, keys, end, hullOffset };
+      return { W, H, mobile, heroEnd, hwTop, keys, end };
     });
   }, []);
 
@@ -82,11 +78,9 @@ export default function App() {
     const ribbon = makeRibbon({ keys, hwTop, heroEnd, endY: end.y, mobile });
     const far = makeForest({ W, top: -560, bottom: H - 420, ground: H - 40, kind: 'far', seed: 11, mobile });
     const near = makeForest({ W, top: -560, bottom: H - 240, ground: H + 10, kind: 'near', seed: 23, mobile });
-    const water = makeWaterPainter({ W, depth: WATER_DEPTH, mobile });
     return {
       ribbon,
       glow: (ctx, y0, h, dpr) => paintRibbonGlow(ctx, y0, h, dpr, ribbon),
-      water: (ctx, y0) => water(ctx.canvas, y0, 1),
       far: (ctx, y0, h, dpr) => paintForest(ctx, y0, h, dpr, far),
       near: (ctx, y0, h, dpr) => paintForest(ctx, y0, h, dpr, near),
     };
@@ -100,7 +94,7 @@ export default function App() {
   return (
     <>
       <Defs />
-      <Motes waterRef={waterRef} goldRef={goldRef} />
+      <Motes />
       <Menu />
 
       <main>
@@ -158,19 +152,11 @@ export default function App() {
               Every light <em>starts somewhere small.</em>
             </p>
             <FloatingLanterns count={5} seed={91} front band={[24, 76]} />
-            <Boat ref={boatLanternRef} />
           </div>
         </section>
 
-        <Water
-          ref={waterRef}
-          boatX={layout ? layout.end.x : '50%'}
-          hullOffset={layout?.hullOffset ?? 0}
-          width={W}
-          depth={WATER_DEPTH}
-          paint={painters?.water}
-        />
-        <Gold ref={goldRef} />
+        <Voyage ref={boatLanternRef} />
+        <Footer />
       </main>
     </>
   );

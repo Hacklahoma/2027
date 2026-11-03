@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
-// Fixed particle field. Embers in the sky, bubbles under water, dust in the gold.
-export default function Motes({ waterRef, goldRef }) {
+// Fixed field of drifting embers over the whole page.
+export default function Motes() {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -34,8 +34,6 @@ export default function Motes({ waterRef, goldRef }) {
     let lastY = scrollY;
     const frame = (t) => {
       raf = requestAnimationFrame(frame);
-      const wTop = waterRef.current?.getBoundingClientRect().top ?? 1e9;
-      const gTop = goldRef.current?.getBoundingClientRect().top ?? 1e9;
       const dy = scrollY - lastY;
       lastY = scrollY;
       ctx.clearRect(0, 0, W, H);
@@ -44,21 +42,9 @@ export default function Motes({ waterRef, goldRef }) {
         p.x += Math.sin(t / 1600 + p.p) * 0.25;
         if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
         if (p.y > H + 10) { p.y = -10; p.x = Math.random() * W; }
-        const zone = p.y > gTop ? 2 : p.y > wTop ? 1 : 0;
         const tw = 0.55 + 0.45 * Math.sin(t / 380 + p.p * 3);
-        if (zone === 0) {
-          ctx.fillStyle = `rgba(255,${180 + (p.p * 10) % 60 | 0},90,${0.75 * tw})`;
-          ctx.fillRect(p.x, p.y, p.s, p.s);
-        } else if (zone === 1) {
-          ctx.strokeStyle = `rgba(170,200,240,${0.35 * tw})`;
-          ctx.lineWidth = 0.8;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.s * 1.6, 0, Math.PI * 2);
-          ctx.stroke();
-        } else {
-          ctx.fillStyle = `rgba(255,214,150,${0.5 * tw})`;
-          ctx.fillRect(p.x, p.y, p.s * 0.9, p.s * 0.9);
-        }
+        ctx.fillStyle = `rgba(255,${180 + (p.p * 10) % 60 | 0},90,${0.75 * tw})`;
+        ctx.fillRect(p.x, p.y, p.s, p.s);
       }
     };
     const onVis = () => {
@@ -72,7 +58,7 @@ export default function Motes({ waterRef, goldRef }) {
       removeEventListener('resize', resize);
       document.removeEventListener('visibilitychange', onVis);
     };
-  }, [waterRef, goldRef]);
+  }, []);
 
   return <canvas ref={ref} className="motes" aria-hidden="true" />;
 }

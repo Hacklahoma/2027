@@ -3,7 +3,7 @@ import { paintLantern, paintMountains, rng } from '../lib/paint.js';
 
 let sprite = null;
 // One small painted lantern, reused by every floater.
-function lanternSprite() {
+export function lanternSprite() {
   if (!sprite) {
     const c = document.createElement('canvas');
     paintLantern(c, 64, 2, 1.1);

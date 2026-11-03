@@ -359,7 +359,6 @@ export function paintBoat(canvas, cssWidth, dpr) {
 
 const DEPTH = ['#3A5B95', '#2F4F8A', '#27447D', '#203A70', '#1A3163', '#162956', '#13234B', '#11214A'].map(hex);
 const RIPPLE = hex('#4F72AE');
-const SHADOW = hex('#15224A');
 
 function vnoise(x, seed) {
   const i = Math.floor(x);
@@ -367,79 +366,6 @@ function vnoise(x, seed) {
   const a = hash(i, 0, seed);
   const b = hash(i + 1, 0, seed);
   return a + (b - a) * f * f * (3 - 2 * f);
-}
-
-// Dithered depth bands, light shafts from the surface, ripples and the forest's
-// dark reflection near the edges. Painted once; the bottom matches #11214A.
-export function makeWaterPainter({ W, depth, mobile }) {
-  const rays = mobile
-    ? [{ x: 0.22, a: -0.18, w: 30 }, { x: 0.7, a: 0.12, w: 40 }]
-    : [{ x: 0.16, a: -0.22, w: 40 }, { x: 0.36, a: -0.08, w: 60 }, { x: 0.62, a: 0.06, w: 50 }, { x: 0.82, a: 0.2, w: 44 }];
-  const edgeW = mobile ? W * 0.04 : W * 0.11;
-  return (canvas, y0, dpr) => {
-    const cell = Math.max(1, Math.round(1.6 * dpr));
-    dither(canvas, { cell, toX: (px) => px / dpr, toY: (py) => y0 + py / dpr }, (x, y, n, n2) => {
-      if (y > depth) return DEPTH[DEPTH.length - 1];
-      const g = y / depth;
-      let ray = 0;
-      for (const r of rays) {
-        const cx = r.x * W + y * Math.tan(r.a);
-        const half = r.w + y * 0.1;
-        ray = Math.max(ray, Math.max(0, 1 - Math.abs(x - cx) / half));
-      }
-      ray *= Math.pow(1 - g, 1.6);
-      let idx = g * (DEPTH.length - 1) - ray * 2.4 + (n - 0.5) * 1.1;
-      idx = clamp(Math.round(idx), 0, DEPTH.length - 1);
-
-      // ripples near the surface: short horizontal dashes
-      if (y < 420) {
-        const row = Math.floor(y / 6);
-        const len = 40 + hash(row, 7, 3) * 140;
-        const on = vnoise(x / len + row * 13.7, 5);
-        const fade = 1 - y / 420;
-        // reflected treeline at the banks, broken up by the ripples
-        const bank = edgeW * (0.55 + 0.45 * vnoise(y / 46, 4)) * (1 - y / 560);
-        const broken = on > 0.78;
-        if ((x < bank || x > W - bank) && !broken && n2 < 0.85 - y / 700) return SHADOW;
-        if (on > 0.9 - fade * 0.06 && n2 < 0.4 * fade) return RIPPLE;
-      }
-      return DEPTH[idx];
-    });
-  };
-}
-
-// The lantern's light broken up on the water. Drawn every frame around x = 0.
-export function drawReflection(ctx, w, h, t, hullOffset = 0) {
-  ctx.clearRect(0, 0, w, h);
-  const mid = w / 2;
-  for (let row = 0; row * 5 < h; row++) {
-    const y = row * 5 + 3;
-    const q = y / h;
-    const rnd = rng(row * 7919 + 13);
-    const base = (1 - q) ** 0.9 * (24 + rnd() * 90);
-    const len = base * (0.65 + 0.35 * Math.sin(t * 0.8 + row * 1.7));
-    const cx = mid + Math.sin(t * 0.6 + row * 0.45) * (4 + q * 34) + (rnd() - 0.5) * q * 70;
-    const alpha = (1 - q) ** 1.3;
-    if (alpha < 0.03) continue;
-    const dots = Math.round(len * 1.1);
-    for (let i = 0; i < dots; i++) {
-      const f = rnd() * 2 - 1;
-      if (Math.abs(f) > 0.55 && rnd() < 0.5) continue;
-      const af = Math.abs(f);
-      const c = af < 0.35 - q * 0.3 ? '255,231,166' : af < 0.7 ? '255,198,58' : rnd() < 0.6 ? '243,138,49' : '222,75,43';
-      ctx.fillStyle = `rgba(${c},${alpha.toFixed(2)})`;
-      ctx.fillRect(cx + f * len, y + (rnd() - 0.5) * 2.4, 1.6, 1.6);
-    }
-  }
-  // the hull's dark reflection right under the boat
-  ctx.fillStyle = 'rgba(14,21,48,.8)';
-  for (let row = 0; row < 10; row++) {
-    const rnd = rng(row * 31 + 7);
-    const wv = (200 - row * 18) * (0.9 + 0.1 * Math.sin(t + row));
-    const x0 = mid + hullOffset + Math.sin(t * 0.7 + row) * 4;
-    const dots = Math.round(wv * (1.6 - row * 0.12));
-    for (let i = 0; i < dots; i++) ctx.fillRect(x0 + (rnd() - 0.5) * wv, row * 4 + rnd() * 3, 1.6, 1.6);
-  }
 }
 
 /* ---------------- the forest ---------------- */
@@ -593,3 +519,6 @@ export function paintMountains(canvas, W, H, dpr) {
     return null;
   });
 }
+
+// Shared with the voyage painter.
+export { clamp, lerp, smooth, hash, hex, vnoise, DEPTH, RIPPLE, EMBER, PAPER, HAZE };
