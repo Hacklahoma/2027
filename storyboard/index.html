@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hacklahoma 2027 Storyboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700&family=Gloock&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<style>
+  :root { --night:#121b3a; --sky:#1c2a55; --cream:#fff4da; --light:#ffc63a; --mist:#8ea8d6; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--night); color:var(--cream); font-family:'Archivo',system-ui,sans-serif; line-height:1.5; }
+  header, section, footer { max-width:1200px; margin:0 auto; padding:0 24px; }
+  header { padding-top:56px; padding-bottom:24px; }
+  header img { height:44px; width:auto; display:block; filter:brightness(0) invert(1) sepia(1) saturate(4) hue-rotate(5deg) brightness(1.1); }
+  h1 { font-family:'Gloock',serif; font-weight:400; font-size:clamp(32px,5vw,56px); margin:20px 0 8px; }
+  h1 em, h2 em { font-family:'Instrument Serif',serif; color:var(--light); }
+  header p { color:var(--mist); max-width:60ch; margin:0; }
+  h2 { font-family:'Gloock',serif; font-weight:400; font-size:30px; margin:56px 0 4px; }
+  .sub { color:var(--mist); margin:0 0 20px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:20px; }
+  .card { display:block; text-decoration:none; color:inherit; background:var(--sky); border:1px solid rgba(255,198,58,.25); border-radius:14px; overflow:hidden; transition:transform .2s, border-color .2s, box-shadow .2s; }
+  .card:hover, .card:focus-visible { transform:translateY(-3px); border-color:var(--light); box-shadow:0 12px 40px rgba(255,198,58,.15); outline:none; }
+  .card:focus-visible { outline:2px solid var(--light); outline-offset:3px; }
+  .shot { position:relative; height:220px; overflow:hidden; background:#0b1230; pointer-events:none; }
+  .shot iframe { position:absolute; top:0; left:0; width:1440px; height:1000px; border:0; transform:scale(.24); transform-origin:0 0; }
+  .meta { padding:14px 16px 18px; }
+  .meta b { display:block; font-family:'Gloock',serif; font-weight:400; font-size:20px; }
+  .meta span { color:var(--mist); font-size:14px; }
+  .tag { display:inline-block; font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--light); margin-bottom:6px; }
+  .logo-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px; }
+  .logo-box { border-radius:14px; padding:28px; display:flex; flex-direction:column; gap:10px; }
+  .logo-box img { width:100%; height:auto; display:block; }
+  .logo-box small { font-size:13px; opacity:.8; }
+  footer { padding-top:56px; padding-bottom:56px; color:var(--mist); font-size:14px; }
+  @media (prefers-reduced-motion: reduce) { .card { transition:none; } }
+</style>
+</head>
+<body>
+<header>
+  <img src="../public/brand/hacklahoma-logo.png" alt="Hacklahoma" />
+  <h1>2027 UI <em>storyboard</em></h1>
+  <p>Six directions to pick from: three navbars and three sponsor sections. Open any panel for the full desktop, mobile and state walkthrough.</p>
+</header>
+
+<section aria-labelledby="logo-h">
+  <h2 id="logo-h">Logo, <em>speckles removed</em></h2>
+  <p class="sub">Cleaned wordmark in <code>public/brand/</code>: transparent background, plus a gold-plate version.</p>
+  <div class="logo-row">
+    <div class="logo-box" style="background:#f0c858"><img src="../public/brand/hacklahoma-logo.png" alt="Cleaned Hacklahoma logo on gold" /><small style="color:#1a254f">Transparent PNG over gold</small></div>
+    <div class="logo-box" style="background:#fff4da"><img src="../public/brand/hacklahoma-logo.png" alt="Cleaned Hacklahoma logo on cream" /><small style="color:#1a254f">Transparent PNG over cream</small></div>
+  </div>
+</section>
+
+<section aria-labelledby="nav-h">
+  <h2 id="nav-h">Navbar <em>options</em></h2>
+  <p class="sub">Three ways to move around the night river.</p>
+  <div class="grid">
+    <a class="card" href="navbar-1-lantern-rail.html"><div class="shot"><iframe src="navbar-1-lantern-rail.html" title="Preview" tabindex="-1" loading="lazy"></iframe></div><div class="meta"><span class="tag">Navbar 1</span><b>Lantern Rail</b><span>Slim top rail, sliding lantern indicator, scroll progress line.</span></div></a>
+    <a class="card" href="navbar-2-floating-dock.html"><div class="shot"><iframe src="navbar-2-floating-dock.html" title="Preview" tabindex="-1" loading="lazy"></iframe></div><div class="meta"><span class="tag">Navbar 2</span><b>Floating Dock</b><span>Glass pill with countdown, auto-hide, thumb-reach dock on mobile.</span></div></a>
+    <a class="card" href="navbar-3-chapter-rail.html"><div class="shot"><iframe src="navbar-3-chapter-rail.html" title="Preview" tabindex="-1" loading="lazy"></iframe></div><div class="meta"><span class="tag">Navbar 3</span><b>Chapter Rail</b><span>Vertical roman-numeral rail with a boat tracking scroll.</span></div></a>
+  </div>
+</section>
+
+<section aria-labelledby="sp-h">
+  <h2 id="sp-h">Sponsor section <em>options</em></h2>
+  <p class="sub">Three ways to thank the people who keep the lights on.</p>
+  <div class="grid">
+    <a class="card" href="sponsors-1-lit-windows.html"><div class="shot"><iframe src="sponsors-1-lit-windows.html" title="Preview" tabindex="-1" loading="lazy"></iframe></div><div class="meta"><span class="tag">Sponsors 1</span><b>Lit Windows Skyline</b><span>Tiers as window sizes that light up, reflected in the river.</span></div></a>
+    <a class="card" href="sponsors-2-editorial-ledger.html"><div class="shot"><iframe src="sponsors-2-editorial-ledger.html" title="Preview" tabindex="-1" loading="lazy"></iframe></div><div class="meta"><span class="tag">Sponsors 2</span><b>Editorial Ledger</b><span>Print-style patron page: clear logos, ruled tiers, value props.</span></div></a>
+    <a class="card" href="sponsors-3-lantern-garland.html"><div class="shot"><iframe src="sponsors-3-lantern-garland.html" title="Preview" tabindex="-1" loading="lazy"></iframe></div><div class="meta"><span class="tag">Sponsors 3</span><b>Lantern Garland</b><span>Swaying paper lanterns on wires; size and glow show tier.</span></div></a>
+  </div>
+</section>
+
+<footer>Storyboard only. These panels are static design explorations and are not wired into <code>src/</code> yet.</footer>
+</body>
+</html>

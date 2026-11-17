@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navbar 3: Chapter Rail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Gloock&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16204a; --night:#121b3a; --deep:#0b1129; --sky-0:#1c2a55; --sky-1:#26407a; --sky-2:#2f4c86;
+  --mist:#8ea8d6; --cream:#fff4da; --light:#ffc63a; --amber:#f59a3a; --ember:#de4b2b; --gold-4:#ffe4ae;
+  --body:#cdd8ef;
+  --display:'Gloock','Times New Roman',serif;
+  --italic:'Instrument Serif',Georgia,serif;
+  --sans:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box}
+html{background:var(--deep)}
+body{margin:0;background:
+  radial-gradient(1200px 600px at 80% -10%,rgba(47,76,134,.45),transparent 70%),
+  var(--deep);
+  color:var(--cream);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh}
+:focus-visible{outline:2px solid var(--light);outline-offset:3px;border-radius:4px}
+button{font:inherit;color:inherit}
+a{color:inherit}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:999;opacity:.07;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+
+/* ============================================================ storyboard shell */
+.sb{max-width:1360px;margin:0 auto;padding:40px 40px 96px}
+.eyebrow{font-family:var(--sans);font-stretch:125%;font-weight:700;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--mist)}
+.sb-head{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1.5fr);gap:56px;align-items:start;padding-bottom:40px;border-bottom:1px solid rgba(142,168,214,.22)}
+.sb-head h1{font-family:var(--display);font-weight:400;font-size:clamp(48px,6vw,88px);line-height:.98;margin:14px 0 18px;letter-spacing:-.01em}
+.sb-head h1 em{font-family:var(--italic);color:var(--light);font-style:italic}
+.concept{font-family:var(--italic);font-style:italic;font-size:clamp(20px,2vw,26px);line-height:1.35;color:var(--gold-4);margin:0;max-width:34ch}
+.ideas{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.ideas li{border-top:1px solid rgba(255,198,58,.45);padding-top:16px}
+.ideas .n{font-family:var(--display);font-size:30px;color:var(--light);line-height:1}
+.ideas h3{font-family:var(--display);font-weight:400;font-size:21px;margin:10px 0 6px;color:var(--cream)}
+.ideas p{margin:0;font-size:14.5px;color:var(--body);line-height:1.55}
+
+.block{margin-top:56px}
+.block-head{display:flex;align-items:baseline;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.block-head h2{font-family:var(--display);font-weight:400;font-size:28px;margin:0}
+.block-head p{margin:0;font-family:var(--italic);font-style:italic;font-size:19px;color:var(--mist)}
+
+/* scaling frames */
+.fit{width:100%;position:relative}
+.fit>.fit-in{transform-origin:0 0}
+
+/* ============================================================ desktop browser frame */
+.dframe{width:1280px;border-radius:14px;overflow:hidden;background:#0a0f22;border:1px solid rgba(142,168,214,.28);box-shadow:0 40px 80px -30px rgba(0,0,0,.7)}
+.chrome{height:44px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#0f1630;border-bottom:1px solid rgba(142,168,214,.18)}
+.chrome i{width:11px;height:11px;border-radius:50%;background:#2b3768;display:block}
+.chrome .url{margin-left:18px;flex:0 1 420px;height:26px;border-radius:13px;background:#182049;color:var(--mist);font-size:12.5px;display:flex;align-items:center;padding:0 14px;letter-spacing:.02em}
+.view{position:relative;overflow:hidden;background:var(--night)}
+.view--d{height:720px}
+.scroller{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:rgba(142,168,214,.35) transparent}
+.scroller::-webkit-scrollbar{width:8px}
+.scroller::-webkit-scrollbar-thumb{background:rgba(142,168,214,.35);border-radius:8px}
+.hint{position:absolute;right:22px;bottom:20px;z-index:30;display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(10,15,34,.82);border:1px solid rgba(255,244,218,.16);font-size:12.5px;color:var(--cream);transition:opacity .5s;pointer-events:none}
+.hint.is-gone{opacity:0}
+
+/* ============================================================ fake page */
+.pg{--vh:720px;--padl:140px;--padr:96px;
+  background:
+    radial-gradient(1.2px 1.2px at 20px 30px,rgba(255,244,218,.8),transparent 60%) 0 0/170px 140px,
+    radial-gradient(1px 1px at 90px 80px,rgba(255,244,218,.55),transparent 60%) 0 0/230px 190px,
+    linear-gradient(#2a4682 0,#1c2a55 22%,#162248 55%,#0d1430 100%);
+  color:var(--cream)}
+.chap{position:relative;min-height:var(--vh);padding:72px var(--padr) 72px var(--padl);display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.chap::before{content:"";position:absolute;pointer-events:none;width:560px;height:560px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,198,58,.17),transparent 62%);right:-120px;top:-140px}
+.chap:nth-of-type(even)::before{left:auto;right:auto;left:30%;top:auto;bottom:-260px}
+.ghost{position:absolute;right:56px;top:50%;transform:translateY(-50%);font-family:var(--display);font-size:420px;line-height:1;color:rgba(255,244,218,.045);pointer-events:none;user-select:none}
+.kick{font-family:var(--sans);font-stretch:125%;font-weight:700;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--mist);margin:0 0 14px}
+.kick b{color:var(--light);font-weight:700}
+.chap h2{font-family:var(--display);font-weight:400;font-size:62px;line-height:1.02;margin:0 0 18px;max-width:15ch;position:relative}
+.chap h2 em{font-family:var(--italic);font-style:italic;color:var(--gold-4)}
+.chap p.lede{font-size:18px;color:var(--body);max-width:46ch;margin:0 0 26px;position:relative}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;max-width:760px;position:relative}
+.card{border:1px solid rgba(142,168,214,.28);border-radius:14px;padding:16px 18px;background:rgba(18,27,58,.55)}
+.card b{display:block;font-family:var(--display);font-weight:400;font-size:20px;color:var(--cream)}
+.card span{font-size:13.5px;color:var(--body)}
+.sk{height:9px;border-radius:5px;background:rgba(142,168,214,.22);margin:9px 0}
+.faq{max-width:700px;position:relative;list-style:none;margin:0;padding:0}
+.faq li{border-top:1px solid rgba(142,168,214,.28);padding:15px 0;font-family:var(--display);font-size:21px;display:flex;justify-content:space-between;gap:20px}
+.faq li:last-child{border-bottom:1px solid rgba(142,168,214,.28)}
+.faq li span{color:var(--light);font-family:var(--sans);font-size:20px}
+.tier{display:flex;gap:12px;align-items:center;margin:0 0 10px;position:relative}
+.tier small{width:70px;font-stretch:125%;font-weight:700;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mist)}
+.plate{height:50px;border:1.5px dashed rgba(142,168,214,.55);border-radius:10px;display:grid;place-items:center;font-stretch:112%;font-weight:600;font-size:12px;letter-spacing:.1em;color:var(--body);background:rgba(18,27,58,.5);padding:0 14px;white-space:nowrap}
+.plate.t{width:260px;height:56px}
+.cta{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 24px;border-radius:999px;background:var(--light);color:var(--ink);font-weight:700;font-stretch:112%;font-size:15px;text-decoration:none;position:relative;margin-top:14px;box-shadow:0 8px 30px -8px rgba(255,198,58,.6)}
+.cta.ghostbtn{background:transparent;color:var(--cream);border:1.5px solid rgba(255,244,218,.4);box-shadow:none}
+.foot{margin-top:34px;font-size:12.5px;color:var(--mist);position:relative}
+
+.hero{background:none}
+.hero h1{font-family:var(--display);font-weight:400;font-size:150px;line-height:.9;margin:0 0 20px;letter-spacing:-.02em;color:var(--cream);position:relative;z-index:2}
+.hero h1 em{font-family:var(--italic);font-style:italic;color:var(--light);font-size:.52em;letter-spacing:0;margin-left:.1em}
+.hero .date{font-stretch:125%;font-weight:700;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-4);position:relative;z-index:2}
+.hero-art{position:absolute;left:0;right:0;bottom:0;height:46%;pointer-events:none}
+
+/* ============================================================ THE RAIL (vertical) */
+.rail{position:absolute;top:0;bottom:0;left:0;width:72px;z-index:20;
+  background:linear-gradient(90deg,rgba(8,12,30,.88),rgba(8,12,30,.55) 65%,transparent)}
+.rail::after{content:"";position:absolute;right:0;top:0;bottom:0;width:1px;background:linear-gradient(transparent,rgba(142,168,214,.26) 18%,rgba(142,168,214,.26) 82%,transparent)}
+.rail-logo{position:absolute;left:0;top:16px;width:64px;height:48px;display:block;text-decoration:none;z-index:3;border-radius:10px}
+.rail-logo .mark{position:absolute;left:14px;top:8px;width:34px;height:32px;overflow:hidden;display:block}
+.rail-logo .mark img{clip-path:polygon(0 0,15.35% 0,15.35% 66%,14.6% 66%,14.6% 82%,15.35% 82%,15.35% 100%,0 100%)}
+.rail-logo img{display:block;height:32px;width:auto;max-width:none;margin-left:-2px;filter:brightness(0) invert(.97) sepia(.28) saturate(2) hue-rotate(-8deg)}
+.rail-logo .word{position:absolute;left:62px;top:50%;height:22px;display:block;opacity:0;transform:translate(-10px,-50%);transition:opacity .25s,transform .35s cubic-bezier(.2,.8,.2,1);pointer-events:none;padding:12px 16px;box-sizing:content-box;margin-top:0;
+  background:rgba(10,15,34,.78);border:1px solid rgba(255,244,218,.14);border-radius:999px;backdrop-filter:blur(8px);height:22px}
+.rail-logo .word img{height:22px;margin:0;filter:brightness(0) invert(.97) sepia(.28) saturate(2) hue-rotate(-8deg)}
+.rail-logo:hover .word,.rail-logo:focus-visible .word,.rail-logo.is-hover .word{opacity:1;transform:translate(0,-50%)}
+.rail-logo:focus-visible,.rail-logo.is-focus{outline:2px solid var(--light);outline-offset:-2px}
+
+.rail-track{position:absolute;left:0;width:100%;top:100px;bottom:176px}
+.rail-track::before{content:"";position:absolute;left:30px;top:-36px;height:36px;width:0;border-left:1px dashed rgba(142,168,214,.4)}
+.line{position:absolute;left:29px;top:0;bottom:0;width:2px;background:rgba(142,168,214,.32);border-radius:2px}
+.fill{position:absolute;left:29px;top:0;width:2px;height:calc(var(--prog,0)*100%);background:linear-gradient(var(--amber),var(--light));box-shadow:0 0 10px 1px rgba(255,198,58,.6);border-radius:2px;transition:height .12s linear}
+.stops{list-style:none;margin:0;padding:0;position:absolute;inset:0}
+.stops li{position:absolute;left:0;top:calc(var(--p)*100%);width:100%;height:0}
+.stop{position:absolute;left:0;top:-23px;height:46px;width:64px;background:none;border:0;padding:0;cursor:pointer;color:var(--mist);border-radius:23px;display:block}
+.stop .dot{position:absolute;left:30px;top:50%;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;background:var(--night);border:1.5px solid var(--mist);transition:background .3s,border-color .3s,box-shadow .3s}
+.stop .dot::after{content:"";position:absolute;inset:-17px;border-radius:50%;background:radial-gradient(circle,rgba(255,198,58,.6),rgba(255,198,58,0) 66%);opacity:0;transition:opacity .4s}
+.stop .num{position:absolute;left:43px;top:50%;font-family:var(--display);font-size:12px;letter-spacing:.04em;line-height:1;color:var(--mist);transform:translateY(-50%) scale(1);transform-origin:left center;transition:transform .3s cubic-bezier(.2,.8,.2,1),color .3s,text-shadow .3s}
+.stop .lab{position:absolute;left:62px;top:50%;transform:translate(-12px,-50%);opacity:0;visibility:hidden;white-space:nowrap;isolation:isolate;
+  font-family:var(--italic);font-style:italic;font-size:28px;line-height:1;color:var(--cream);padding:8px 18px 9px 38px;
+  transition:opacity .22s,transform .38s cubic-bezier(.2,.8,.2,1),visibility 0s .22s;pointer-events:none}
+.stop .lab::after{content:"";position:absolute;left:22px;right:0;top:0;bottom:0;z-index:-1;border-radius:999px;background:rgba(10,15,34,.86);border:1px solid rgba(255,244,218,.16);backdrop-filter:blur(8px)}
+.stop .lab::before{content:"";position:absolute;left:4px;top:50%;width:18px;height:1px;background:linear-gradient(90deg,transparent,var(--light))}
+.stop:hover .lab,.stop:focus-visible .lab,.stop.is-hover .lab{opacity:1;visibility:visible;transform:translate(0,-50%);transition-delay:0s}
+.stop:hover .num,.stop:focus-visible .num,.stop.is-hover .num{transform:translateY(-50%) scale(1.55);color:var(--cream)}
+.stop:hover .dot,.stop:focus-visible .dot,.stop.is-hover .dot{border-color:var(--cream)}
+.stop:focus-visible,.stop.is-focus{outline:2px solid var(--light);outline-offset:-1px}
+.stop.is-lit .dot{background:var(--amber);border-color:var(--amber)}
+.stop.is-lit .num{color:var(--gold-4)}
+.stop[aria-current="true"] .dot{background:var(--light);border-color:var(--cream);box-shadow:0 0 0 3px rgba(255,198,58,.22),0 0 14px 3px rgba(255,198,58,.7)}
+.stop[aria-current="true"] .dot::after{opacity:1;animation:flick 3.6s ease-in-out infinite}
+.stop[aria-current="true"] .num{color:var(--light);transform:translateY(-50%) scale(1.5);text-shadow:0 0 14px rgba(255,198,58,.9),0 0 3px rgba(255,198,58,.6)}
+@keyframes flick{0%,100%{opacity:1;transform:scale(1)}18%{opacity:.78;transform:scale(.94)}34%{opacity:1;transform:scale(1.05)}52%{opacity:.85;transform:scale(.97)}72%{opacity:1;transform:scale(1.03)}}
+
+.boat{position:absolute;left:30px;top:calc(var(--prog,0)*100%);width:20px;height:33px;transform:translate(-50%,-50%);z-index:4;pointer-events:none;transition:top .12s linear}
+.boat svg{display:block;overflow:visible;filter:drop-shadow(0 0 6px rgba(255,198,58,.55))}
+.boat .glow{transform-origin:12px 24px;animation:flick 2.8s ease-in-out infinite}
+
+.rail-date{position:absolute;left:0;width:60px;bottom:30px;height:128px;display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl;transform:rotate(180deg);
+  font-stretch:125%;font-weight:700;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--mist);white-space:nowrap}
+.rail--mini .rail-track{top:84px;bottom:28px}
+.rail--mini .rail-date{display:none}
+.rail--mini .rail-logo{top:12px}
+
+/* kebab + menu */
+.kebab{position:absolute;top:16px;right:22px;width:46px;height:46px;border-radius:50%;z-index:70;cursor:pointer;display:grid;place-items:center;
+  background:rgba(10,15,34,.78);border:1px solid rgba(255,244,218,.22);backdrop-filter:blur(8px);color:var(--cream);transition:background .25s,border-color .25s,transform .25s}
+.kebab:hover{border-color:var(--light);background:rgba(10,15,34,.95)}
+.kebab .kx{display:none}
+.kebab.is-open .kx{display:block}.kebab.is-open .kd{display:none}
+.kebab.is-focus{outline:2px solid var(--light);outline-offset:3px}
+.menu{position:absolute;inset:0;z-index:60;opacity:0;visibility:hidden;transition:opacity .3s,visibility 0s .3s;
+  background:radial-gradient(900px 500px at 85% 0,rgba(255,198,58,.12),transparent 70%),linear-gradient(#17244d,#0c1230);
+  padding:96px 120px 56px 120px;display:grid;grid-template-columns:1.3fr 1fr;gap:80px;overflow:auto}
+.menu.is-open{opacity:1;visibility:visible;transition-delay:0s}
+.menu .eyebrow{display:block;margin-bottom:18px}
+.years{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:6px 24px}
+.years a{display:flex;align-items:center;min-height:68px;font-family:var(--display);font-size:56px;line-height:1;text-decoration:none;color:var(--cream);border-bottom:1px solid rgba(142,168,214,.25);transition:color .2s,padding .3s}
+.years a:hover{color:var(--light);padding-left:8px}
+.years li:first-child a{color:var(--light)}
+.menu .big{display:block;font-family:var(--display);font-size:38px;line-height:1.15;text-decoration:none;color:var(--cream);margin:0 0 30px}
+.menu .big i{font-family:var(--italic);color:var(--light)}
+.menu .big:hover{color:var(--light)}
+.menu .small{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:2px}
+.menu .small a{display:inline-flex;align-items:center;min-height:44px;font-size:16px;color:var(--body);text-decoration:none;border-bottom:1px solid transparent}
+.menu .small a:hover{color:var(--light)}
+
+/* ============================================================ MOBILE */
+.phone{width:395px;padding:10px;border-radius:54px;background:#080c1f;border:1px solid rgba(142,168,214,.3);box-shadow:0 40px 70px -30px rgba(0,0,0,.75);position:relative}
+.view--m{width:375px;height:760px;border-radius:44px}
+.phone .isle{position:absolute;top:20px;left:50%;transform:translateX(-50%);width:92px;height:26px;border-radius:14px;background:#000;z-index:90}
+.pg--m{--vh:760px;--padl:24px;--padr:24px}
+.pg--m .chap{padding-top:96px;padding-bottom:84px}
+.pg--m .ghost{font-size:230px;right:-10px}
+.pg--m .chap h2{font-size:38px;max-width:12ch}
+.pg--m .chap p.lede{font-size:16.5px}
+.pg--m .cards{grid-template-columns:1fr;gap:10px}
+.pg--m .card{padding:12px 16px}
+.pg--m .hero h1,.pg--m .hero-h{font-size:56px}
+.pg--m .faq li{font-size:18px}
+.pg--m .tier{flex-wrap:wrap;gap:8px}
+.pg--m .tier small{width:100%}
+.pg--m .plate.t{width:100%}
+.pg--m .plate{height:44px;flex:1 1 0;min-width:0;padding:0 8px;font-size:11px}
+.m-top{position:absolute;left:0;right:0;top:0;height:84px;z-index:30;pointer-events:none;background:linear-gradient(rgba(8,12,30,.92) 30%,rgba(8,12,30,0))}
+.m-logo{position:absolute;left:18px;top:21px;z-index:40;height:44px;display:flex;align-items:center;text-decoration:none;border-radius:8px}
+.m-logo img{height:20px;width:auto;display:block;filter:brightness(0) invert(.97) sepia(.28) saturate(2) hue-rotate(-8deg) drop-shadow(0 1px 6px rgba(8,12,30,.8))}
+.view--m .kebab{top:12px;right:14px}
+.view--m .menu{padding:88px 24px 40px;grid-template-columns:1fr;gap:28px}
+.view--m .years{grid-template-columns:repeat(3,1fr);gap:0 14px}
+.view--m .years a{font-size:36px;min-height:56px}
+.view--m .menu .big{font-size:30px;margin-bottom:18px}
+
+.mbar{position:absolute;left:0;right:0;bottom:0;height:74px;z-index:40;
+  background:linear-gradient(transparent,rgba(8,12,30,.78) 28%,rgba(8,12,30,.95));backdrop-filter:blur(6px);touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.mbar::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:rgba(142,168,214,.22)}
+.m-track{position:absolute;left:34px;right:34px;top:0;bottom:0}
+.mbar .line{left:0;right:0;top:19px;bottom:auto;width:auto;height:2px}
+.mbar .fill{left:0;top:19px;height:2px;width:calc(var(--prog,0)*100%);transition:width .12s linear}
+.mbar .stops li{left:calc(var(--p)*100%);top:0;width:0;height:100%}
+.mbar .stop{left:-28px;top:0;width:56px;height:68px;border-radius:12px}
+.mbar .stop .dot{left:28px;top:20px;margin:-5.5px 0 0 -5.5px}
+.mbar .stop .num{left:50%;top:46px;transform:translate(-50%,-50%) scale(1);transform-origin:center;font-size:13px}
+.mbar .stop[aria-current="true"] .num{transform:translate(-50%,-50%) scale(1.45)}
+.mbar .stop.is-hover .num{transform:translate(-50%,-50%) scale(1.3)}
+.mbar .stop .num svg{display:block}
+.mbar .stop:focus-visible,.mbar .stop.is-focus{outline-offset:-3px}
+.mbar .boat{left:calc(var(--prog,0)*100%);top:20px;transform:translate(-50%,-50%) rotate(-90deg);transition:left .12s linear}
+.mbar.is-drag .fill,.mbar.is-drag .boat{transition:none}
+.m-bubble{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translate(-50%,6px);opacity:0;pointer-events:none;white-space:nowrap;
+  font-family:var(--italic);font-style:italic;font-size:26px;line-height:1;color:var(--cream);padding:8px 18px 9px;border-radius:999px;background:rgba(10,15,34,.94);border:1px solid rgba(255,198,58,.5);
+  box-shadow:0 0 24px -4px rgba(255,198,58,.45);transition:opacity .2s,transform .25s}
+.m-bubble b{font-family:var(--display);font-style:normal;font-weight:400;font-size:15px;color:var(--light);margin-right:8px;letter-spacing:.04em}
+.mbar.show .m-bubble,.mbar.is-drag .m-bubble{opacity:1;transform:translate(-50%,0)}
+.mbar.is-drag .stop{pointer-events:none}
+.finger{position:absolute;width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,244,218,.7);background:rgba(255,244,218,.12);transform:translate(-50%,-50%);pointer-events:none;z-index:5}
+
+/* ============================================================ mobile row notes */
+.mrow{display:grid;grid-template-columns:auto auto minmax(260px,1fr);gap:40px;align-items:start}
+.phone-cap{margin:14px 6px 0;font-size:13.5px;color:var(--mist)}
+.phone-cap b{color:var(--cream);font-weight:600}
+.notes{border-left:1px solid rgba(142,168,214,.22);padding-left:32px}
+.notes h3{font-family:var(--display);font-weight:400;font-size:24px;margin:0 0 12px}
+.notes ul{margin:0 0 28px;padding:0;list-style:none;display:grid;gap:12px}
+.notes li{font-size:14.5px;color:var(--body);padding-left:20px;position:relative;line-height:1.5}
+.notes li::before{content:"";position:absolute;left:0;top:.5em;width:7px;height:7px;border-radius:50%;background:var(--light);box-shadow:0 0 8px rgba(255,198,58,.7)}
+.notes li b{color:var(--cream);font-weight:600}
+.notes code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;color:var(--gold-4)}
+
+/* ============================================================ states */
+.states{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+.state figure{margin:0}
+.sv{position:relative;height:403px;border-radius:14px;overflow:hidden;border:1px solid rgba(142,168,214,.28);background:var(--night)}
+.sv .pg{position:absolute;inset:0;--padl:96px;--padr:20px}
+.sv .mini{position:absolute;inset:0;padding:0 22px 0 96px;display:flex;flex-direction:column;justify-content:center;
+  background:
+    radial-gradient(1.2px 1.2px at 20px 30px,rgba(255,244,218,.8),transparent 60%) 0 0/170px 140px,
+    linear-gradient(#26407a,#162248 60%,#0d1430)}
+.sv .mini::before{content:"";position:absolute;right:-90px;top:-90px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,198,58,.2),transparent 62%)}
+.mini h4{font-family:var(--display);font-weight:400;font-size:34px;line-height:1.05;margin:0 0 12px;position:relative}
+.mini .kick{position:relative;margin-bottom:10px;font-size:10.5px}
+.mini .sk{position:relative;max-width:150px}
+.mini .sk.w{max-width:190px}
+.mini .sk.s{max-width:110px}
+.mini-hero h4{font-size:31px}
+.state figcaption{margin-top:14px;display:grid;grid-template-columns:36px 1fr;column-gap:12px}
+.state .badge{grid-row:span 2;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-size:18px;color:var(--ink);background:var(--light);box-shadow:0 0 18px rgba(255,198,58,.45)}
+.state h3{font-family:var(--display);font-weight:400;font-size:20px;margin:0;line-height:1.25}
+.state figcaption p{margin:3px 0 0;font-size:13.5px;color:var(--body);line-height:1.5}
+.sv .fit{position:relative}
+.sv--m{background:#0a0f22}
+.sv--m .view--m{border-radius:0;position:relative;width:375px;height:468px}
+
+/* ============================================================ responsive for the storyboard page itself */
+@media (max-width:1200px){
+  .mrow{grid-template-columns:auto auto}
+  .notes{grid-column:1/-1;border-left:0;padding-left:0;border-top:1px solid rgba(142,168,214,.22);padding-top:28px}
+  .states{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:900px){
+  .sb{padding:28px 16px 72px}
+  .sb-head{grid-template-columns:1fr;gap:28px}
+  .ideas{grid-template-columns:1fr}
+  .mrow{grid-template-columns:1fr;justify-items:center}
+  .states{grid-template-columns:1fr}
+}
+
+/* ============================================================ reduced motion */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important;transition-delay:0s!important;scroll-behavior:auto!important}
+  .stop .lab,.rail-logo .word,.m-bubble{transform:translate(0,-50%)}
+  .m-bubble{transform:translate(-50%,0)}
+}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<main class="sb">
+
+  <header class="sb-head">
+    <div>
+      <span class="eyebrow">Hacklahoma 2027 &middot; Navbar option 3</span>
+      <h1>The <em>Chapter</em> Rail</h1>
+      <p class="concept">No bar at all. A thin riverbank down the left edge, where the page&rsquo;s chapters are stops on a line of light and a small boat marks how far you&rsquo;ve drifted.</p>
+    </div>
+    <ol class="ideas">
+      <li><span class="n">I</span><h3>Chapters, not links</h3><p>Numerals I&ndash;V sit tiny on the bank. Reach for one (hover, focus, or tap) and its name slides out in italic serif. Nothing else competes with the page.</p></li>
+      <li><span class="n">II</span><h3>Progress you can see</h3><p>The line fills with lantern light as you scroll, a boat rides it, and the current chapter&rsquo;s numeral glows like a lit lantern.</p></li>
+      <li><span class="n">III</span><h3>One corner, one kebab</h3><p>Past years, exec team and socials stay in the existing full-screen menu. On phones the rail lies down into a bottom scrubber you can tap or drag.</p></li>
+    </ol>
+  </header>
+
+  <!-- ===================================================== DESKTOP -->
+  <section class="block" aria-labelledby="h-desktop">
+    <div class="block-head"><h2 id="h-desktop">Desktop</h2><p>Live: scroll inside the frame, hover or Tab through the rail, click the kebab.</p></div>
+    <div class="fit" data-w="1280">
+      <div class="fit-in dframe">
+        <div class="chrome" aria-hidden="true"><i></i><i></i><i></i><span class="url">hacklahoma.org</span></div>
+        <div class="view view--d" id="d-view"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== MOBILE -->
+  <section class="block" aria-labelledby="h-mobile">
+    <div class="block-head"><h2 id="h-mobile">Mobile</h2><p>Live: tap a numeral to jump, or drag along the bottom bar to scrub.</p></div>
+    <div class="mrow">
+      <div>
+        <div class="fit" data-w="395"><div class="fit-in phone"><span class="isle" aria-hidden="true"></span><div class="view view--m" id="m-view"></div></div></div>
+        <p class="phone-cap"><b>Scrubber.</b> The rail lies down into a bottom bar.</p>
+      </div>
+      <div>
+        <div class="fit" data-w="395"><div class="fit-in phone"><span class="isle" aria-hidden="true"></span><div class="view view--m" id="m-view-menu"></div></div></div>
+        <p class="phone-cap"><b>Kebab open.</b> The same full-screen menu as today.</p>
+      </div>
+      <aside class="notes" aria-label="Mobile and accessibility notes">
+        <h3>On a phone</h3>
+        <ul>
+          <li><b>Slim bottom bar</b> (74px) holds the line, the boat and six numerals: a top stop plus I&ndash;V.</li>
+          <li><b>Tap</b> a numeral to jump; each stop is a 56&times;68px target.</li>
+          <li><b>Drag</b> anywhere along the bar to scrub. The boat follows your thumb and a bubble names the chapter.</li>
+          <li><b>Kebab</b> sits top-right, wordmark top-left. Nothing else floats on the page.</li>
+        </ul>
+        <h3>Built in</h3>
+        <ul>
+          <li>Real <code>&lt;nav&gt;</code>, <code>&lt;ol&gt;</code> and <code>&lt;button&gt;</code>s; the current chapter gets <code>aria-current</code>.</li>
+          <li>Labels are reachable by keyboard focus, not just hover, with a gold focus ring.</li>
+          <li>Reduced motion: the boat and fill still track scroll, but flicker and slide-out easing are off.</li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ===================================================== STATES -->
+  <section class="block" aria-labelledby="h-states">
+    <div class="block-head"><h2 id="h-states">States &amp; interactions</h2><p>Four moments along the river.</p></div>
+    <div class="states" id="states"></div>
+  </section>
+
+</main>
+
+<script>
+/* ---------------------------------------------------------------- data */
+var CH=[
+  {n:'I',t:'What is Hacklahoma?'},
+  {n:'II',t:'Schedule'},
+  {n:'III',t:'FAQ'},
+  {n:'IV',t:'Sponsors'},
+  {n:'V',t:'Register'}
+];
+var YEARS=[2026,2025,2024,2023,2022,2021,2020,2019,2018];
+var LOGO='../public/brand/hacklahoma-logo.png';
+var REDUCE=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+var BOAT='<svg viewBox="0 0 24 40" width="20" height="33" aria-hidden="true">'
+ +'<path d="M4 10 Q12 3 20 10" fill="none" stroke="#8ea8d6" stroke-width="1.3" stroke-linecap="round" opacity=".55"/>'
+ +'<path d="M7 4.5 Q12 .5 17 4.5" fill="none" stroke="#8ea8d6" stroke-width="1.3" stroke-linecap="round" opacity=".32"/>'
+ +'<circle class="glow" cx="12" cy="24" r="10" fill="rgba(255,198,58,.28)"/>'
+ +'<path d="M12 39 C5 34 3.6 23 5.6 13 L18.4 13 C20.4 23 19 34 12 39Z" fill="#fff4da" stroke="#16204a" stroke-width="1.4" stroke-linejoin="round"/>'
+ +'<path d="M7.8 15.5 C7 23 8.2 30 12 34.6 C15.8 30 17 23 16.2 15.5Z" fill="#26407a"/>'
+ +'<circle cx="12" cy="23" r="3.3" fill="#ffc63a" stroke="#fff4da" stroke-width="1"/>'
+ +'</svg>';
+
+/* ---------------------------------------------------------------- builders */
+function pageHTML(m){
+  var h=m?'hero-h':'';
+  return ''
+  +'<div class="pg'+(m?' pg--m':'')+'">'
+  +'<section class="chap hero" data-top id="top"><svg class="hero-art" viewBox="0 0 1280 330" preserveAspectRatio="xMidYMax slice" aria-hidden="true">'
+  +'<defs><linearGradient id="rv'+(m?'m':'d')+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#26407a"/><stop offset="1" stop-color="#0b1129"/></linearGradient>'
+  +'<radialGradient id="lg'+(m?'m':'d')+'"><stop offset="0" stop-color="#ffc63a" stop-opacity=".9"/><stop offset="1" stop-color="#ffc63a" stop-opacity="0"/></radialGradient></defs>'
+  +'<path d="M0 120 L120 80 L250 118 L380 70 L520 120 L700 90 L900 125 L1090 78 L1280 118 L1280 330 L0 330Z" fill="#162248"/>'
+  +'<rect y="150" width="1280" height="180" fill="url(#rv'+(m?'m':'d')+')"/>'
+  +'<path d="M820 150 L900 330 L760 330Z" fill="rgba(255,198,58,.12)"/>'
+  +'<circle cx="835" cy="214" r="64" fill="url(#lg'+(m?'m':'d')+')"/>'
+  +'<path d="M772 214 Q835 246 898 214 L884 228 Q835 250 786 228Z" fill="#0b1129"/>'
+  +'<path d="M835 214 L835 188" stroke="#0b1129" stroke-width="3"/><circle cx="835" cy="198" r="7" fill="#ffc63a"/>'
+  +'<path d="M740 262 H930 M770 276 H900" stroke="rgba(255,198,58,.35)" stroke-width="2" stroke-linecap="round"/>'
+  +'</svg>'
+  +'<p class="date" style="margin:0 0 18px">Feb 6&ndash;7, 2027 &middot; Norman, Oklahoma</p>'
+  +'<h1 class="'+h+'">Hacklahoma<em>2027</em></h1>'
+  +'<p class="lede" style="position:relative;z-index:2;margin:0">Oklahoma&rsquo;s largest hackathon.</p>'
+  +'</section>'
+
+  +'<section class="chap" data-top id="c1"><span class="ghost" aria-hidden="true">I</span>'
+  +'<p class="kick"><b>I</b> &nbsp;Chapter one</p><h2>What is <em>Hacklahoma?</em></h2>'
+  +'<p class="lede">A weekend where students build something from nothing, together, by lantern light.</p>'
+  +'<div class="cards"><div class="card"><b>Build</b><div class="sk"></div><div class="sk s"></div></div><div class="card"><b>Learn</b><div class="sk"></div><div class="sk s"></div></div><div class="card"><b>Meet</b><div class="sk"></div><div class="sk s"></div></div></div></section>'
+
+  +'<section class="chap" data-top id="c2"><span class="ghost" aria-hidden="true">II</span>'
+  +'<p class="kick"><b>II</b> &nbsp;Chapter two</p><h2>Schedule &amp; <em>tracks</em></h2>'
+  +'<p class="lede">Two days on the river. Times are placeholders in this storyboard.</p>'
+  +'<div class="cards"><div class="card"><b>Doors open</b><span>Saturday &middot; TBA</span></div><div class="card"><b>Hacking</b><span>All night &middot; TBA</span></div><div class="card"><b>Demos</b><span>Sunday &middot; TBA</span></div></div></section>'
+
+  +'<section class="chap" data-top id="c3"><span class="ghost" aria-hidden="true">III</span>'
+  +'<p class="kick"><b>III</b> &nbsp;Chapter three</p><h2>Questions, <em>answered</em></h2>'
+  +'<ul class="faq"><li>Who can come? <span aria-hidden="true">+</span></li><li>What does it cost? <span aria-hidden="true">+</span></li><li>Do I need a team? <span aria-hidden="true">+</span></li></ul></section>'
+
+  +'<section class="chap" data-top id="c4"><span class="ghost" aria-hidden="true">IV</span>'
+  +'<p class="kick"><b>IV</b> &nbsp;Chapter four</p><h2>The people who keep the <em>lights on</em></h2>'
+  +'<p class="lede">Hacklahoma is free for every hacker because of them.</p>'
+  +'<div class="tier"><small>Title</small><div class="plate t">[TITLE SPONSOR]</div></div>'
+  +'<div class="tier"><small>Gold</small><div class="plate">[GOLD SPONSOR]</div><div class="plate">[GOLD SPONSOR]</div></div>'
+  +'<div class="tier"><small>Silver</small><div class="plate">[SILVER]</div><div class="plate">[SILVER]</div><div class="plate">[SILVER]</div></div>'
+  +'<a class="cta" href="#" onclick="return false">Light a lantern with us</a></section>'
+
+  +'<section class="chap" data-top id="c5"><span class="ghost" aria-hidden="true">V</span>'
+  +'<p class="kick"><b>V</b> &nbsp;Chapter five</p><h2>Come <em>aboard</em></h2>'
+  +'<p class="lede">Registration is open to every student. Bring a laptop and a little curiosity.</p>'
+  +'<div><a class="cta" href="#" onclick="return false">Register</a></div>'
+  +'<p class="foot">&copy; 2027 Hacklahoma &middot; University of Oklahoma &middot; MLH Code of Conduct</p></section>'
+  +'</div>';
+}
+
+function railV(mini){
+  return '<nav class="rail'+(mini?' rail--mini':'')+'" aria-label="Chapters">'
+  +'<a class="rail-logo" href="#top" data-i="0" aria-label="Hacklahoma, back to the top"><span class="mark"><img src="'+LOGO+'" alt=""></span><span class="word"><img src="'+LOGO+'" alt=""></span></a>'
+  +'<div class="rail-track"><div class="line"></div><div class="fill"></div><ol class="stops">'
+  + CH.map(function(c,i){return '<li style="--p:'+((i+1)/5)+'"><button type="button" class="stop" data-i="'+(i+1)+'" aria-label="Chapter '+c.n+': '+c.t+'"><span class="dot"></span><span class="num" aria-hidden="true">'+c.n+'</span><span class="lab" aria-hidden="true">'+c.t+'</span></button></li>';}).join('')
+  +'</ol><div class="boat" aria-hidden="true">'+BOAT+'</div></div>'
+  +'<span class="rail-date" aria-hidden="true">Feb 6&ndash;7 &middot; 2027</span></nav>';
+}
+
+function railH(){
+  var up='<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 10V2M2.5 5.5L6 2l3.5 3.5"/></svg>';
+  var stops='<li style="--p:0"><button type="button" class="stop" data-i="0" aria-label="Top of page"><span class="dot"></span><span class="num">'+up+'</span></button></li>'
+  + CH.map(function(c,i){return '<li style="--p:'+((i+1)/5)+'"><button type="button" class="stop" data-i="'+(i+1)+'" aria-label="Chapter '+c.n+': '+c.t+'"><span class="dot"></span><span class="num" aria-hidden="true">'+c.n+'</span></button></li>';}).join('');
+  return '<nav class="mbar" aria-label="Chapters"><div class="m-bubble" aria-hidden="true"></div>'
+  +'<div class="m-track"><div class="line"></div><div class="fill"></div><ol class="stops">'+stops+'</ol><div class="boat" aria-hidden="true">'+BOAT+'</div></div></nav>';
+}
+
+function kebabHTML(open,ctl){
+  return '<button type="button" class="kebab'+(open?' is-open':'')+'" aria-label="'+(open?'Close menu':'Open menu')+'" aria-expanded="'+(open?'true':'false')+'"'+(ctl?' aria-controls="'+ctl+'"':'')+'>'
+  +'<svg class="kd" width="6" height="22" viewBox="0 0 6 22" aria-hidden="true"><circle cx="3" cy="3" r="2.4" fill="currentColor"/><circle cx="3" cy="11" r="2.4" fill="currentColor"/><circle cx="3" cy="19" r="2.4" fill="currentColor"/></svg>'
+  +'<svg class="kx" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15"/></svg></button>';
+}
+
+function menuHTML(open,id){
+  return '<nav class="menu'+(open?' is-open':'')+'"'+(id?' id="'+id+'"':'')+' aria-label="Hacklahoma"'+(open?'':' aria-hidden="true" inert')+'>'
+  +'<section><span class="eyebrow">Lights we&rsquo;ve lit before</span><ul class="years">'
+  + YEARS.map(function(y){return '<li><a href="https://'+y+'.hacklahoma.org" target="_blank" rel="noopener">'+y+'</a></li>';}).join('')
+  +'</ul></section>'
+  +'<section><span class="eyebrow">The people</span><a class="big" href="#" onclick="return false">Meet the exec team <i>&rarr;</i></a>'
+  +'<span class="eyebrow">This year</span><a class="big" href="https://register.hacklahoma.org/" target="_blank" rel="noopener">Register <i>&rarr;</i></a>'
+  +'<ul class="small"><li><a href="#" onclick="return false">Instagram</a></li><li><a href="#" onclick="return false">LinkedIn</a></li><li><a href="#" onclick="return false">Discord</a></li><li><a href="https://mlh.io/code-of-conduct" target="_blank" rel="noopener">MLH Code of Conduct</a></li></ul></section></nav>';
+}
+
+/* ---------------------------------------------------------------- behaviour */
+function setRail(root,pos){
+  pos=Math.max(0,Math.min(5,pos));
+  root.style.setProperty('--prog',(pos/5).toFixed(4));
+  var active=0;
+  for(var i=1;i<=5;i++){ if(pos>=i-0.4) active=i; }
+  root.querySelectorAll('.stop').forEach(function(b){
+    var i=+b.dataset.i;
+    b.classList.toggle('is-lit',i>0&&pos>=i-0.05);
+    if(i>0&&i===active) b.setAttribute('aria-current','true'); else b.removeAttribute('aria-current');
+  });
+  return {pos:pos,active:active};
+}
+
+function wire(view,kind){
+  var scroller=view.querySelector('.scroller');
+  var root=view.querySelector(kind==='h'?'.mbar':'.rail');
+  var bubble=root.querySelector('.m-bubble');
+  var hint=view.querySelector('.hint');
+  var bubTimer=null;
+  function tops(){return Array.prototype.map.call(scroller.querySelectorAll('[data-top]'),function(e){return e.offsetTop;});}
+  function posFromScroll(){
+    var t=tops(),s=scroller.scrollTop,k=0;
+    while(k<5&&s>=t[k+1]-0.5)k++;
+    if(k>=5)return 5;
+    return k+(s-t[k])/(t[k+1]-t[k]);
+  }
+  function label(pos){
+    var i=Math.round(pos);
+    return i===0?'<b>&uarr;</b>Top':'<b>'+CH[i-1].n+'</b>'+CH[i-1].t;
+  }
+  function placeBubble(pos){
+    if(!bubble)return;
+    bubble.innerHTML=label(pos);
+    var W=root.clientWidth,w=bubble.offsetWidth,x=34+(pos/5)*(W-68);
+    x=Math.max(w/2+8,Math.min(W-w/2-8,x));
+    bubble.style.left=x+'px';
+  }
+  var ticking=false;
+  function update(){
+    ticking=false;
+    var p=posFromScroll();
+    setRail(root,p);
+    if(bubble)placeBubble(p);
+    if(hint&&scroller.scrollTop>40)hint.classList.add('is-gone');
+  }
+  scroller.addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(update);}},{passive:true});
+  function jump(i){
+    var t=tops();
+    scroller.scrollTo({top:t[i],behavior:REDUCE?'auto':'smooth'});
+    if(bubble){
+      placeBubble(i);root.classList.add('show');clearTimeout(bubTimer);
+      bubTimer=setTimeout(function(){root.classList.remove('show');},1500);
+    }
+  }
+  root.querySelectorAll('[data-i]').forEach(function(b){
+    b.addEventListener('click',function(e){
+      e.preventDefault();
+      if(root._dragged){root._dragged=false;return;}
+      jump(+b.dataset.i);
+    });
+  });
+  if(kind==='h'){
+    var track=root.querySelector('.m-track'),down=null,drag=false;
+    root.addEventListener('pointerdown',function(e){
+      if(e.button!==undefined&&e.button!==0)return;
+      down={x:e.clientX,id:e.pointerId};drag=false;root._dragged=false;
+    });
+    root.addEventListener('pointermove',function(e){
+      if(!down)return;
+      if(!drag&&Math.abs(e.clientX-down.x)>6){
+        drag=true;root._dragged=true;root.classList.add('is-drag');
+        try{root.setPointerCapture(down.id);}catch(_){}
+      }
+      if(!drag)return;
+      var r=track.getBoundingClientRect();
+      var p=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*5;
+      var t=tops(),k=Math.min(4,Math.floor(p));
+      scroller.scrollTop=(p>=5)?t[5]:t[k]+(p-k)*(t[k+1]-t[k]);
+      clearTimeout(bubTimer);
+    });
+    function end(){
+      if(!down)return;
+      down=null;
+      if(drag){
+        root.classList.remove('is-drag');root.classList.add('show');
+        clearTimeout(bubTimer);bubTimer=setTimeout(function(){root.classList.remove('show');},1200);
+        setTimeout(function(){root._dragged=false;},0);
+      }
+      drag=false;
+    }
+    root.addEventListener('pointerup',end);
+    root.addEventListener('pointercancel',end);
+  }
+  update();
+  return {update:update};
+}
+
+function wireMenu(view){
+  var kb=view.querySelector('.kebab'),menu=view.querySelector('.menu');
+  function set(open){
+    menu.classList.toggle('is-open',open);
+    kb.classList.toggle('is-open',open);
+    kb.setAttribute('aria-expanded',open);
+    kb.setAttribute('aria-label',open?'Close menu':'Open menu');
+    menu.setAttribute('aria-hidden',open?'false':'true');
+    if(open){menu.removeAttribute('inert');var a=menu.querySelector('a');if(a)a.focus({preventScroll:true});}
+    else{menu.setAttribute('inert','');kb.focus({preventScroll:true});}
+  }
+  kb.addEventListener('click',function(){set(!menu.classList.contains('is-open'));});
+  view.addEventListener('keydown',function(e){if(e.key==='Escape'&&menu.classList.contains('is-open'))set(false);});
+}
+
+/* ---------------------------------------------------------------- assemble live frames */
+var dv=document.getElementById('d-view');
+dv.innerHTML='<div class="scroller" tabindex="-1">'+pageHTML(false)+'</div>'
+  +railV(false)+kebabHTML(false,'d-menu')+menuHTML(false,'d-menu')
+  +'<div class="hint" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2v10M3 8l4 4 4-4"/></svg>Scroll inside the frame</div>';
+wire(dv,'v');wireMenu(dv);
+
+var mv=document.getElementById('m-view');
+mv.innerHTML='<div class="scroller" tabindex="-1">'+pageHTML(true)+'</div>'
+  +'<div class="m-top" aria-hidden="true"></div><a class="m-logo" href="#top" aria-label="Hacklahoma, back to the top"><img src="'+LOGO+'" alt=""></a>'
+  +kebabHTML(false,'m-menu')+menuHTML(false,'m-menu')+railH();
+wire(mv,'h');wireMenu(mv);
+mv.querySelector('.m-logo').addEventListener('click',function(e){e.preventDefault();mv.querySelector('.scroller').scrollTo({top:0,behavior:REDUCE?'auto':'smooth'});});
+dv.querySelector('.rail-logo');
+
+/* static phone with menu open */
+var mm=document.getElementById('m-view-menu');
+mm.innerHTML='<div class="scroller">'+pageHTML(true)+'</div>'
+  +'<div class="m-top" aria-hidden="true"></div><a class="m-logo" href="#top" aria-label="Hacklahoma"><img src="'+LOGO+'" alt=""></a>'
+  +kebabHTML(true)+menuHTML(true)+railH();
+(function(){
+  var r=mm.querySelector('.mbar');setRail(r,3.6);
+  mm.querySelector('.scroller').scrollTop=0;
+  var a=mm.querySelector('.menu');a.removeAttribute('inert');
+  mm.querySelector('.m-logo').setAttribute('tabindex','-1');
+  mm.querySelectorAll('.mbar button,.menu a,.kebab').forEach(function(x){x.setAttribute('tabindex','-1');});
+})();
+
+/* ---------------------------------------------------------------- state panels */
+var states=document.getElementById('states');
+function miniPanel(kick,title,hero){
+  return '<div class="mini'+(hero?' mini-hero':'')+'"><p class="kick">'+kick+'</p><h4>'+title+'</h4><div class="sk w"></div><div class="sk"></div><div class="sk s"></div></div>';
+}
+var S=[
+ {t:'Resting at the top',d:'Numerals are tiny, the line is unlit and the boat waits at the mark. The page owns the screen.',
+  html:'<div class="sv">'+miniPanel('Feb 6&ndash;7, 2027','Hacklahoma<br>2027',true)+railV(true)+'<div class="kebab-slot">'+kebabHTML(false)+'</div></div>',pos:0},
+ {t:'Hover or focus',d:'Reach for IV and its name slides out in Instrument Serif italic. Keyboard focus shows the same label plus a gold ring.',
+  html:'<div class="sv">'+miniPanel('<b>II</b> Chapter two','Schedule')+railV(true)+kebabHTML(false)+'</div>',pos:2.3,hover:4,focus:true},
+ {t:'Mid-journey',d:'The line is lit down to the boat. Passed stops warm to amber and the current chapter, III, glows like a lantern.',
+  html:'<div class="sv">'+miniPanel('<b>III</b> Chapter three','Questions, answered')+railV(true)+kebabHTML(false)+'</div>',pos:3.45}
+];
+S.forEach(function(s,i){
+  var f=document.createElement('div');f.className='state';
+  f.innerHTML='<figure>'+s.html+'<figcaption><span class="badge">'+(i+1)+'</span><h3>'+s.t+'</h3><p>'+s.d+'</p></figcaption></figure>';
+  states.appendChild(f);
+  var r=f.querySelector('.rail');setRail(r,s.pos);
+  if(s.hover){var b=r.querySelector('.stop[data-i="'+s.hover+'"]');b.classList.add('is-hover');if(s.focus)b.classList.add('is-focus');}
+  f.querySelector('.sv').setAttribute('inert','');
+});
+/* state 4: mobile scrubbing */
+(function(){
+  var f=document.createElement('div');f.className='state';
+  f.innerHTML='<figure><div class="sv sv--m"><div class="fit" data-w="375" style="width:100%"><div class="fit-in view view--m" id="m-drag" style="height:468px;border-radius:0"></div></div></div>'
+    +'<figcaption><span class="badge">4</span><h3>Scrubbing on mobile</h3><p>Drag along the bar: the boat follows your thumb and a bubble names the chapter while the page scrolls with you.</p></figcaption></figure>';
+  states.appendChild(f);
+  var v=f.querySelector('#m-drag');
+  v.innerHTML='<div class="scroller">'+pageHTML(true)+'</div><a class="m-logo" href="#top" aria-label="Hacklahoma"><img src="'+LOGO+'" alt=""></a>'+railH()+'<span class="finger" aria-hidden="true"></span>';
+  var sc=v.querySelector('.scroller');
+  sc.style.setProperty('--vh','468px');
+  var bar=v.querySelector('.mbar');bar.classList.add('is-drag');
+  var res=setRail(bar,3.6);
+  var bub=bar.querySelector('.m-bubble');bub.innerHTML='<b>IV</b>Sponsors';
+  var W=375,w=0;
+  v.querySelector('.finger').style.cssText='left:'+(34+(3.6/5)*(W-68))+'px;top:'+(468-74+30)+'px';
+  v.setAttribute('inert','');
+  requestAnimationFrame(function(){
+    w=bub.offsetWidth;bub.style.left=Math.max(w/2+8,Math.min(W-w/2-8,34+(3.6/5)*(W-68)))+'px';
+    var c4=sc.querySelector('#c4');sc.scrollTop=c4.offsetTop-10;
+  });
+})();
+
+/* ---------------------------------------------------------------- fit frames to container */
+function fit(){
+  document.querySelectorAll('.fit').forEach(function(w){
+    var inner=w.firstElementChild,W=+w.dataset.w;
+    var k=Math.min(1,w.clientWidth/W);
+    inner.style.transform=k<1?'scale('+k+')':'none';
+    w.style.height=Math.round(inner.offsetHeight*k)+'px';
+    if(w.parentElement.classList.contains('sv--m')){w.style.width='100%';}
+  });
+}
+window.addEventListener('resize',fit);
+window.addEventListener('load',function(){fit();setTimeout(fit,300);});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
+fit();
+</script>
+</body>
+</html>

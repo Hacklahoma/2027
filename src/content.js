@@ -12,6 +12,14 @@ export const event = {
   contact: 'hacklahoma@ou.edu',
 };
 
+// Links in the top rail, in page order.
+export const navLinks = [
+  { label: 'About', href: '#light' },
+  { label: 'When & where', href: '#when' },
+  { label: 'FAQ', href: '#questions' },
+  { label: 'Sponsors', href: '#sponsors' },
+];
+
 // The big lanterns that float beside the stream of light.
 export const chapters = [
   {
@@ -92,13 +100,6 @@ export const sponsors = [
 ];
 
 export const sponsorCta = { label: 'Light a lantern with us', href: 'mailto:hacklahoma@ou.edu' };
-
-export const pastYears = [2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018].map((year) => ({
-  year,
-  href: `https://${year}.hacklahoma.org`,
-}));
-
-export const team = { label: 'Meet the exec team', href: '[EXEC PAGE URL]' };
 
 export const socials = [
   { label: 'Instagram', href: '[INSTAGRAM URL]' },

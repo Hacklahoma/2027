@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sponsors 2: Editorial Ledger (Hacklahoma 2027 storyboard)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gloock&family=Instrument+Serif:ital@0;1&family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16204a; --night:#121b3a; --sky0:#1c2a55; --sky1:#26407a; --sky2:#2f4c86; --mist:#8ea8d6;
+  --cream:#fff4da; --light:#ffc63a; --amber:#f59a3a; --ember:#de4b2b; --gold4:#ffe4ae;
+  --paper:#f6ebcf; --paper-2:#efdfb8; --muted:#4a5478; --hair:rgba(22,32,74,.34); --ember-ink:#a9331a;
+  --display:'Gloock',Georgia,serif; --serif:'Instrument Serif',Georgia,serif; --sans:'Archivo',system-ui,sans-serif;
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .26 0 0 0 0 .1 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box}
+html{background:#0c1330}
+body{margin:0;font-family:var(--sans);color:var(--cream);background:radial-gradient(1200px 600px at 20% -10%,#1c2a55 0,transparent 70%),#0c1330;-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--light);outline-offset:3px}
+
+/* ============ STORYBOARD CHROME ============ */
+.sb{max-width:1344px;margin:0 auto;padding:40px 24px 80px}
+.sb-head{display:grid;grid-template-columns:1.1fr 1.6fr;gap:40px;padding-bottom:32px;border-bottom:1px solid rgba(142,168,214,.28)}
+.sb-kicker{font:700 12px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--light);margin:0 0 14px}
+.sb-head h1{font:400 clamp(34px,4.4vw,56px)/1 var(--display);margin:0 0 14px;color:var(--cream)}
+.sb-head h1 em{font:italic 400 1.02em var(--serif);color:var(--gold4)}
+.sb-concept{font:italic 400 22px/1.3 var(--serif);color:var(--gold4);margin:0;max-width:34ch}
+.ideas{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;counter-reset:i}
+.ideas li{counter-increment:i;border-top:2px solid var(--light);padding-top:12px;font-size:14.5px;color:#dfe7f7}
+.ideas li::before{content:counter(i);display:block;font:400 34px/1 var(--display);color:var(--light);margin-bottom:6px}
+.ideas b{display:block;color:var(--cream);font-size:15px;margin-bottom:3px}
+.sb-sec{margin-top:48px}
+.sb-label{display:flex;align-items:baseline;gap:14px;margin:0 0 16px}
+.sb-label h2{font:700 12px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--mist);margin:0}
+.sb-label span{font:italic 400 18px var(--serif);color:var(--gold4)}
+.sb-label::after{content:"";flex:1;height:1px;background:rgba(142,168,214,.28)}
+.note{font-size:13.5px;color:#b7c6e6;max-width:90ch;margin:16px 0 0}
+.note code{font-size:12.5px;background:rgba(255,255,255,.08);padding:1px 6px;border-radius:4px}
+
+/* Desktop mock browser */
+.desk-fit{width:100%;position:relative}
+.desk{width:1280px;transform-origin:top left;border-radius:12px;overflow:hidden;border:1px solid rgba(142,168,214,.35);box-shadow:0 30px 80px rgba(0,0,0,.45);background:var(--night)}
+.chrome{height:42px;display:flex;align-items:center;gap:8px;padding:0 14px;background:#0a1028;border-bottom:1px solid rgba(142,168,214,.2)}
+.chrome i{width:11px;height:11px;border-radius:50%;background:#3a4676}
+.chrome .url{margin-left:14px;flex:0 1 420px;height:26px;border-radius:13px;background:#161f45;color:#9fb2d8;font:500 12px/26px var(--sans);padding:0 14px}
+.page-bg{position:relative;background:
+  radial-gradient(1px 1px at 12% 14%,#fff8 50%,transparent 51%),radial-gradient(1.5px 1.5px at 33% 8%,#fff9 50%,transparent 51%),
+  radial-gradient(1px 1px at 58% 18%,#fff7 50%,transparent 51%),radial-gradient(1.5px 1.5px at 81% 10%,#fffa 50%,transparent 51%),
+  radial-gradient(1px 1px at 92% 26%,#fff7 50%,transparent 51%),radial-gradient(1px 1px at 6% 36%,#fff6 50%,transparent 51%),
+  linear-gradient(#1c2a55 0,#18244b 18%,#121b3a 60%,#0d1430 100%)}
+.site-top{display:flex;justify-content:space-between;align-items:center;padding:22px 40px}
+.site-top img{height:22px;filter:brightness(0) invert(1);opacity:.92}
+.kebab{width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,244,218,.4);display:grid;place-items:center}
+.kebab svg{width:18px;height:18px;fill:var(--cream)}
+.ghost{padding:36px 64px 8px;display:grid;grid-template-columns:140px 1fr 1fr 1fr;gap:28px;opacity:.55}
+.ghost .gn{font:400 64px/1 var(--display);color:var(--gold4)}
+.ghost .gq{border-top:1px solid rgba(255,244,218,.35);padding-top:12px}
+.ghost .gq b{display:block;font:italic 400 24px/1.1 var(--serif);color:var(--cream);margin-bottom:8px}
+.ghost .gq span{display:block;height:7px;border-radius:4px;background:rgba(255,244,218,.25);margin:7px 0;width:90%}
+.ghost .gq span:nth-child(3){width:65%}
+.lantern-gap{height:64px;position:relative}
+.lantern-gap::after{content:"";position:absolute;left:50%;bottom:-30px;width:60%;height:120px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(255,198,58,.28),transparent);filter:blur(10px)}
+
+/* Phones */
+.phones{display:flex;gap:28px;justify-content:center;flex-wrap:wrap}
+.phone-col{width:399px}
+.phone{width:399px;border-radius:44px;padding:12px;background:#05081a;border:1px solid rgba(142,168,214,.4);box-shadow:0 24px 60px rgba(0,0,0,.5);position:relative}
+.phone::before{content:"";position:absolute;top:20px;left:50%;width:96px;height:22px;border-radius:12px;background:#05081a;transform:translateX(-50%);z-index:3}
+.screen{width:375px;height:780px;border-radius:34px;overflow-y:auto;overflow-x:hidden;background:linear-gradient(#1c2a55 0,#18244b 14%,#121b3a 50%,#0d1430 100%);scrollbar-width:thin;scrollbar-color:#4a5a90 transparent}
+.screen .phone-top{height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 18px 6px}
+.screen .phone-top img{height:16px;filter:brightness(0) invert(1);opacity:.92}
+.phone-ghost{padding:20px 20px 28px;opacity:.55}
+.phone-ghost .gn{font:400 44px/1 var(--display);color:var(--gold4)}
+.phone-ghost b{display:block;font:italic 400 22px var(--serif);color:var(--cream);margin:8px 0}
+.phone-ghost span{display:block;height:7px;border-radius:4px;background:rgba(255,244,218,.25);margin:7px 0}
+.phone-cap{margin:14px 6px 0;font-size:13.5px;color:#c4d2ee;text-align:center}
+.phone-cap b{color:var(--light);font-weight:700}
+
+/* State frames */
+.states{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.state{background:rgba(255,255,255,.04);border:1px solid rgba(142,168,214,.3);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.state-h{display:flex;align-items:center;gap:12px}
+.state-h .n{width:32px;height:32px;border-radius:50%;background:var(--light);color:var(--ink);font:700 15px/32px var(--sans);text-align:center;flex:none}
+.state-h h3{margin:0;font:400 22px/1 var(--display);color:var(--cream)}
+.state-h p{margin:2px 0 0;font-size:13.5px;color:#b7c6e6}
+.demo{background:var(--paper);border-radius:6px;padding:42px 0 18px;position:relative;color:var(--ink);overflow:hidden;min-height:210px;display:flex;align-items:center}
+.demo>*{width:100%}
+.demo>.tag{width:auto}
+.demo::before{content:"";position:absolute;inset:0;background:var(--grain);mix-blend-mode:multiply;opacity:.4;pointer-events:none}
+.tag{position:absolute;z-index:2;font:700 11px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;background:var(--ink);color:var(--cream);padding:6px 9px;border-radius:3px}
+.tag::after{content:"";position:absolute;left:12px;bottom:-5px;border:5px solid transparent;border-top-color:var(--ink);border-bottom:0}
+.demo-narrow{max-width:360px;margin:0 auto}
+
+/* ============ THE COMPONENT: EDITORIAL LEDGER ============ */
+.ledger-wrap{container:ledger/inline-size}
+.ledger-pad{padding:0 64px}
+.panel{--pad:56px;position:relative;isolation:isolate;overflow:hidden;color:var(--ink);background:linear-gradient(#f8eed4,#f2e5c2);border-radius:4px;padding:30px var(--pad) 0;box-shadow:0 0 0 1px rgba(255,228,174,.5),0 0 120px rgba(255,198,58,.2),0 40px 80px rgba(0,0,0,.4)}
+.panel::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--grain);mix-blend-mode:multiply;opacity:.55;pointer-events:none}
+.panel::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(120% 60% at 50% 0,rgba(255,255,255,.5),transparent 60%);pointer-events:none}
+
+.runhead{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:14px;border-bottom:3px double var(--ink)}
+.runhead img{height:24px;display:block}
+.sc{font:700 11.5px/1.2 var(--sans);letter-spacing:.17em;text-transform:uppercase;color:var(--muted)}
+.runhead .sc:nth-child(2){text-align:center}
+
+.hero{display:grid;grid-template-columns:1fr 290px;gap:48px;align-items:end;padding:34px 0 36px}
+.ledger-title{margin:0;font:400 clamp(60px,10.4cqi,140px)/.88 var(--display);letter-spacing:-.015em;color:var(--ink);white-space:nowrap}
+.ledger-title .dot{color:var(--ember-ink)}
+.ledger-title em{display:block;font:italic 400 .37em/1.05 var(--serif);letter-spacing:0;color:var(--ember-ink);margin-top:.22em}
+.hero-aside{border-left:1px solid var(--hair);padding-left:24px;padding-bottom:6px}
+.hero-aside p{margin:0 0 16px;font:italic 400 26px/1.22 var(--serif)}
+.hero-aside p:first-letter{font:400 3.1em/.8 var(--display);float:left;margin:.07em .1em 0 0;color:var(--ember-ink);font-style:normal}
+
+.tier{display:grid;grid-template-columns:210px 1fr;border-top:1px solid var(--hair)}
+.tier-meta{padding:24px 20px 24px 0}
+.num{display:block;font:400 62px/.9 var(--display);color:var(--ember-ink)}
+.tlabel{margin:10px 0 0;font:700 12px/1.2 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--ink)}
+.tnote{margin:6px 0 0;font:italic 400 18px/1.2 var(--serif);color:var(--muted)}
+.tier.tier-title{border-top:3px double var(--ink);border-bottom:1px solid var(--ink);background:linear-gradient(90deg,rgba(255,198,58,.28),rgba(255,198,58,.1) 55%,transparent)}
+.tier-title .tier-meta{padding-top:28px}
+.tier:last-of-type{border-bottom:0}
+
+.logos{list-style:none;margin:0;padding:0;display:grid}
+.logos.g2{grid-template-columns:repeat(2,1fr)}
+.logos.g3{grid-template-columns:repeat(3,1fr)}
+.logos li+li{border-left:1px solid var(--hair)}
+
+/* logo link: default monochrome navy, bloom to brand colour */
+.logo-link{--brand:#a9331a;position:relative;display:grid;align-content:space-between;gap:18px;text-decoration:none;color:var(--ink);padding:26px 28px 14px;min-height:var(--h,150px);transition:background-color .3s}
+.logo-link::before{content:"";position:absolute;inset:0;background:radial-gradient(70% 90% at 28% 45%,color-mix(in srgb,var(--brand) 20%,transparent),transparent 75%);opacity:0;transition:opacity .35s;pointer-events:none}
+.wm{position:relative;display:inline-flex;align-items:center;gap:.55em;font:800 var(--wm,24px)/1 var(--sans);font-stretch:112%;letter-spacing:.01em;color:var(--ink);transition:color .35s,transform .35s;align-self:center}
+.wm svg{width:1.7em;height:1.7em;fill:currentColor;flex:none}
+.wm span{font-size:1em;white-space:nowrap}
+.visit{position:relative;justify-self:end;display:inline-flex;align-items:center;gap:.5em;font:700 11px/1 var(--sans);letter-spacing:.17em;text-transform:uppercase;color:var(--muted);padding:6px 0 5px;border-bottom:1px solid transparent;transition:color .25s,border-color .25s}
+.visit svg{width:14px;height:14px;transition:transform .25s}
+.logo-link:hover,.logo-link.is-hover{background-color:rgba(255,255,255,.28)}
+.logo-link:hover::before,.logo-link.is-hover::before,.logo-link:focus-visible::before,.logo-link.is-focus::before,.logo-link.is-active::before{opacity:1}
+.logo-link:hover .wm,.logo-link.is-hover .wm,.logo-link:focus-visible .wm,.logo-link.is-focus .wm,.logo-link.is-active .wm{color:var(--brand);transform:translateY(-2px)}
+.logo-link:hover .visit,.logo-link.is-hover .visit,.logo-link:focus-visible .visit,.logo-link.is-focus .visit,.logo-link.is-active .visit{color:var(--ink);border-color:var(--ink)}
+.logo-link:hover .visit svg,.logo-link.is-hover .visit svg,.logo-link:focus-visible .visit svg,.logo-link.is-focus .visit svg{transform:translate(3px,-3px)}
+.logo-link:focus-visible,.logo-link.is-focus{outline:3px solid var(--ink);outline-offset:-6px;box-shadow:inset 0 0 0 6px rgba(255,198,58,.9)}
+.logo-link.is-active{background-color:rgba(255,198,58,.3)}
+
+.tier-title .logo-link{grid-column:auto;grid-template-columns:1fr auto;align-items:center;gap:32px;min-height:216px;padding:30px 28px 30px 8px;--wm:44px}
+.title-logo{display:grid;gap:20px;justify-items:start}
+.title-logo .wm{align-self:start}
+.blurb{font:italic 400 24px/1.25 var(--serif);color:var(--ink);max-width:40ch}
+.tier-title .visit{align-self:center;padding:14px 20px;border:1.5px solid var(--ink);border-radius:999px;color:var(--ink);font-size:12px}
+.tier-title .logo-link:hover .visit,.tier-title .logo-link.is-hover .visit,.tier-title .logo-link:focus-visible .visit{background:var(--ink);color:var(--cream)}
+.tier-gold .logo-link{--h:170px;--wm:27px}
+.tier-silver .logo-link{--h:132px;--wm:16px}
+
+.community{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);column-gap:40px}
+.community a{display:flex;align-items:baseline;gap:10px;min-height:56px;padding:12px 0;text-decoration:none;font:italic 400 25px/1.1 var(--serif);white-space:nowrap;color:var(--ink);border-bottom:1px solid var(--hair);transition:color .25s}
+.community .lead{flex:1;border-bottom:2px dotted rgba(22,32,74,.4);transform:translateY(-4px);min-width:16px}
+.community svg{width:15px;height:15px;color:var(--muted);align-self:center;transition:transform .25s,color .25s;flex:none}
+.community a:hover,.community a:focus-visible{color:var(--ember-ink)}
+.community a:hover svg,.community a:focus-visible svg{transform:translate(3px,-3px);color:var(--ember-ink)}
+.community a:focus-visible{outline:3px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 6px rgba(255,198,58,.9)}
+.tier-comm .tier-body{padding:20px 0 30px}
+
+.cta{margin:0 calc(var(--pad)*-1);padding:56px var(--pad) 52px;background:var(--ink);color:var(--cream);position:relative;border-top:4px solid var(--light)}
+.cta::before{content:"";position:absolute;inset:0;background:var(--grain);mix-blend-mode:screen;opacity:.1;pointer-events:none}
+.cta-top{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end;margin-bottom:38px}
+.cta .sc{color:var(--light)}
+.cta h3{margin:10px 0 0;font:400 clamp(38px,5.2cqi,64px)/1 var(--display);color:var(--cream)}
+.cta h3 em{font:italic 400 1.05em var(--serif);color:var(--gold4)}
+.btn{display:inline-flex;align-items:center;gap:12px;min-height:56px;padding:0 28px;border-radius:999px;background:var(--light);color:var(--ink);font:800 15px/1 var(--sans);letter-spacing:.02em;text-decoration:none;transition:background-color .25s,transform .25s;white-space:nowrap}
+.btn svg{width:18px;height:18px;transition:transform .25s}
+.btn:hover{background:var(--gold4)}
+.btn:hover svg{transform:translateX(4px)}
+.btn:focus-visible{outline:3px solid var(--cream);outline-offset:4px}
+.props{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid rgba(255,244,218,.3)}
+.props li{padding:24px 28px 0 0;position:relative}
+.props li+li{padding-left:28px;border-left:1px solid rgba(255,244,218,.22)}
+.props svg{width:30px;height:30px;color:var(--light);margin-bottom:10px;display:block}
+.props h4{margin:0 0 6px;font:400 28px/1.05 var(--display);color:var(--cream)}
+.props h4 small{display:block;font:700 11px/1 var(--sans);letter-spacing:.2em;color:var(--light);text-transform:uppercase;margin-bottom:8px}
+.props p{margin:0;font-size:15.5px;line-height:1.5;color:#e3e9f8;max-width:34ch}
+.cta-mail{margin-top:26px;font-size:14.5px;color:#cdd8f1}
+.cta-mail a{color:var(--gold4);text-underline-offset:3px}
+
+.foot{display:grid;grid-template-columns:auto 1fr auto;gap:32px;align-items:center;padding:34px 4px 8px;color:#dfe7f7}
+.foot img{height:26px;filter:brightness(0) invert(1);opacity:.92;display:block}
+.foot .meta{font:italic 400 20px/1.2 var(--serif);color:var(--gold4)}
+.foot ul{list-style:none;margin:0;padding:0;display:flex;gap:6px 22px;flex-wrap:wrap;justify-content:flex-end}
+.foot ul a{display:inline-flex;align-items:center;min-height:44px;font:600 13.5px var(--sans);color:#dfe7f7;text-decoration:none;border-bottom:1px solid transparent}
+.foot ul a:hover{color:var(--light);text-decoration:underline;text-underline-offset:4px}
+.foot .fine{grid-column:1/-1;border-top:1px solid rgba(142,168,214,.28);padding-top:14px;font-size:12.5px;color:#a9bbe0;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.foot .fine a{color:#d5dff5}
+
+/* ---- Mobile: tiers become stacked rows, one logo per row ---- */
+@container ledger (max-width:760px){
+  .ledger-pad{padding:0 12px}
+  .panel{--pad:20px;padding-top:20px}
+  .runhead .sc:nth-child(2){display:none}
+  .runhead img{height:20px}
+  .hero{grid-template-columns:1fr;gap:20px;padding:26px 0 26px}
+  .ledger-title{font-size:clamp(40px,15.2cqi,92px)}
+  .hero>*{min-width:0}
+  .hero-aside{border-left:0;border-top:1px solid var(--hair);padding:18px 0 0}
+  .hero-aside p{font-size:22px;margin:0}
+  .tier{grid-template-columns:1fr}
+  .tier-meta{display:flex;align-items:baseline;gap:12px;padding:16px 0 8px;flex-wrap:wrap}
+  .num{font-size:38px}
+  .tlabel{margin:0}
+  .tnote{margin:0 0 0 auto;font-size:16px}
+  .tier.tier-title{margin:0 calc(var(--pad)*-1);padding:0 var(--pad)}
+  .logos.g2,.logos.g3{grid-template-columns:1fr}
+  .logos li+li{border-left:0;border-top:1px solid var(--hair)}
+  .logo-link,.tier-gold .logo-link,.tier-silver .logo-link{grid-template-columns:1fr auto;align-items:center;gap:12px;min-height:88px;padding:14px 4px;--wm:16px}
+  .logo-link .wm{align-self:center;justify-self:start}
+  .visit{justify-self:end}
+  .tier-title .logo-link{grid-template-columns:1fr;gap:14px;min-height:0;padding:12px 0 22px;--wm:20px}
+  .title-logo{gap:12px}
+  .blurb{font-size:20px}
+  .tier-title .visit{justify-self:start;padding:12px 18px;min-height:44px}
+  .logo-link:focus-visible,.logo-link.is-focus{outline-offset:-4px;box-shadow:inset 0 0 0 4px rgba(255,198,58,.9)}
+  .community{grid-template-columns:1fr}
+  .community a{font-size:24px;min-height:52px}
+  .tier-comm .tier-body{padding:4px 0 26px}
+  .cta{padding:40px var(--pad) 36px}
+  .cta-top{grid-template-columns:1fr;gap:22px;margin-bottom:26px}
+  .cta h3{font-size:clamp(36px,11cqi,50px)}
+  .btn{justify-content:center;width:100%}
+  .props{grid-template-columns:1fr}
+  .props li,.props li+li{padding:20px 0;border-left:0;border-top:1px solid rgba(255,244,218,.22)}
+  .props li:first-child{border-top:0}
+  .props p{max-width:none}
+  .foot{grid-template-columns:1fr;gap:14px;padding:28px 4px 6px}
+  .foot ul{justify-content:flex-start}
+  .foot .fine{flex-direction:column}
+}
+
+/* Grain drifts very slightly; hairlines draw in. All off for reduced motion. */
+@keyframes draw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.runhead{position:relative}
+.runhead::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:1px;background:var(--ink);transform-origin:left;animation:draw 1.1s .2s cubic-bezier(.2,.7,.2,1) both}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important}
+  .logo-link:hover .wm,.logo-link:focus-visible .wm{transform:none}
+}
+@media (max-width:900px){
+  .sb-head{grid-template-columns:1fr}
+  .ideas{grid-template-columns:1fr}
+  .states{grid-template-columns:minmax(0,1fr)}
+}
+</style>
+</head>
+<body>
+<main class="sb">
+
+<header class="sb-head">
+  <div>
+    <p class="sb-kicker">Sponsor section &middot; Option 2 of 3</p>
+    <h1>The Editorial <em>Ledger</em></h1>
+    <p class="sb-concept">A program&rsquo;s patron page, printed on cream paper and held up to the night: calm, ruled, and built so every logo reads clearly.</p>
+  </div>
+  <ol class="ideas" style="list-style:none;margin:0;padding:0">
+    <li><b>Quiet until you look</b>Every logo sits in the same navy ink. Hover or focus and it blooms to full colour, so no brand shouts over another.</li>
+    <li><b>Rank by the ruled ledger</b>Tier numerals, small-caps labels and hairline rules do the ranking. Logo slots step down 1 &rarr; 2 &rarr; 3 &rarr; list.</li>
+    <li><b>Paper is trust</b>One bright cream panel against the night page. On mobile each tier collapses to full-width rows, one logo per row, 88px tall tap targets.</li>
+  </ol>
+</header>
+
+<section class="sb-sec" aria-labelledby="h-desk">
+  <div class="sb-label"><h2 id="h-desk">Desktop &middot; 1280px</h2><span>Chapter VI, in context below the FAQ</span></div>
+  <div class="desk-fit" id="deskFit">
+    <div class="desk" id="desk">
+      <div class="chrome" aria-hidden="true"><i></i><i></i><i></i><span class="url">hacklahoma.org/#sponsors</span></div>
+      <div class="page-bg">
+        <div class="site-top" aria-hidden="true">
+          <img src="../public/brand/hacklahoma-logo.png" alt="">
+          <span class="kebab"><svg viewBox="0 0 18 18"><circle cx="9" cy="3" r="1.8"/><circle cx="9" cy="9" r="1.8"/><circle cx="9" cy="15" r="1.8"/></svg></span>
+        </div>
+        <div class="ghost" aria-hidden="true">
+          <div class="gn">V</div>
+          <div class="gq"><b>Do I need a team?</b><span></span><span></span><span></span></div>
+          <div class="gq"><b>What should I bring?</b><span></span><span></span><span></span></div>
+          <div class="gq"><b>Is travel covered?</b><span></span><span></span><span></span></div>
+        </div>
+        <div class="lantern-gap"></div>
+        <div class="ledger-wrap" data-ledger="desk" id="deskLedger"></div>
+        <div style="height:36px"></div>
+      </div>
+    </div>
+  </div>
+  <p class="note">Placeholders only: the marks are generic shapes plus bracketed names. Real logos drop into the same slot as an <code>&lt;img&gt;</code> with <code>filter: grayscale(1) brightness(.3)</code> by default and <code>filter: none</code> on hover / focus-visible. Small-caps labels are uppercase Archivo with 0.17em tracking.</p>
+</section>
+
+<section class="sb-sec" aria-labelledby="h-mob">
+  <div class="sb-label"><h2 id="h-mob">Mobile &middot; 375px</h2><span>Scroll inside each phone. Stacked rows, one logo per row.</span></div>
+  <div class="phones">
+    <div class="phone-col"><div class="phone"><div class="screen" tabindex="0" role="region" aria-label="Mobile preview, top of sponsor section" data-scroll="0"></div></div><p class="phone-cap"><b>A</b> Headline and title sponsor</p></div>
+    <div class="phone-col"><div class="phone"><div class="screen" tabindex="0" role="region" aria-label="Mobile preview, tier rows" data-scroll="tiers"></div></div><p class="phone-cap"><b>B</b> Gold and silver rows, community list</p></div>
+    <div class="phone-col"><div class="phone"><div class="screen" tabindex="0" role="region" aria-label="Mobile preview, become a sponsor and footer" data-scroll="cta"></div></div><p class="phone-cap"><b>C</b> Become a sponsor and footer</p></div>
+  </div>
+</section>
+
+<section class="sb-sec" aria-labelledby="h-st">
+  <div class="sb-label"><h2 id="h-st">States &amp; interactions</h2><span>These are live: hover or Tab to any logo in the frames above</span></div>
+  <div class="states">
+    <article class="state">
+      <div class="state-h"><span class="n" aria-hidden="true">1</span><div><h3>Default</h3><p>All logos in one navy ink. &ldquo;Visit&rdquo; is always visible, never hover-only.</p></div></div>
+      <div class="demo"><ul class="logos g2" id="s1"></ul></div>
+    </article>
+    <article class="state">
+      <div class="state-h"><span class="n" aria-hidden="true">2</span><div><h3>Hover</h3><p>Logo blooms to brand colour, a soft glow lifts behind it, the Visit arrow nudges up and right.</p></div></div>
+      <div class="demo"><span class="tag" style="left:34px;top:14px">Navy &rarr; full colour</span><ul class="logos g2" id="s2"></ul></div>
+    </article>
+    <article class="state">
+      <div class="state-h"><span class="n" aria-hidden="true">3</span><div><h3>Keyboard focus</h3><p>Same bloom, plus a 3px ink ring with a gold halo. Visible on paper and on navy.</p></div></div>
+      <div class="demo"><span class="tag" style="left:34px;top:14px">Tab: ink ring + gold halo</span><ul class="logos g2" id="s3"></ul></div>
+    </article>
+    <article class="state">
+      <div class="state-h"><span class="n" aria-hidden="true">4</span><div><h3>Touch press (mobile)</h3><p>Row tints gold and the logo blooms while pressed. Rows are 88px tall; the whole row is the link.</p></div></div>
+      <div class="demo"><div class="ledger-wrap demo-narrow"><ul class="logos g2" id="s4"></ul></div></div>
+    </article>
+  </div>
+</section>
+
+</main>
+
+<script>
+(function(){
+  var ARROW='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var RIGHT='<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h13M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var MARKS={
+    hex:'<path d="M20 3l15 8.5v17L20 37 5 28.5v-17z"/>',
+    ring:'<path fill-rule="evenodd" d="M20 4a16 16 0 100 32 16 16 0 000-32zm0 9a7 7 0 110 14 7 7 0 010-14z"/>',
+    tri:'<path d="M20 4l17 30H3z"/>',
+    sq:'<path fill-rule="evenodd" d="M5 5h30v30H5zM14 14v12h12V14z"/>',
+    dia:'<path d="M20 2l18 18-18 18L2 20z"/>',
+    half:'<path d="M20 4a16 16 0 010 32z"/><path d="M20 4a16 16 0 000 32" fill="none" stroke="currentColor" stroke-width="3.2"/>'
+  };
+  var S={
+    title:{n:'[TITLE SPONSOR]',c:'#a9331a',m:'hex'},
+    g1:{n:'[GOLD SPONSOR]',c:'#1d5c9e',m:'ring'},
+    g2:{n:'[GOLD SPONSOR]',c:'#17695d',m:'tri'},
+    s1:{n:'[SILVER SPONSOR]',c:'#5b3fb8',m:'sq'},
+    s2:{n:'[SILVER SPONSOR]',c:'#9a5a06',m:'dia'},
+    s3:{n:'[SILVER SPONSOR]',c:'#9c2f5f',m:'half'}
+  };
+  function wm(s){return '<span class="wm"><svg viewBox="0 0 40 40" aria-hidden="true">'+MARKS[s.m]+'</svg><span>'+s.n+'</span></span>';}
+  function slot(s,cls,tier){
+    return '<li><a class="logo-link '+(cls||'')+'" href="#" style="--brand:'+s.c+'" aria-label="'+s.n.replace(/[\[\]]/g,'')+', visit website">'+wm(s)+'<span class="visit">Visit '+ARROW+'</span></a></li>';
+  }
+  var COMM=['[COMMUNITY PARTNER]','[COMMUNITY]','[COMMUNITY]','[COMMUNITY]','[COMMUNITY]','[COMMUNITY]','[COMMUNITY]','[COMMUNITY]','[COMMUNITY]'];
+  function ledger(u){
+    var comm=COMM.map(function(n,i){return '<li><a href="#" aria-label="Community partner '+(i+1)+', visit website">'+n+'<span class="lead" aria-hidden="true"></span>'+ARROW+'</a></li>';}).join('');
+    return ''+
+    '<div class="ledger-pad"><section class="panel" aria-labelledby="'+u+'-t">'+
+      '<div class="runhead"><img src="../public/brand/hacklahoma-logo.png" alt="Hacklahoma"><span class="sc">The Patrons&rsquo; Page</span><span class="sc">Chapter VI &middot; 2027</span></div>'+
+      '<div class="hero"><h2 class="ledger-title" id="'+u+'-t">Thank you<span class="dot">.</span><em>for keeping the lights on.</em></h2>'+
+        '<div class="hero-aside"><p>Hacklahoma is free for every hacker because of the people on this page.</p><span class="sc">Listed by tier, then with thanks</span></div></div>'+
+      '<section class="tier tier-title" aria-labelledby="'+u+'-1"><div class="tier-meta"><span class="num" aria-hidden="true">1</span><h3 class="tlabel" id="'+u+'-1">Title Sponsor</h3><p class="tnote">Presenting</p></div>'+
+        '<a class="logo-link" href="#" style="--brand:'+S.title.c+'" aria-label="Title sponsor, visit website"><span class="title-logo">'+wm(S.title)+'<span class="blurb">Presenting Hacklahoma 2027 and keeping every ticket free.</span></span><span class="visit">Visit '+ARROW+'</span></a></section>'+
+      '<section class="tier tier-gold" aria-labelledby="'+u+'-2" data-anchor="tiers"><div class="tier-meta"><span class="num" aria-hidden="true">2</span><h3 class="tlabel" id="'+u+'-2">Gold</h3><p class="tnote">Two lanterns</p></div>'+
+        '<ul class="logos g2">'+slot(S.g1)+slot(S.g2)+'</ul></section>'+
+      '<section class="tier tier-silver" aria-labelledby="'+u+'-3"><div class="tier-meta"><span class="num" aria-hidden="true">3</span><h3 class="tlabel" id="'+u+'-3">Silver</h3><p class="tnote">Three lanterns</p></div>'+
+        '<ul class="logos g3">'+slot(S.s1)+slot(S.s2)+slot(S.s3)+'</ul></section>'+
+      '<section class="tier tier-comm" aria-labelledby="'+u+'-4"><div class="tier-meta"><span class="num" aria-hidden="true">4</span><h3 class="tlabel" id="'+u+'-4">Community</h3><p class="tnote">With thanks</p></div>'+
+        '<div class="tier-body"><ul class="community">'+comm+'</ul></div></section>'+
+      '<section class="cta" aria-labelledby="'+u+'-c" data-anchor="cta"><div class="cta-top"><div><span class="sc">Become a sponsor</span><h3 id="'+u+'-c">Put your name <em>in the lantern light.</em></h3></div>'+
+        '<a class="btn" href="mailto:hacklahoma@ou.edu">Light a lantern with us '+RIGHT+'</a></div>'+
+        '<ul class="props">'+
+          '<li><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="16" cy="16" r="3"/><path d="M9.5 9.5a9.2 9.2 0 000 13M22.5 9.5a9.2 9.2 0 010 13M5 5a15.5 15.5 0 000 22M27 5a15.5 15.5 0 010 22"/></svg><h4><small>01</small>Reach</h4><p>Be seen by hundreds of students from OU and across the region, on screens, shirts and stage all weekend.</p></li>'+
+          '<li><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="11" r="4.5"/><path d="M3.5 26c.6-5 4-8 8.5-8s7.9 3 8.5 8"/><path d="M21 6.8a4.5 4.5 0 010 8.4M24.5 18.4c2.3 1 3.7 3.3 4 6.6"/></svg><h4><small>02</small>Recruiting</h4><p>Meet builders while they build. A full weekend of real conversations beats a stack of r&eacute;sum&eacute;s.</p></li>'+
+          '<li><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3.5l3.6 7.6 8.3 1.1-6 5.8 1.5 8.3L16 22.2 8.6 26.3l1.5-8.3-6-5.8 8.3-1.1z"/></svg><h4><small>03</small>Brand</h4><p>Be the name students link to the best weekend of their semester, and to Oklahoma&rsquo;s largest hackathon.</p></li>'+
+        '</ul><p class="cta-mail">Questions? Write to <a href="mailto:hacklahoma@ou.edu">hacklahoma@ou.edu</a></p></section>'+
+    '</section></div>'+
+    '<footer class="ledger-pad"><div class="foot"><img src="../public/brand/hacklahoma-logo.png" alt="Hacklahoma"><p class="meta" style="margin:0">February 6&ndash;7, 2027 &middot; Norman, Oklahoma</p>'+
+      '<nav aria-label="Social and policy links"><ul><li><a href="#">Instagram</a></li><li><a href="#">LinkedIn</a></li><li><a href="#">Discord</a></li><li><a href="https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md">MLH Code of Conduct</a></li></ul></nav>'+
+      '<div class="fine"><span>Oklahoma&rsquo;s largest hackathon &middot; University of Oklahoma</span><a href="mailto:hacklahoma@ou.edu">hacklahoma@ou.edu</a></div></div></footer>';
+  }
+
+  // desktop
+  document.getElementById('deskLedger').innerHTML=ledger('d');
+
+  // phones
+  document.querySelectorAll('.screen').forEach(function(sc,i){
+    sc.innerHTML='<div class="phone-top" aria-hidden="true"><img src="../public/brand/hacklahoma-logo.png" alt=""><span class="kebab" style="width:36px;height:36px"><svg viewBox="0 0 18 18" style="width:16px;height:16px;fill:#fff4da"><circle cx="9" cy="3" r="1.6"/><circle cx="9" cy="9" r="1.6"/><circle cx="9" cy="15" r="1.6"/></svg></span></div>'+
+      '<div class="phone-ghost" aria-hidden="true"><div class="gn">V</div><b>Is travel covered?</b><span style="width:92%"></span><span style="width:60%"></span></div>'+
+      '<div class="ledger-wrap">'+ledger('m'+i)+'</div><div style="height:24px"></div>';
+  });
+  function scrollPhones(){
+    document.querySelectorAll('.screen').forEach(function(sc){
+      var k=sc.getAttribute('data-scroll');
+      if(k==='0'){sc.scrollTop=0;return;}
+      var el=sc.querySelector('[data-anchor="'+k+'"]');
+      if(el){sc.scrollTop=el.getBoundingClientRect().top-sc.getBoundingClientRect().top+sc.scrollTop-14;}
+    });
+  }
+
+  // state demos
+  function fill(id,cls){
+    var el=document.getElementById(id);
+    var a=slot(S.g1,cls), b=slot(S.g2,'');
+    el.innerHTML=a+b;
+    el.querySelectorAll('.logo-link').forEach(function(l){l.style.setProperty('--h','150px');l.style.setProperty('--wm','18px');});
+  }
+  fill('s1','');fill('s2','is-hover');fill('s3','is-focus');
+  var s4=document.getElementById('s4');
+  s4.className='logos';
+  s4.innerHTML=slot(S.g1,'is-active')+slot(S.s2,'');
+
+  // scale desktop frame to fit
+  var fit=document.getElementById('deskFit'), desk=document.getElementById('desk');
+  function scale(){
+    var s=Math.min(1,fit.clientWidth/1280);
+    desk.style.transform='scale('+s+')';
+    fit.style.height=(desk.offsetHeight*s)+'px';
+  }
+  window.addEventListener('resize',scale);
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){scale();scrollPhones();});}
+  scale();
+  window.addEventListener('load',function(){scale();scrollPhones();});
+  scrollPhones();
+})();
+</script>
+</body>
+</html>

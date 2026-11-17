@@ -9,7 +9,7 @@ import { FloatingLanterns, Shore, Sparkles } from './components/SkyDecor.jsx';
 import Boat from './components/Boat.jsx';
 import Water from './components/Water.jsx';
 import Gold from './components/Gold.jsx';
-import Menu from './components/Menu.jsx';
+import Nav from './components/Nav.jsx';
 import Motes from './components/Motes.jsx';
 import useParallax from './useParallax.js';
 
@@ -101,9 +101,9 @@ export default function App() {
     <>
       <Defs />
       <Motes waterRef={waterRef} goldRef={goldRef} />
-      <Menu />
+      <Nav />
 
-      <main>
+      <main id="top">
         <section className="sky" ref={skyRef}>
           <div className="sky-paint">
             <Sparkles />
@@ -126,19 +126,21 @@ export default function App() {
           <header className="hero" ref={heroRef}>
             <p className="label hero-kicker">{event.kicker}</p>
             <h1 className="hero-title" ref={titleRef}>
-              {event.name}
+              <img src="/brand/hacklahoma-logo.png" alt={event.name} width="1990" height="314" onLoad={measure} />
             </h1>
             <p className="label hero-date">
               {event.dates} <span aria-hidden="true">✦</span> {event.place}
             </p>
-            <a className="hero-cue" href="#light">
-              follow the light
-            </a>
           </header>
 
           <div className="chapters" id="light">
             {chapters.map((c, i) => (
-              <div className="chapter" key={c.numeral} data-side={i % 2 === 0 ? 'left' : 'right'}>
+              <div
+                className="chapter"
+                key={c.numeral}
+                id={c.numeral === 'IV' ? 'when' : undefined}
+                data-side={i % 2 === 0 ? 'left' : 'right'}
+              >
                 <div ref={(el) => (lanternRefs.current[i] = el)} className="chapter-slot">
                   <Lantern numeral={c.numeral} label={c.label} title={c.title} side={i % 2 === 0 ? 'left' : 'right'}>
                     <p>{c.body}</p>

@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useRef } from 'react';
 import { BOAT_BOX, paintBoat } from '../lib/paint.js';
 
-// A rowboat on the horizon with Hacksy aboard. The river of light rises from its lantern.
+// A rowboat on the horizon, empty but for its lantern. The river of light rises from its lantern.
 const Boat = forwardRef(function Boat(_, lanternRef) {
   const box = useRef(null);
   const art = useRef(null);
@@ -28,7 +28,7 @@ const Boat = forwardRef(function Boat(_, lanternRef) {
           style={{ left: `${(lantern.x / w) * 100}%`, top: `${((lantern.y - 11) / h) * 100}%` }}
           aria-hidden="true"
         />
-        <canvas ref={art} role="img" aria-label="Hacksy, the Hacklahoma mascot, in a rowboat with a lantern" />
+        <canvas ref={art} role="img" aria-label="A rowboat with a glowing lantern" />
       </div>
     </div>
   );

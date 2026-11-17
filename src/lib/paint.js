@@ -253,14 +253,15 @@ export function paintLantern(canvas, cssWidth, dpr, grain = 1.4) {
       // glow spray
       const hwc = lanternHalf(clamp(y, 30, 474));
       const dEdge = Math.max(ax - hwc, 26 - y, y - 492, 0);
-      if (n < 0.55 * Math.exp(-dEdge / 8)) return EMBER[n2 < 0.6 ? 0 : n2 < 0.86 ? 1 : 2];
-      if (n2 < 0.08 * Math.exp(-dEdge / 40) && n > 0.5) return HAZE;
+      // a thin ember fringe and a few stray flecks (was 0.55 / 8 and 0.08 / 40, much heavier)
+      if (n < 0.22 * Math.exp(-dEdge / 5)) return EMBER[n2 < 0.6 ? 0 : n2 < 0.86 ? 1 : 2];
+      if (n2 < 0.02 * Math.exp(-dEdge / 28) && n > 0.5) return HAZE;
       return null;
     },
   );
 }
 
-/* ---------------- the boat and Hacksy ---------------- */
+/* ---------------- the boat ---------------- */
 
 // Units: a 300 x 170 box. The waterline is y = 134; the lantern hangs at (212, 50).
 export const BOAT_BOX = { w: 300, h: 170, waterline: 134, lantern: { x: 212, y: 50 } };
@@ -268,8 +269,6 @@ export const BOAT_BOX = { w: 300, h: 170, waterline: 134, lantern: { x: 212, y: 
 const HULL = hex('#0F1733');
 const HULL_LIT = hex('#22336A');
 const PLANK = hex('#080D22');
-const HACKSY = ['#3F6FC4', '#5B9CF0', '#64C1F1', '#6EE7F2', '#C9F7FA'].map(hex);
-const WARM = hex('#FFC63A');
 
 function segDist(px, py, ax, ay, bx, by) {
   const vx = bx - ax;
@@ -277,20 +276,6 @@ function segDist(px, py, ax, ay, bx, by) {
   const t = clamp(((px - ax) * vx + (py - ay) * vy) / (vx * vx + vy * vy), 0, 1);
   return Math.hypot(px - ax - vx * t, py - ay - vy * t);
 }
-
-function inRoundRect(u, v, x, y, w, h, r) {
-  if (u < x || u > x + w || v < y || v > y + h) return false;
-  const cx = clamp(u, x + r, x + w - r);
-  const cy = clamp(v, y + r, y + h - r);
-  return Math.hypot(u - cx, v - cy) <= r;
-}
-
-// Hacksy's H (the Hacksy repo's mascot.ts drawing, 100-unit box) with the app mark's happy eyes.
-const H_PARTS = [
-  [18, 16, 22, 70, 7],
-  [60, 14, 22, 72, 7],
-  [30, 37, 40, 24, 0],
-];
 
 export function paintBoat(canvas, cssWidth, dpr) {
   const k = (cssWidth * dpr) / BOAT_BOX.w;
@@ -312,25 +297,6 @@ export function paintBoat(canvas, cssWidth, dpr) {
       if (y - top < 2.2) return n < 0.3 + light * 0.7 ? EMBER[n2 < 0.7 ? 0 : 2] : HULL_LIT;
       if (Math.abs(y - top - 9) < 0.8 || Math.abs(y - top - 17) < 0.8) return PLANK;
       return n < light * 0.65 ? HULL_LIT : HULL;
-    }
-
-    // Hacksy, peeking up out of the boat
-    const s = 0.8;
-    const u = (x - 58) / s;
-    const v = (y - 47) / s;
-    if (u > 10 && u < 90 && v > 8 && v < 92) {
-      for (const [ex, ey] of [[40, 46], [62, 45]]) {
-        if (segDist(u, v, ex - 4, ey + 2, ex, ey - 2) < 1.5 || segDist(u, v, ex, ey - 2, ex + 4, ey + 2) < 1.5) return HULL;
-      }
-      for (const [rx, ry, rw, rh, rr] of H_PARTS) {
-        if (!inRoundRect(u, v, rx, ry, rw, rh, rr)) continue;
-        const t = (v - 14) / 72;
-        let idx = (1 - t) * 3 + 0.4 + (n - 0.5) * 1.1;
-        if (rx + rw - u < 4) idx += 1;
-        if (u - rx < 3 && rr) idx -= 1;
-        if (rx === 60 && rx + rw - u < 3 && n2 < 0.45) return WARM;
-        return HACKSY[clamp(Math.round(idx), 0, 4)];
-      }
     }
 
     // the lantern
@@ -544,7 +510,7 @@ export function paintForest(ctx, y0, h, dpr, { circles, trunks, cfg, ground }) {
 
 // Three ridges, far to near, each a jagged fbm line. Slopes that face the
 // light in the middle catch it; the valley under the boat dips low so the
-// boat and Hacksy read against the sky. Units are CSS px of a W x H strip.
+// boat reads against the sky. Units are CSS px of a W x H strip.
 const RIDGES = [
   { base: 0.42, amp: 0.5, freq: 1 / 210, seed: 31, fill: '#34508A', lit: '#5C7DB6', warm: 0.05 },
   { base: 0.6, amp: 0.36, freq: 1 / 140, seed: 57, fill: '#253D73', lit: '#3F5F9A', warm: 0.18 },

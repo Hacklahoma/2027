@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sponsors 3 - Lantern Garland</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Gloock&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16204a; --night:#121b3a; --sky0:#1c2a55; --sky1:#26407a; --sky2:#2f4c86;
+  --mist:#8ea8d6; --cream:#fff4da; --light:#ffc63a; --amber:#f59a3a; --ember:#de4b2b; --gold4:#ffe4ae;
+  --page:#0a1029;
+  --display:'Gloock', Georgia, serif; --italic:'Instrument Serif', Georgia, serif;
+  --sans:'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+*{box-sizing:border-box}
+html{color-scheme:dark}
+body{margin:0;background:radial-gradient(1200px 600px at 50% -10%, #17224a, var(--page) 70%);color:var(--cream);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--gold4);outline-offset:4px;border-radius:6px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- storyboard chrome ---------- */
+.wrap{width:min(1320px, calc(100% - 48px));margin:0 auto}
+.sb-head{padding:44px 0 30px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;align-items:start}
+.tag{display:inline-flex;align-items:center;gap:10px;font:600 12px/1 var(--sans);font-stretch:112%;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:16px}
+.tag b{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--light);color:var(--ink);letter-spacing:0;font-size:13px}
+.sb-head h1{font:400 clamp(40px,5vw,68px)/1 var(--display);margin:0 0 14px;color:var(--cream)}
+.sb-head h1 em{font:italic 400 1.08em var(--italic);color:var(--light)}
+.concept{margin:0;color:rgba(255,244,218,.82);max-width:46ch;font-size:17px}
+.ideas{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;counter-reset:idea}
+.ideas li{counter-increment:idea;background:linear-gradient(180deg,rgba(47,76,134,.35),rgba(28,42,85,.35));border:1px solid rgba(142,168,214,.28);border-radius:16px;padding:16px 16px 18px}
+.ideas li::before{content:counter(idea);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--light);color:var(--light);font:600 14px var(--sans);margin-bottom:10px}
+.ideas h2{font:400 18px/1.2 var(--display);margin:0 0 6px;color:var(--cream)}
+.ideas p{margin:0;font-size:14.5px;line-height:1.5;color:rgba(255,244,218,.8)}
+
+.lab{display:flex;align-items:center;gap:12px;margin:34px 0 14px;font:600 13px/1.3 var(--sans);font-stretch:112%;letter-spacing:.16em;text-transform:uppercase;color:var(--mist)}
+.lab .n{display:inline-grid;place-items:center;min-width:30px;height:30px;border-radius:8px;background:rgba(142,168,214,.16);border:1px solid rgba(142,168,214,.4);color:var(--cream);letter-spacing:0;font-size:14px}
+.lab small{font:400 14px var(--sans);letter-spacing:0;text-transform:none;color:rgba(255,244,218,.65)}
+
+/* desktop browser */
+.desk-outer{width:100%;position:relative}
+.browser{width:1280px;transform-origin:0 0;border-radius:16px;overflow:hidden;background:#0d1431;border:1px solid rgba(142,168,214,.35);box-shadow:0 30px 80px rgba(0,0,0,.55)}
+.bar{height:44px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#1a2347;border-bottom:1px solid rgba(142,168,214,.2)}
+.bar i{width:11px;height:11px;border-radius:50%;background:rgba(142,168,214,.45)}
+.bar .url{margin-left:14px;flex:0 1 420px;height:26px;border-radius:13px;background:rgba(10,16,41,.7);color:var(--mist);font:13px/26px var(--sans);padding:0 14px}
+.viewport{position:relative}
+
+/* fake page content */
+.fnav{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:#0e1533}
+.logo-img{display:block;height:26px;width:auto;filter:brightness(0) invert(1) sepia(.28) saturate(1.4) hue-rotate(-6deg)}
+.kebab{width:48px;height:48px;border-radius:50%;border:1.5px solid rgba(255,244,218,.55);background:transparent;color:var(--cream);display:grid;place-items:center;cursor:pointer}
+.prev{height:170px;padding:34px 48px 0;background:linear-gradient(#0e1533,#121b3a);position:relative}
+.prev .ch{font:600 12px var(--sans);font-stretch:112%;letter-spacing:.2em;text-transform:uppercase;color:rgba(142,168,214,.8);margin-bottom:10px}
+.prev h4{margin:0 0 16px;font:400 30px/1.1 var(--display);color:rgba(255,244,218,.5)}
+.prev .row{height:14px;border-radius:7px;background:rgba(142,168,214,.16);margin-bottom:10px;width:62%}
+.prev .row:nth-child(4){width:48%}
+.prev::after{content:"";position:absolute;inset:auto 0 0 0;height:90px;background:linear-gradient(transparent,#121b3a)}
+
+/* ---------- the garland stage ---------- */
+.stage{position:relative;z-index:20;background:linear-gradient(180deg,#121b3a 0%,#16214a 40%,#1c2a55 100%);isolation:isolate}
+.stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:90;opacity:.09;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>")}
+.stage .sky{position:absolute;inset:0;z-index:0;background:
+  radial-gradient(700px 380px at 50% 46%, rgba(245,154,58,.13), transparent 70%),
+  radial-gradient(900px 300px at 50% 100%, rgba(38,64,122,.55), transparent 70%)}
+.stars{position:absolute;left:0;top:0;width:1px;height:1px;border-radius:50%;z-index:0}
+.embers{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.ember{position:absolute;border-radius:50%;background:radial-gradient(circle,#ffe4ae 0%,#ffc63a 45%,rgba(245,154,58,0) 72%);opacity:var(--o);animation:rise var(--rd) linear var(--rl) infinite;will-change:transform,opacity}
+@keyframes rise{0%{transform:translate3d(0,0,0) scale(.6);opacity:0}12%{opacity:var(--o)}55%{transform:translate3d(calc(var(--dx)*.4),calc(var(--rs)*-.55),0) scale(1)}100%{transform:translate3d(var(--dx),calc(var(--rs)*-1),0) scale(.7);opacity:0}}
+.wires{position:absolute;left:0;top:0;z-index:3;pointer-events:none;overflow:visible}
+.bulb{fill:#ffe4ae;animation:twinkle var(--tw) ease-in-out var(--td) infinite}
+@keyframes twinkle{0%,100%{opacity:.35}50%{opacity:1}}
+
+.stage-head{position:absolute;z-index:6;left:50%;transform:translateX(-50%);text-align:center;width:760px}
+.kick-r{display:inline-flex;align-items:center;gap:12px;font:600 13px/1 var(--sans);font-stretch:112%;letter-spacing:.2em;text-transform:uppercase;color:var(--amber)}
+.kick-r b{display:inline-grid;place-items:center;min-width:34px;height:34px;padding:0 6px;border-radius:50%;border:1.5px solid var(--amber);font:400 15px var(--display);letter-spacing:0}
+.stage-head h3{margin:14px 0 12px;font:400 var(--hs,54px)/1.04 var(--display);color:var(--cream);text-wrap:balance}
+.stage-head h3 em{font:italic 400 1.1em/1 var(--italic);color:var(--light)}
+.stage-head p{margin:0 auto;font-size:var(--ps,18px);color:rgba(255,244,218,.85);max-width:44ch}
+
+/* lanterns */
+.lanterns{list-style:none;margin:0;padding:0;position:absolute;inset:0;z-index:5}
+.lt{position:absolute;width:var(--w);height:calc(var(--cord) + var(--w)*1.56);margin:0;padding:0}
+.lt:is(:hover,:focus-within,.is-open,.force-open){z-index:50}
+.swing{transform-origin:50% 0;animation:sway var(--dur) ease-in-out var(--d) infinite alternate}
+.kick{transform-origin:50% 0}
+@keyframes sway{from{transform:rotate(calc(var(--a)*-1))}to{transform:rotate(var(--a))}}
+@keyframes kick{0%{transform:rotate(0)}16%{transform:rotate(calc(var(--k)*var(--dir)))}36%{transform:rotate(calc(var(--k)*var(--dir)*-.7))}56%{transform:rotate(calc(var(--k)*var(--dir)*.42))}76%{transform:rotate(calc(var(--k)*var(--dir)*-.18))}100%{transform:rotate(0)}}
+.lt:is(:hover,:focus-within,.is-open) .kick{animation:kick 1.9s cubic-bezier(.3,.6,.3,1) 1}
+.lt.force-open .kick{animation:kick 3.6s ease-in-out infinite}
+.cord{width:2px;height:var(--cord);margin:0 auto;background:linear-gradient(#d9b46a,#8a6a34);border-radius:1px}
+.lantern{display:block;position:relative;width:100%;height:calc(var(--w)*1.56);color:var(--ink);text-decoration:none;-webkit-tap-highlight-color:transparent}
+.lantern:focus-visible{outline:3px solid var(--gold4);outline-offset:8px;border-radius:40%/24%}
+.lantern svg{position:relative;z-index:1;display:block;width:100%;height:100%;overflow:visible;transition:filter .35s;filter:drop-shadow(0 0 calc(var(--w)*.07) var(--g1))}
+.lt:is(:hover,:focus-within,.is-open,.force-open,.lit) .lantern svg{filter:brightness(1.14) saturate(1.12) drop-shadow(0 0 calc(var(--w)*.16) var(--g3))}
+.glow{position:absolute;z-index:0;left:50%;top:46%;width:calc(var(--w)*var(--g));aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%) scale(1);background:radial-gradient(closest-side,var(--g1),var(--g2) 46%,transparent 76%);opacity:.85;pointer-events:none;transition:opacity .4s,transform .55s cubic-bezier(.2,.7,.3,1);animation:breathe var(--br,6s) ease-in-out var(--d) infinite alternate}
+@keyframes breathe{from{opacity:.62}to{opacity:.92}}
+.lt:is(:hover,:focus-within,.is-open,.force-open,.lit) .glow{animation:none;opacity:1;transform:translate(-50%,-50%) scale(1.42)}
+.halo{position:absolute;z-index:-1;left:50%;top:46%;width:calc(var(--w)*6.6);aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;background:radial-gradient(closest-side,rgba(255,214,120,.34),rgba(245,154,58,.14) 42%,transparent 74%);animation:halo 7s ease-in-out infinite alternate}
+@keyframes halo{from{transform:translate(-50%,-50%) scale(.94)}to{transform:translate(-50%,-50%) scale(1.06)}}
+.core{animation:flicker var(--fl,3.2s) ease-in-out var(--d) infinite alternate;transform-origin:50% 50%}
+@keyframes flicker{0%{opacity:.78}35%{opacity:1}60%{opacity:.86}100%{opacity:.98}}
+.cap{fill:var(--cap);stroke:var(--rim);stroke-width:.9;transition:fill .6s}
+.rib{fill:none;stroke:var(--rib);stroke-width:1;opacity:.55}
+.band{fill:none;stroke:var(--cap);stroke-width:2.2;opacity:.8}
+.stud{fill:var(--rim)}
+.tas{stroke:var(--rim);stroke-width:1.4;fill:none}
+.tuft{fill:var(--tuft);stroke:var(--rim);stroke-width:.6}
+
+.face{position:absolute;z-index:2;left:19%;right:19%;top:27%;height:38%;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.slot{width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;border:1.5px dashed rgba(22,32,74,.55);border-radius:4px;background:rgba(255,255,255,.24);font:700 max(9px,calc(var(--w)*.072))/1.14 var(--sans);font-stretch:112%;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
+.t-silver .slot{font-size:max(8.5px,calc(var(--w)*.072));letter-spacing:.03em}
+.t-comm .slot{height:46%;flex-direction:column;gap:3px;border-width:1px}
+.t-comm .slot::before,.t-comm .slot::after{content:"";display:block;height:2.5px;border-radius:2px;background:rgba(22,32,74,.6);width:62%}
+.t-comm .slot::after{width:40%}
+.t-cta .face{left:17%;right:17%;top:25%;height:42%}
+.cta-txt{font:italic 400 max(15px,calc(var(--w)*.125))/1.08 var(--italic);text-align:center;color:var(--cream);transition:color .6s .1s}
+.lt.t-cta:is(:hover,:focus-within,.is-open,.force-open,.lit) .cta-txt{color:var(--ink)}
+.lt.t-cta .lit-body{opacity:0;transition:opacity .7s ease}
+.lt.t-cta:is(:hover,:focus-within,.is-open,.force-open,.lit) .lit-body{opacity:1}
+.lt.t-cta .core{opacity:0;animation:none;transition:opacity .7s}
+.lt.t-cta:is(:hover,:focus-within,.is-open,.force-open,.lit) .core{opacity:1;animation:flicker 2.6s ease-in-out infinite alternate}
+.lt.t-cta .glow{opacity:0;animation:none}
+.lt.t-cta:not(:is(:hover,:focus-within,.is-open,.force-open,.lit)) .glow{opacity:.0;transform:translate(-50%,-50%) scale(.7)}
+.lt.t-cta:is(:hover,:focus-within,.is-open,.force-open,.lit) .glow{opacity:1}
+.lt.t-cta .wick{position:absolute;z-index:3;left:50%;top:46%;width:calc(var(--w)*.5);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(255,198,58,.5),transparent 70%);animation:wick 3.4s ease-in-out infinite alternate;pointer-events:none;transition:opacity .4s}
+.lt.t-cta:is(:hover,:focus-within,.is-open,.force-open,.lit) .wick{opacity:0;animation:none}
+@keyframes wick{from{opacity:.05}to{opacity:.5}}
+.sparks{position:absolute;z-index:4;left:50%;top:46%;pointer-events:none}
+.sparks i{position:absolute;left:0;top:0;width:5px;height:5px;margin:-2.5px;border-radius:50%;background:var(--light);opacity:0;box-shadow:0 0 8px 2px rgba(255,198,58,.7)}
+.lt.t-cta:is(:hover,:focus-within,.is-open,.force-open) .sparks i{animation:spark 1.5s cubic-bezier(.1,.7,.3,1) var(--sd) 1 both}
+@keyframes spark{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--sx),var(--sy)) scale(.2);opacity:0}}
+
+/* tiers */
+.t-title{--g:5.2;--g1:rgba(255,198,58,.5);--g2:rgba(245,154,58,.2);--g3:rgba(255,214,110,.85);--cap:#8a2a14;--rim:#ffe4ae;--rib:#9a3a12;--tuft:#de4b2b;--br:7s;--fl:4s}
+.t-gold{--g:3.7;--g1:rgba(255,198,58,.45);--g2:rgba(245,154,58,.17);--g3:rgba(255,198,58,.85);--cap:#7a2c16;--rim:#ffc63a;--rib:#8a3a12;--tuft:#f59a3a;--br:5.4s}
+.t-silver{--g:3.3;--g1:rgba(190,212,255,.42);--g2:rgba(142,168,214,.16);--g3:rgba(205,222,255,.85);--cap:#3c4e86;--rim:#dfe7fb;--rib:#5a6fa8;--tuft:#8ea8d6;--br:4.8s}
+.t-comm{--g:3.4;--g1:rgba(255,150,100,.5);--g2:rgba(222,75,43,.16);--g3:rgba(255,170,120,.9);--cap:#7a2c16;--rim:#ffb48a;--rib:#a2431e;--tuft:#de4b2b;--br:4s}
+.t-cta{--g:4.6;--g1:rgba(255,198,58,.5);--g2:rgba(245,154,58,.2);--g3:rgba(255,214,110,.85);--cap:#2e386a;--rim:#8ea8d6;--rib:#8ea8d6;--tuft:#3c4e86}
+.lt.t-cta:is(:hover,:focus-within,.is-open,.force-open,.lit){--cap:#8a2a14;--rim:#ffe4ae;--tuft:#de4b2b}
+.lt.t-cta .lantern svg{filter:none}
+.lt.t-cta:is(:hover,:focus-within,.is-open,.force-open,.lit) .lantern svg{filter:brightness(1.1) drop-shadow(0 0 calc(var(--w)*.16) var(--g3))}
+
+/* caption card */
+.card{position:absolute;z-index:60;top:calc(100% + 2px);left:50%;width:var(--cw,224px);transform:translate(-50%,8px);opacity:0;visibility:hidden;transition:opacity .22s,transform .25s cubic-bezier(.2,.8,.3,1),visibility 0s .25s;background:rgba(13,20,47,.97);border:1px solid rgba(255,198,58,.55);border-radius:14px;padding:14px 14px 8px;color:var(--cream);text-align:left;box-shadow:0 20px 44px rgba(0,0,0,.5)}
+.card::before{content:"";position:absolute;left:-10px;right:-10px;top:-18px;height:20px}
+.card::after{content:"";position:absolute;top:-7px;left:calc(50% - 6px);width:12px;height:12px;background:rgba(13,20,47,.97);border-left:1px solid rgba(255,198,58,.55);border-top:1px solid rgba(255,198,58,.55);transform:rotate(45deg)}
+.lt:is(:hover,:focus-within,.is-open,.force-open) .card{opacity:1;visibility:visible;transform:translate(-50%,0);transition-delay:0s}
+.lt.al-l .card{left:0;transform:translate(0,8px)}
+.lt.al-l:is(:hover,:focus-within,.is-open,.force-open) .card{transform:translate(0,0)}
+.lt.al-l .card::after{left:calc(var(--w)/2 - 6px)}
+.lt.al-r .card{left:auto;right:0;transform:translate(0,8px)}
+.lt.al-r:is(:hover,:focus-within,.is-open,.force-open) .card{transform:translate(0,0)}
+.lt.al-r .card::after{left:auto;right:calc(var(--w)/2 - 6px)}
+.chip{display:inline-block;font:700 10.5px/1 var(--sans);font-stretch:112%;letter-spacing:.14em;text-transform:uppercase;padding:5px 9px;border-radius:99px;color:var(--ink);background:var(--light)}
+.chip.c-title{background:linear-gradient(90deg,#ffe4ae,#ffc63a 55%,#f59a3a)}
+.chip.c-silver{background:#dfe7fb}
+.chip.c-comm{background:#ffb48a}
+.chip.c-cta{background:var(--cream)}
+.card strong{display:block;margin:9px 0 3px;font:400 18px/1.15 var(--display);color:var(--cream)}
+.card p{margin:0 0 4px;font-size:13.5px;line-height:1.45;color:rgba(255,244,218,.8)}
+.visit{display:inline-flex;align-items:center;gap:8px;min-height:44px;font:600 14px var(--sans);color:var(--light);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1.5px}
+.visit svg{width:16px;height:16px}
+.tap{position:absolute;z-index:8;left:50%;width:44px;height:44px;margin:-22px;border-radius:50%;border:2px solid var(--cream);pointer-events:none;animation:tap 2s ease-out infinite}
+.tap::after{content:"";position:absolute;inset:14px;border-radius:50%;background:var(--cream);opacity:.9}
+@keyframes tap{0%{transform:scale(.6);opacity:.95}80%,100%{transform:scale(1.6);opacity:0}}
+
+/* legend */
+.legend{position:absolute;z-index:6;left:50%;transform:translateX(-50%);text-align:center;width:var(--lw,400px)}
+.legend ul{list-style:none;margin:0 0 8px;padding:0;display:flex;justify-content:center;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.legend li{display:flex;flex-direction:column;align-items:center;gap:4px;font:600 11.5px/1 var(--sans);font-stretch:108%;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,244,218,.85)}
+.legend .ml{display:block;height:auto}
+.legend .ml svg{display:block;width:100%;height:auto;overflow:visible}
+.legend p{margin:0;font-size:13.5px;color:rgba(255,244,218,.78)}
+.legend p+ul{margin-top:10px}
+
+/* footer */
+.foot{position:relative;z-index:10;background:#0c1230;border-top:1px solid rgba(255,198,58,.22);padding:22px 48px 18px}
+.foot::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,198,58,.7),transparent)}
+.foot-row{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.foot nav ul{list-style:none;margin:0;padding:0;display:flex;gap:6px 22px;flex-wrap:wrap}
+.foot nav a{display:inline-flex;align-items:center;min-height:44px;font:500 14.5px var(--sans);color:rgba(255,244,218,.88);text-decoration:none}
+.foot nav a:hover{color:var(--light);text-decoration:underline;text-underline-offset:4px}
+.socials{display:flex;gap:4px}
+.socials a{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;color:var(--cream)}
+.socials a:hover{background:rgba(255,244,218,.1);color:var(--light)}
+.socials svg{width:20px;height:20px}
+.fine{margin:6px 0 0;font-size:12.5px;color:rgba(142,168,214,.95);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.when{font:400 italic 17px var(--italic);color:var(--gold4);margin:6px 0 0}
+
+/* phone */
+.mobile-row{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:48px;align-items:start}
+.phone{width:399px;padding:12px;border-radius:50px;background:#05081c;border:1px solid rgba(142,168,214,.4);box-shadow:0 30px 80px rgba(0,0,0,.55)}
+.phone .screen{width:375px;border-radius:38px;overflow:hidden;background:#0d1431;position:relative}
+.status{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;font:600 13px var(--sans);color:var(--cream);background:#0e1533}
+.status .notch{width:90px;height:24px;border-radius:14px;background:#05081c}
+.fnav.m{height:64px;padding:0 20px}
+.prev.m{height:110px;padding:22px 20px 0}
+.prev.m h4{font-size:24px;margin-bottom:10px}
+.foot.m{padding:22px 20px 20px}
+.foot.m .foot-row{flex-direction:column;align-items:flex-start;gap:8px}
+.foot.m nav ul{display:grid;grid-template-columns:1fr 1fr;gap:0 10px;width:100%}
+.foot.m .fine{flex-direction:column;gap:4px}
+.notes{list-style:none;margin:0;padding:0;display:grid;gap:14px;max-width:620px;position:sticky;top:24px}
+.notes li{padding:16px 18px;border:1px solid rgba(142,168,214,.26);border-radius:14px;background:rgba(28,42,85,.35)}
+.notes h3{margin:0 0 4px;font:400 18px/1.2 var(--display);color:var(--cream)}
+.notes p{margin:0;font-size:14.5px;color:rgba(255,244,218,.8)}
+.notes b{color:var(--gold4);font-weight:600}
+
+/* states row */
+.states{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:20px;padding-bottom:56px}
+.panel{border:1px solid rgba(142,168,214,.3);border-radius:18px;background:rgba(18,27,58,.7);padding:14px;display:flex;flex-direction:column;gap:12px}
+.panel header{display:flex;align-items:center;gap:10px}
+.panel header .n{width:30px;height:30px;border-radius:50%;background:var(--light);color:var(--ink);display:grid;place-items:center;font:700 14px var(--sans)}
+.panel h3{margin:0;font:400 19px/1.1 var(--display);color:var(--cream)}
+.mini{width:280px;margin:0 auto;border-radius:12px;overflow:hidden;--cw:196px;border:1px solid rgba(142,168,214,.22)}
+.panel p.cap-t{margin:0;font-size:14px;color:rgba(255,244,218,.82)}
+.pill{position:absolute;z-index:7;transform:translateX(-50%);font:600 11.5px var(--sans);font-stretch:108%;letter-spacing:.12em;text-transform:uppercase;color:var(--cream);background:rgba(13,20,47,.9);border:1px solid rgba(142,168,214,.5);padding:6px 10px;border-radius:99px;white-space:nowrap}
+
+@media (max-width:1100px){
+  .sb-head{grid-template-columns:1fr}
+  .mobile-row{grid-template-columns:1fr}
+}
+@media (max-width:700px){
+  .ideas{grid-template-columns:1fr}
+  .wrap{width:calc(100% - 32px)}
+  .phone{max-width:100%;transform-origin:0 0}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important;transition-delay:0s!important;scroll-behavior:auto!important}
+  .ember{opacity:calc(var(--o)*.7)}
+}
+</style>
+</head>
+<body>
+
+<!-- shared gradient defs (zero-size svg) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <radialGradient id="paper-title" cx="50%" cy="46%" r="62%"><stop offset="0" stop-color="#fff4da"/><stop offset=".38" stop-color="#ffd262"/><stop offset=".78" stop-color="#f59a3a"/><stop offset="1" stop-color="#de4b2b"/></radialGradient>
+    <radialGradient id="paper-gold" cx="50%" cy="46%" r="62%"><stop offset="0" stop-color="#fff0c0"/><stop offset=".42" stop-color="#ffc63a"/><stop offset="1" stop-color="#f59a3a"/></radialGradient>
+    <radialGradient id="paper-silver" cx="50%" cy="46%" r="62%"><stop offset="0" stop-color="#ffffff"/><stop offset=".42" stop-color="#eef3ff"/><stop offset=".8" stop-color="#c9d6f2"/><stop offset="1" stop-color="#8ea8d6"/></radialGradient>
+    <radialGradient id="paper-comm" cx="50%" cy="46%" r="62%"><stop offset="0" stop-color="#fff0e0"/><stop offset=".5" stop-color="#ffb48a"/><stop offset="1" stop-color="#f0763f"/></radialGradient>
+    <radialGradient id="paper-unlit" cx="50%" cy="46%" r="62%"><stop offset="0" stop-color="#3a4d86"/><stop offset=".6" stop-color="#283a72"/><stop offset="1" stop-color="#1c2a55"/></radialGradient>
+    <radialGradient id="core-g" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fffbe8" stop-opacity=".95"/><stop offset=".55" stop-color="#ffe9a8" stop-opacity=".35"/><stop offset="1" stop-color="#ffe9a8" stop-opacity="0"/></radialGradient>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header class="sb-head">
+    <div>
+      <div class="tag"><b>3</b> Sponsor section &middot; Storyboard</div>
+      <h1>Lantern <em>Garland</em></h1>
+      <p class="concept">Sponsors are paper lanterns strung on sagging wires across the night sky. Size and glow tell the tier, the logo is printed on the lantern face, and one last lantern waits unlit for you.</p>
+    </div>
+    <ol class="ideas" aria-label="Key UX ideas">
+      <li><h2>Size and glow are the tier</h2><p>One big haloed Title lantern, then Gold, Silver and tiny Community lanterns. Hierarchy reads at a glance, and the tier is always written out too, never colour alone.</p></li>
+      <li><h2>Hover, focus or tap to meet them</h2><p>The lantern swings and brightens, and a caption card shows tier plus a Visit link. Keyboard focus does the same; on touch, the first tap opens the card.</p></li>
+      <li><h2>The unlit lantern is the CTA</h2><p>Last on the wire, dark until you reach for it, then it ignites with a burst of sparks. "Light a lantern with us" says the call to action without a button.</p></li>
+    </ol>
+  </header>
+
+  <h2 class="lab"><span class="n">A</span> Desktop <small>1280px viewport, scaled to fit. Hover or Tab through the lanterns.</small></h2>
+  <div class="desk-outer" id="deskOuter">
+    <div class="browser" id="desk">
+      <div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="url">hacklahoma.org/#sponsors</span></div>
+      <div class="viewport" id="deskView"></div>
+    </div>
+  </div>
+
+  <h2 class="lab"><span class="n">B</span> Mobile <small>375px. Stacked wires in a zig-zag garland, tap a lantern to open its card.</small></h2>
+  <div class="mobile-row">
+    <div class="phone" id="phoneOuter"><div class="screen" id="phone"></div></div>
+    <ul class="notes">
+      <li><h3>Stacked wires, one tier per wire</h3><p><b>Title</b> on its own wire, <b>Gold</b> pair below, then <b>Silver</b> trio, then <b>Community</b> lanterns. Wires slope in alternating directions so the garland zig-zags down the page and runs off both screen edges, as if it continues.</p></li>
+      <li><h3>Touch-friendly by construction</h3><p>Every lantern is at least 52 by 81px (the whole lantern is the hit area). The first tap swings it and opens the card, the 44px "Visit website" button inside the card navigates. Tapping elsewhere closes it.</p></li>
+      <li><h3>The CTA closes the garland</h3><p>The unlit lantern sits at the end of the last wire, right-aligned so the thumb reaches it. Tap to ignite, tap again to open the email.</p></li>
+      <li><h3>Calm by default, accessible always</h3><p>Sway, embers and flicker stop under <b>prefers-reduced-motion</b>; lanterns stay lit and static. Each lantern is a real link with a spoken name and tier, the wires and embers are hidden from screen readers, and tab order runs Title, Gold, Silver, Community, then the CTA.</p></li>
+    </ul>
+  </div>
+
+  <h2 class="lab"><span class="n">C</span> States &amp; interactions <small>live panels: they animate and respond just like the real thing</small></h2>
+  <div class="states" id="states">
+    <section class="panel" aria-labelledby="s1"><header><span class="n">1</span><h3 id="s1">Default: swaying</h3></header><div class="stage mini" id="m1"></div><p class="cap-t">Each lantern sways on its own rhythm; small lanterns swing wider, the big one barely moves. Embers drift up, fairy lights twinkle. Reduced motion: everything holds still.</p></section>
+    <section class="panel" aria-labelledby="s2"><header><span class="n">2</span><h3 id="s2">Hover or focus</h3></header><div class="stage mini" id="m2"></div><p class="cap-t">The lantern swings, its glow swells and the caption card opens with tier and a Visit link. Keyboard focus triggers the same state, with a visible ring.</p></section>
+    <section class="panel" aria-labelledby="s3"><header><span class="n">3</span><h3 id="s3">Tap on touch</h3></header><div class="stage mini" id="m3" data-touch="1"></div><p class="cap-t">First tap opens the card (the ring shows the tap). The 44px Visit button inside the card does the navigating. Tap outside, or press Esc, to put it away.</p></section>
+    <section class="panel" aria-labelledby="s4"><header><span class="n">4</span><h3 id="s4">CTA ignites</h3></header><div class="stage mini" id="m4"></div><p class="cap-t">The call to action starts unlit with a faint ember at its wick. Hover, focus or tap and it floods with light and throws sparks. Try the left one.</p></section>
+  </div>
+</div>
+
+<script>
+/* ---------- helpers ---------- */
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const quad=(w,t)=>{const a=(1-t)*(1-t),b=2*t*(1-t),c=t*t;return{x:a*w[0]+b*w[2]+c*w[4],y:a*w[1]+b*w[3]+c*w[5]}};
+const ARROW='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
+
+const TIERS={
+  title:{label:'Title sponsor',cls:'t-title',chip:'c-title',a:1.1,dur:[8,10],k:4,blurb:'Presenting Hacklahoma 2027 and keeping it free for every hacker.'},
+  gold:{label:'Gold sponsor',cls:'t-gold',chip:'',a:2,dur:[5.5,7],k:7,blurb:'Helps keep Hacklahoma free for every hacker.'},
+  silver:{label:'Silver sponsor',cls:'t-silver',chip:'c-silver',a:2.8,dur:[4.6,6],k:9,blurb:'Helps keep Hacklahoma free for every hacker.'},
+  comm:{label:'Community partner',cls:'t-comm',chip:'c-comm',a:4,dur:[3.8,5],k:12,blurb:'A community partner lighting the way for student builders.'},
+  cta:{label:'Become a sponsor',cls:'t-cta',chip:'c-cta',a:2.4,dur:[6,7],k:8,blurb:'Email hacklahoma@ou.edu to sponsor Hacklahoma 2027.'}
+};
+
+function lanternSVG(kind){
+  const title=kind==='title', gold=kind==='gold', cta=kind==='cta';
+  const paper=cta?'unlit':kind;
+  let s='<svg viewBox="0 0 100 156" aria-hidden="true" focusable="false">';
+  s+='<path class="cap" d="M40,3.5h20a2,2 0 0 1 2,2V9H38V5.5a2,2 0 0 1 2-2z"/>';
+  s+=`<path d="M26,18 C-4,44 -4,98 26,124 L74,124 C104,98 104,44 74,18 Z" fill="url(#paper-${paper})"${cta?' stroke="#8ea8d6" stroke-opacity=".55" stroke-width="1.2"':''}/>`;
+  if(cta) s+='<path class="lit-body" d="M26,18 C-4,44 -4,98 26,124 L74,124 C104,98 104,44 74,18 Z" fill="url(#paper-gold)"/>';
+  s+='<ellipse class="core" cx="50" cy="71" rx="26" ry="36" fill="url(#core-g)"/>';
+  s+='<path class="rib" d="M50,18V124"/><path class="rib" d="M38,18C22,46 22,96 38,124"/><path class="rib" d="M62,18C78,46 78,96 62,124"/><path class="rib" d="M30,19C10,46 10,96 30,123" opacity=".35"/><path class="rib" d="M70,19C90,46 90,96 70,123" opacity=".35"/>';
+  if(title) s+='<path class="band" d="M7.2,47.4 Q50,53 92.8,47.4"/><path class="band" d="M7.1,94.5 Q50,100.5 92.9,94.5"/>';
+  s+='<path class="cap" d="M30,9H70L75,18H25Z"/>';
+  if(title||gold) s+='<circle class="stud" cx="36" cy="13.6" r="1.5"/><circle class="stud" cx="50" cy="13.6" r="1.5"/><circle class="stud" cx="64" cy="13.6" r="1.5"/>';
+  s+='<path class="cap" d="M26,124H74L69,134H31Z"/>';
+  s+='<path class="tas" d="M50,134V146"/><path class="tuft" d="M44.5,146H55.5L59,156H41Z"/>';
+  if(title) s+='<path class="tas" d="M36,134V143M64,134V143"/><circle class="stud" cx="36" cy="145" r="2.6"/><circle class="stud" cx="64" cy="145" r="2.6"/>';
+  return s+'</svg>';
+}
+
+function buildStage(el,cfg){
+  const R=rng(cfg.seed||7), W=cfg.W, H=cfg.H;
+  el.style.width=W+'px'; el.style.height=H+'px';
+  if(cfg.cw) el.style.setProperty('--cw',cfg.cw+'px');
+  // sky + stars
+  let stars=[];const n=Math.round(W*H/9000);
+  for(let i=0;i<n;i++){const x=Math.round(R()*W),y=Math.round(R()*H*.85),a=(.25+R()*.6).toFixed(2),sz=R()<.18?1.5:0;stars.push(`${x}px ${y}px 0 ${sz}px rgba(255,244,218,${a})`)}
+  let html=`<div class="sky"></div><div class="stars" style="box-shadow:${stars.join(',')}"></div>`;
+  // embers
+  let e='';const en=cfg.embers||22;
+  for(let i=0;i<en;i++){const sz=2+R()*3.4;e+=`<span class="ember" style="left:${(R()*W).toFixed(0)}px;top:${(H*(.3+R()*.7)).toFixed(0)}px;width:${sz.toFixed(1)}px;height:${sz.toFixed(1)}px;--o:${(.45+R()*.5).toFixed(2)};--dx:${((R()-.5)*90).toFixed(0)}px;--rs:${(180+R()*320).toFixed(0)}px;--rd:${(9+R()*10).toFixed(1)}s;--rl:-${(R()*18).toFixed(1)}s"></span>`}
+  html+=`<div class="embers" aria-hidden="true">${e}</div>`;
+  // wires
+  let sv=`<svg class="wires" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false">`;
+  const knots=[];
+  cfg.items.forEach(it=>knots.push([it.wire,it.t]));
+  cfg.wires.forEach((w,wi)=>{
+    const d=`M${w[0]},${w[1]} Q${w[2]},${w[3]} ${w[4]},${w[5]}`;
+    sv+=`<path d="${d}" fill="none" stroke="#070b20" stroke-width="3.6" opacity=".45" transform="translate(0,2)"/><path d="${d}" fill="none" stroke="#8ea8d6" stroke-width="1.5" opacity=".8"/>`;
+    const len=Math.hypot(w[4]-w[0],w[5]-w[1])*1.05, cnt=Math.max(6,Math.floor(len/(cfg.bulbGap||56)));
+    for(let i=1;i<cnt;i++){const t=i/cnt; if(knots.some(k=>k[0]===wi&&Math.abs(k[1]-t)<.03)) continue;const p=quad(w,t);sv+=`<circle class="bulb" cx="${p.x.toFixed(1)}" cy="${(p.y+3).toFixed(1)}" r="2.1" style="--tw:${(2+R()*2.4).toFixed(1)}s;--td:-${(R()*4).toFixed(1)}s"/>`}
+  });
+  knots.forEach(k=>{const p=quad(cfg.wires[k[0]],k[1]);sv+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.6" fill="#ffe4ae" stroke="#16204a" stroke-width="1.2"/>`});
+  html+=sv+'</svg>';
+  // lanterns
+  let li='';
+  cfg.items.forEach((it,i)=>{
+    const T=TIERS[it.tier], p=quad(cfg.wires[it.wire],it.t), w=it.w, cord=it.cord;
+    const dur=T.dur[0]+R()*(T.dur[1]-T.dur[0]), d=-(R()*dur);
+    const left=p.x-w/2, half=(cfg.cw||224)/2;
+    let al=''; if(left+w/2-half<8) al='al-l'; else if(left+w/2+half>W-8) al='al-r';
+    const face=(it.name||'').replace(/ \d+\]$/,']').replace(' ','<br>');
+    const isCta=it.tier==='cta';
+    const faceHTML=isCta?`<span class="face"><span class="cta-txt">Light a lantern with&nbsp;us</span></span>`
+      : `<span class="face"><span class="slot">${it.tier==='comm'?'':face}</span></span>`;
+    const href=isCta?'mailto:hacklahoma@ou.edu':'#';
+    const label=isCta?'Light a lantern with us. Email hacklahoma@ou.edu to become a sponsor.':`${it.name}, ${T.label}. Opens sponsor website.`;
+    const cta=isCta?'<span class="wick"></span><span class="sparks" aria-hidden="true">'+[[-46,-52],[40,-60],[62,-8],[-62,-4],[-18,-80],[22,-86],[8,-40]].map((s,j)=>`<i style="--sx:${s[0]}px;--sy:${s[1]}px;--sd:${(j*.06).toFixed(2)}s"></i>`).join('')+'</span>':'';
+    const cardTitle=isCta?'Light a lantern with us':it.name;
+    const cardLink=isCta?`<a class="visit" href="mailto:hacklahoma@ou.edu" tabindex="-1">Send an email ${ARROW}</a>`:`<a class="visit" href="#" tabindex="-1" data-ph>Visit website ${ARROW}</a>`;
+    li+=`<li class="lt ${T.cls} ${it.cls||''} ${al}" style="left:${left.toFixed(1)}px;top:${p.y.toFixed(1)}px;--w:${w}px;--cord:${cord}px;--a:${T.a}deg;--k:${T.k}deg;--dur:${dur.toFixed(1)}s;--d:${d.toFixed(1)}s;--dir:${i%2?1:-1}">
+      <div class="swing"><div class="kick"><div class="cord"></div>
+        <a class="lantern" href="${href}" aria-label="${label}"${isCta?'':' data-ph'}>
+          ${it.tier==='title'?'<span class="halo"></span>':''}<span class="glow"></span>${lanternSVG(it.tier)}${faceHTML}${cta}
+        </a></div></div>
+      ${it.tap?`<span class="tap" style="top:${cord+w*1.56*.46}px"></span>`:''}
+      <div class="card" aria-hidden="true"><span class="chip ${T.chip}">${T.label}</span><strong>${cardTitle}</strong><p>${T.blurb}</p>${cardLink}</div>
+    </li>`;
+  });
+  html+=`<ul class="lanterns" aria-label="${cfg.listLabel||'Sponsors'}">${li}</ul>`;
+  el.insertAdjacentHTML('beforeend',html);
+  // send the sky/stars behind any pre-existing header
+  wireInteractions(el);
+}
+
+function wireInteractions(stage){
+  const touchy=stage.dataset.touch==='1' || window.matchMedia('(hover: none)').matches;
+  stage.querySelectorAll('a[data-ph]').forEach(a=>a.addEventListener('click',e=>e.preventDefault()));
+  if(!touchy) return;
+  stage.querySelectorAll('.lt').forEach(lt=>{
+    const a=lt.querySelector('.lantern');
+    a.addEventListener('click',e=>{
+      if(!lt.classList.contains('is-open')){
+        e.preventDefault();
+        document.querySelectorAll('.lt.is-open').forEach(o=>o.classList.remove('is-open'));
+        lt.classList.add('is-open');
+      }
+    });
+  });
+}
+document.addEventListener('click',e=>{ if(!e.target.closest('.lt')) document.querySelectorAll('.lt.is-open').forEach(o=>o.classList.remove('is-open')) });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ document.querySelectorAll('.lt.is-open').forEach(o=>o.classList.remove('is-open')); if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.lt')) document.activeElement.blur(); } });
+
+/* ---------- shared bits of fake page ---------- */
+const LOGO='<img class="logo-img" src="../public/brand/hacklahoma-logo.png" alt="Hacklahoma" width="166" height="26">';
+const KEBAB='<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="4" r="2"/><circle cx="10" cy="10" r="2"/><circle cx="10" cy="16" r="2"/></svg>';
+const ICONS={
+  instagram:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor"/></svg>',
+  linkedin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 10.5V16M8 7.8v.1M12 16v-5.5M12 12.8c0-1.4 1-2.3 2.3-2.3 1.4 0 2.2.9 2.2 2.4V16"/></svg>',
+  discord:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 6.5c1.6-.8 3.2-1.2 5-1.2s3.4.4 5 1.2c1.6 2.6 2.4 5.3 2.5 8.2-1.3 1-2.6 1.6-4 2l-1-1.8c-1.6.5-3.4.5-5 0l-1 1.8c-1.4-.4-2.7-1-4-2 .1-2.9.9-5.6 2.5-8.2z"/><circle cx="9.4" cy="12" r="1" fill="currentColor"/><circle cx="14.6" cy="12" r="1" fill="currentColor"/></svg>'
+};
+function footerHTML(m){
+  const nav=`<nav aria-label="${m?'Mobile footer':'Footer'}"><ul>
+    <li><a href="https://2026.hacklahoma.org">Lights we've lit before</a></li>
+    <li><a href="#" data-ph>Meet the exec team</a></li>
+    <li><a href="https://register.hacklahoma.org/">Register</a></li>
+    <li><a href="https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md">MLH Code of Conduct</a></li></ul></nav>`;
+  const soc=`<div class="socials"><a href="#" data-ph aria-label="Hacklahoma on Instagram">${ICONS.instagram}</a><a href="#" data-ph aria-label="Hacklahoma on LinkedIn">${ICONS.linkedin}</a><a href="#" data-ph aria-label="Hacklahoma on Discord">${ICONS.discord}</a></div>`;
+  return `<footer class="foot ${m?'m':''}"><div class="foot-row">${LOGO}${nav}${soc}</div>
+    <div class="fine"><span>February 6&ndash;7, 2027 &middot; Norman, Oklahoma</span><span>&copy; 2027 Hacklahoma &middot; University of Oklahoma</span></div></footer>`;
+}
+function legendHTML(w){
+  const mk=(k,px,l)=>`<li><span class="ml t-${k}" style="width:${px}px">${lanternSVG(k)}</span>${l}</li>`;
+  return `<div class="legend" style="--lw:${w}px" role="note"><ul aria-label="Lantern sizes by tier">${mk('title',30,'Title')}${mk('gold',24,'Gold')}${mk('silver',19,'Silver')}${mk('comm',14,'Community')}</ul><p>Bigger lantern, brighter glow. Hover, focus or tap one to meet them.</p></div>`;
+}
+const HEAD=(id,hs,ps)=>`<div class="stage-head" style="--hs:${hs}px;--ps:${ps}px"><div class="kick-r"><b aria-hidden="true">IV</b> <span>Sponsors</span></div><h3 id="${id}">The people who keep the <em>lights on</em></h3><p>Hacklahoma is free for every hacker because of them.</p></div>`;
+
+/* ---------- DESKTOP ---------- */
+(function(){
+  const v=document.getElementById('deskView');
+  v.innerHTML=`<div aria-hidden="true"><header class="fnav">${LOGO}<button class="kebab" tabindex="-1" aria-label="Open menu">${KEBAB}</button></header>
+    <div class="prev"><div class="ch">Chapter III</div><h4>Questions, answered</h4><div class="row"></div><div class="row"></div><div class="row"></div></div></div>
+    <section aria-labelledby="hd"><div class="stage" id="deskStage" style="margin-top:-1px">${HEAD('hd',54,18).replace('<div class="stage-head" style="','<div class="stage-head" style="top:40px;')}</div></section>${footerHTML(false)}`;
+  const stage=document.getElementById('deskStage');
+  buildStage(stage,{W:1280,H:880,seed:11,cw:224,embers:34,bulbGap:58,listLabel:'Hacklahoma 2027 sponsors',
+    wires:[[-20,270,640,390,1300,270],[-20,570,640,740,1300,570]],
+    items:[
+      {tier:'title',wire:0,t:.5,cord:14,w:220,name:'[TITLE SPONSOR]'},
+      {tier:'gold',wire:0,t:.17,cord:12,w:144,name:'[GOLD SPONSOR 1]'},
+      {tier:'gold',wire:0,t:.83,cord:40,w:144,name:'[GOLD SPONSOR 2]'},
+      {tier:'silver',wire:1,t:.1,cord:16,w:112,name:'[SILVER SPONSOR 1]'},
+      {tier:'silver',wire:1,t:.27,cord:34,w:112,name:'[SILVER SPONSOR 2]'},
+      {tier:'silver',wire:1,t:.7,cord:20,w:112,name:'[SILVER SPONSOR 3]'},
+      {tier:'comm',wire:0,t:.04,cord:10,w:58,name:'[COMMUNITY PARTNER 1]'},
+      {tier:'comm',wire:0,t:.31,cord:30,w:58,name:'[COMMUNITY PARTNER 2]'},
+      {tier:'comm',wire:0,t:.69,cord:14,w:58,name:'[COMMUNITY PARTNER 3]'},
+      {tier:'comm',wire:0,t:.96,cord:36,w:58,name:'[COMMUNITY PARTNER 4]'},
+      {tier:'cta',wire:1,t:.9,cord:16,w:136,name:'Light a lantern with us'}
+    ]});
+  stage.insertAdjacentHTML('beforeend',legendHTML(400));
+  stage.querySelector('.legend').style.top='782px';
+  // scale to fit
+  const outer=document.getElementById('deskOuter'), desk=document.getElementById('desk');
+  function fit(){const s=Math.min(1,outer.clientWidth/1280);desk.style.transform=`scale(${s})`;outer.style.height=(desk.offsetHeight*s)+'px'}
+  fit();addEventListener('resize',fit);
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(fit);
+  addEventListener('load',fit);
+})();
+
+/* ---------- MOBILE ---------- */
+(function(){
+  const p=document.getElementById('phone');
+  p.innerHTML=`<div class="status" aria-hidden="true"><span>9:41</span><span class="notch"></span><span>100%</span></div>
+    <div aria-hidden="true"><header class="fnav m">${LOGO.replace('height="26"','height="22"').replace('class="logo-img"','class="logo-img" style="height:22px"')}<button class="kebab" tabindex="-1" aria-label="Open menu">${KEBAB}</button></header>
+    <div class="prev m"><div class="ch">Chapter III</div><h4>Questions, answered</h4><div class="row"></div></div></div>
+    <section aria-labelledby="hm"><div class="stage" id="mStage" data-touch="1">${HEAD('hm',34,16).replace('<div class="stage-head" style="','<div class="stage-head" style="top:26px;width:343px;')}</div></section>${footerHTML(true)}`;
+  const stage=document.getElementById('mStage');
+  buildStage(stage,{W:375,H:1570,seed:23,cw:208,embers:20,bulbGap:46,listLabel:'Hacklahoma 2027 sponsors',
+    wires:[[-10,250,187,340,385,262],[-10,640,187,730,385,610],[385,900,187,990,-10,930],[-10,1170,187,1230,385,1180]],
+    items:[
+      {tier:'title',wire:0,t:.5,cord:12,w:164,name:'[TITLE SPONSOR]'},
+      {tier:'gold',wire:1,t:.2,cord:14,w:112,name:'[GOLD SPONSOR 1]'},
+      {tier:'gold',wire:1,t:.78,cord:36,w:112,name:'[GOLD SPONSOR 2]'},
+      {tier:'silver',wire:2,t:.17,cord:14,w:86,name:'[SILVER SPONSOR 1]'},
+      {tier:'silver',wire:2,t:.5,cord:32,w:86,name:'[SILVER SPONSOR 2]'},
+      {tier:'silver',wire:2,t:.83,cord:18,w:86,name:'[SILVER SPONSOR 3]'},
+      {tier:'comm',wire:3,t:.13,cord:12,w:52,name:'[COMMUNITY PARTNER 1]'},
+      {tier:'comm',wire:3,t:.30,cord:26,w:52,name:'[COMMUNITY PARTNER 2]'},
+      {tier:'comm',wire:3,t:.47,cord:14,w:52,name:'[COMMUNITY PARTNER 3]'},
+      {tier:'cta',wire:3,t:.78,cord:16,w:124,name:'Light a lantern with us'}
+    ]});
+  stage.insertAdjacentHTML('beforeend',legendHTML(330));
+  stage.querySelector('.legend').style.top='1436px';
+  // shrink the phone on very narrow screens
+  const po=document.getElementById('phoneOuter');
+  function fitPhone(){const avail=po.parentElement.clientWidth;const s=Math.min(1,avail/399);po.style.transform=s<1?`scale(${s})`:'';po.style.marginBottom=s<1?`-${po.offsetHeight*(1-s)}px`:'';po.style.width='399px'}
+  fitPhone();addEventListener('resize',fitPhone);
+})();
+
+/* ---------- STATE PANELS ---------- */
+(function(){
+  const base={W:280,cw:196,bulbGap:50};
+  buildStage(document.getElementById('m1'),{...base,H:262,seed:3,embers:9,
+    wires:[[-10,36,140,100,290,30]],
+    items:[{tier:'gold',wire:0,t:.2,cord:12,w:92,name:'[GOLD SPONSOR]'},{tier:'silver',wire:0,t:.54,cord:30,w:84,name:'[SILVER SPONSOR]'},{tier:'comm',wire:0,t:.85,cord:16,w:46,name:'[COMMUNITY PARTNER]'}]});
+  buildStage(document.getElementById('m2'),{...base,H:420,seed:5,embers:9,
+    wires:[[-10,36,140,96,290,36]],
+    items:[{tier:'silver',wire:0,t:.14,cord:20,w:70,name:'[SILVER SPONSOR]'},{tier:'gold',wire:0,t:.52,cord:14,w:108,name:'[GOLD SPONSOR]',cls:'force-open'},{tier:'comm',wire:0,t:.9,cord:26,w:46,name:'[COMMUNITY PARTNER]'}]});
+  buildStage(document.getElementById('m3'),{...base,H:420,seed:8,embers:9,
+    wires:[[-10,36,140,96,290,36]],
+    items:[{tier:'gold',wire:0,t:.16,cord:10,w:84,name:'[GOLD SPONSOR]'},{tier:'silver',wire:0,t:.58,cord:22,w:92,name:'[SILVER SPONSOR]',cls:'is-open',tap:true},{tier:'comm',wire:0,t:.92,cord:14,w:46,name:'[COMMUNITY PARTNER]'}]});
+  const m4=document.getElementById('m4');
+  buildStage(m4,{...base,H:410,seed:13,embers:9,
+    wires:[[-10,36,140,90,290,36]],
+    items:[{tier:'cta',wire:0,t:.25,cord:14,w:108,name:'Light a lantern with us'},{tier:'cta',wire:0,t:.76,cord:14,w:108,name:'Light a lantern with us',cls:'lit'}]});
+  m4.insertAdjacentHTML('beforeend','<span class="pill" style="left:70px;top:262px">Unlit &middot; hover me</span><span class="pill" style="left:212px;top:262px">Ignited</span>');
+  m4.querySelectorAll('.lt')[1].querySelector('.lantern').setAttribute('tabindex','-1');
+})();
+</script>
+</body>
+</html>
