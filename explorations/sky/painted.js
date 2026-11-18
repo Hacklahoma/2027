@@ -1,0 +1,1 @@
+../figure/painted.js

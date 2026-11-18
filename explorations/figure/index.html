@@ -1,0 +1,126 @@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Figure in the Water</title>
+<meta name="claude:viewport-fit-sides" content="cover" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500&family=DM+Mono&display=swap" rel="stylesheet" />
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>
+  /* Layout: the same study sheet as the boat and water studies; the finished scene is the centrepiece. */
+  :root {
+    --bg: #07121c; --panel: #0b1824; --line: #17293a; --ink: #f3ead8; --mute: #8aa0b2;
+    --amber: #f2b45a; --pin: #7fe0ff;
+    --display: 'Cormorant Garamond', Georgia, serif; --body: 'DM Sans', system-ui, sans-serif; --mono: 'DM Mono', ui-monospace, Menlo, monospace;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.55 var(--body); }
+  .wrap { max-width: 1320px; margin: 0 auto; padding-block: 56px 120px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  h1, h2 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; }
+  h1 { font-size: clamp(40px, 6vw, 72px); line-height: 1; }
+  h2 { font-size: 34px; }
+  .eyebrow { font: 11px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--amber); margin-bottom: 14px; }
+  .lede { color: var(--mute); max-width: 680px; margin-top: 16px; }
+  section { margin-top: 80px; }
+  .head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+  .head p { color: var(--mute); max-width: 540px; margin: 0; }
+
+  .lab { position: relative; height: min(82vh, 780px); min-height: 440px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: #021a2c; }
+  .lab canvas { display: block; width: 100% !important; height: 100% !important; }
+  .controls { position: absolute; left: 14px; right: 14px; bottom: 14px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .controls button { font: 12px var(--body); color: var(--ink); background: rgba(5,15,24,.72); border: 1px solid rgba(255,255,255,.14); border-radius: 999px; padding: 7px 13px; backdrop-filter: blur(6px); cursor: pointer; }
+  .controls button:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+  .controls button[aria-pressed=true] { background: var(--amber); color: #1b1206; border-color: var(--amber); }
+  .controls .sep { width: 1px; height: 22px; background: rgba(255,255,255,.15); margin: 0 2px; }
+  .hint { position: absolute; right: 16px; top: 14px; font: 10px var(--mono); color: var(--mute); letter-spacing: .12em; text-transform: uppercase; text-align: right; }
+
+  .art { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .art { grid-template-columns: 1fr; } }
+  .art figure { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; min-width: 0; }
+  .art figure > div { aspect-ratio: 1052 / 1179; max-width: 100%; display: grid; place-items: center; }
+  .art img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .art .checker { background-color: #d9dee4; background-image: repeating-linear-gradient(45deg, #c4cbd3 0 8px, transparent 8px 16px); }
+  .art figcaption { padding: 14px 16px 16px; border-top: 1px solid var(--line); color: var(--mute); font-size: 13px; }
+  .art figcaption b { display: block; color: var(--ink); font: 500 20px var(--display); margin-bottom: 2px; }
+
+  .notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+  .notes div { padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+  .notes h4 { margin: 0 0 6px; font: 500 13px var(--body); color: var(--amber); }
+  .notes p { margin: 0; color: var(--mute); font-size: 13px; }
+  .flag { margin-top: 16px; padding: 14px 16px; border: 1px solid rgba(242,180,90,.35); border-radius: 12px; color: var(--ink); background: rgba(242,180,90,.06); font-size: 13px; }
+  .flag b { color: var(--amber); font-weight: 500; }
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">Hacklahoma 2027 · Where Worlds Meet · Asset study 03</div>
+  <h1>Someone in the Water</h1>
+  <p class="lede">The figure, finished: a painted person sitting in the live water among the glowing boats. The painting holds the detail; the scene around it is real, so they reflect in the water and the boat in their hands lights it like every other boat.</p>
+
+  <section style="margin-top:48px">
+    <div class="head"><div><div class="eyebrow">01 · The scene</div><h2>Among the boats</h2></div>
+      <p>Move the pointer and the camera drifts gently. <b>Eye level</b> matches the painting; <b>Wide</b> pulls back to show the fleet. Turn <b>Lit</b> off and hover any boat to light it.</p></div>
+    <div class="lab" id="lab">
+      <div class="hint">move the pointer: the camera drifts</div>
+      <div class="controls">
+        <button data-view="scene" aria-pressed="true">Eye level</button>
+        <button data-view="low">Wide</button>
+        <span class="sep"></span>
+        <button data-t="lit" aria-pressed="true">Lit</button>
+        <button data-t="paint" aria-pressed="true">Paint filter</button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><div><div class="eyebrow">02 · The painting</div><h2>From the image to the scene</h2></div>
+      <p>The figure was generated from our written prompt (no reference image), refined in a second pass, then cut out here.</p></div>
+    <div class="art">
+      <figure><div class="checker"><img src="person.png" alt="The painted person, cut out on a transparent background" /></div>
+        <figcaption><b>Cut out</b>The flat background removed, with soft edges so the loose hair keeps its wisps. The boat's painted glow is faded out so the scene's own flickering glow replaces it.</figcaption></figure>
+      <figure><div style="background:#0b2b44"><img src="person.png" alt="The painted person on the scene's water colour" /></div>
+        <figcaption><b>On our water colour</b>No dark fringe and no halo: the edges sit cleanly on the scene's navy.</figcaption></figure>
+    </div>
+    <div class="flag"><b>Still open:</b> the figure is AI-generated. Before it goes on the public site, check that AI art is OK for Hacklahoma and OU. If it isn't, the same brief works for an illustrator, and the new painting drops into the same slot.</div>
+  </section>
+
+  <section>
+    <div class="head"><div><div class="eyebrow">03 · How it's put together</div><h2>A painting in a live world</h2></div>
+      <p>Four small pieces make the painting belong to the scene.</p></div>
+    <div class="notes">
+      <div><h4>A standing card</h4><p>The painting stands at the waterline and turns to face the camera as it drifts, so it never looks flat.</p></div>
+      <div><h4>A real reflection</h4><p>The water reflects it like everything else: darker, and broken up by the ripples.</p></div>
+      <div><h4>A real light</h4><p>An invisible boat sits exactly where the painted one is, so their candle lights the water around them and flickers with the fleet.</p></div>
+      <div><h4>One rule: eye level</h4><p>The painting was made from eye level, so the camera has to stay near eye level too. From high above, any painted figure reads as a flat cut-out. The hero layout should be framed around this.</p></div>
+      <div><h4>Breathing light</h4><p>The warm parts of the painting (face, hands, the boat) brighten and dim with that same flicker. The rest of the figure stays still.</p></div>
+    </div>
+  </section>
+</div>
+
+<script type="module">
+  import { mountWater } from './water.js';
+  import { addPaintedPerson } from './painted.js';
+
+  const FIG = { x: -0.95, z: 1.35 };
+  const ui = {};
+  const api = mountWater(document.getElementById('lab'), ui, {
+    count: 18, boatScale: 0.55, spread: 0.85, lightScale: 0.42,
+    exclude: [{ x: FIG.x, z: FIG.z, r: 0.55 }, { x: 0.2, z: 3.6, r: 1.9 }],   // around the figure, and under the camera
+    view: 'scene',
+    views: { scene: { pos: [0.25, 1.15, 4.7], target: [-0.25, 0.42, 0.4] } },
+  });
+  ui.setMode('smooth');
+  const person = addPaintedPerson(api, { url: 'person.png', x: FIG.x, z: FIG.z, height: 1.05 });
+  window.__scene = { api, ui, person };
+
+  const press = (sel, on) => document.querySelectorAll(sel).forEach((b) => b.setAttribute('aria-pressed', b === on));
+  document.querySelectorAll('[data-view]').forEach((b) => b.onclick = () => { press('[data-view]', b); ui.setView(b.dataset.view); });
+  document.querySelectorAll('[data-t]').forEach((b) => b.onclick = () => {
+    const v = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', v);
+    ({ lit: ui.setAllLit, paint: ui.setPaint })[b.dataset.t](v);
+  });
+</script>

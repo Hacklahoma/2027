@@ -1,0 +1,198 @@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Night Water Study</title>
+<meta name="claude:viewport-fit-sides" content="cover" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500&family=DM+Mono&display=swap" rel="stylesheet" />
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>
+  /* Layout: one long study sheet; the lab is the centrepiece, evidence above, decisions on top. */
+  :root {
+    --bg: #07121c; --panel: #0b1824; --line: #17293a; --ink: #f3ead8; --mute: #8aa0b2;
+    --amber: #f2b45a; --pin: #7fe0ff;
+    --display: 'Cormorant Garamond', Georgia, serif; --body: 'DM Sans', system-ui, sans-serif; --mono: 'DM Mono', ui-monospace, Menlo, monospace;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.55 var(--body); }
+  .wrap { max-width: 1320px; margin: 0 auto; padding-block: 56px 120px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  h1, h2 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; }
+  h1 { font-size: clamp(40px, 6vw, 72px); line-height: 1; }
+  h2 { font-size: 34px; }
+  .eyebrow { font: 11px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--amber); margin-bottom: 14px; }
+  .lede { color: var(--mute); max-width: 680px; margin-top: 16px; }
+  section { margin-top: 88px; }
+  .head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+  .head p { color: var(--mute); max-width: 540px; margin: 0; }
+  .grid { display: grid; gap: 16px; }
+  .g2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; min-width: 0; }
+  .card img { width: 100%; display: block; }
+  .card .cap { padding: 14px 16px 16px; border-top: 1px solid var(--line); }
+  .cap b { font-family: var(--display); font-size: 21px; font-weight: 500; display: block; }
+  .cap span { color: var(--mute); font-size: 12.5px; }
+
+  .decide { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .decide > div { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); min-width: 0; }
+  .decide h4 { margin: 0 0 10px; font: 500 20px var(--display); }
+  .decide ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+  .decide li { color: var(--mute); font-size: 13px; padding-left: 18px; position: relative; }
+  .decide li::before { content: ''; position: absolute; left: 2px; top: 7px; width: 7px; height: 7px; border-radius: 50%; border: 1px solid var(--mute); }
+  .decide li.rec { color: var(--ink); }
+  .decide li.rec::before { background: var(--amber); border-color: var(--amber); }
+  .decide li.rec::after { content: 'recommended'; margin-left: 8px; font: 9.5px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--amber); }
+
+  .ref { display: grid; grid-template-columns: 1.1fr 1fr; gap: 16px; }
+  @media (max-width: 860px) { .ref { grid-template-columns: 1fr; } }
+  ul.obs { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  ul.obs li { padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
+  ul.obs li b { color: var(--amber); font-weight: 500; }
+  .strip { display: flex; height: 54px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); margin-top: 12px; }
+  .strip div { flex: 1; position: relative; }
+  .strip small { position: absolute; bottom: 4px; left: 4px; font: 9px var(--mono); color: rgba(255,255,255,.55); writing-mode: vertical-rl; transform: rotate(180deg); }
+  .strip-l { display: flex; justify-content: space-between; font: 10px var(--mono); color: var(--mute); margin-top: 6px; letter-spacing: .1em; text-transform: uppercase; }
+
+  .lab { position: relative; height: min(80vh, 760px); min-height: 420px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: #021a2c; }
+  .lab canvas { display: block; width: 100% !important; height: 100% !important; }
+  .controls { position: absolute; left: 14px; right: 14px; bottom: 14px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .controls button, .controls .rng, .controls select { font: 12px var(--body); color: var(--ink); background: rgba(5,15,24,.72); border: 1px solid rgba(255,255,255,.14); border-radius: 999px; padding: 7px 13px; backdrop-filter: blur(6px); }
+  .controls button { cursor: pointer; }
+  .controls button:focus-visible, .controls select:focus-visible, .controls input:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+  .controls button[aria-pressed=true] { background: var(--amber); color: #1b1206; border-color: var(--amber); }
+  .controls .rng { display: flex; align-items: center; gap: 8px; padding: 5px 12px; }
+  .controls .rng input { width: 84px; accent-color: var(--amber); }
+  .controls select { appearance: none; padding-right: 26px; background-image: linear-gradient(45deg, transparent 50%, #8aa0b2 50%), linear-gradient(135deg, #8aa0b2 50%, transparent 50%); background-position: calc(100% - 14px) 50%, calc(100% - 10px) 50%; background-size: 4px 4px; background-repeat: no-repeat; }
+  .controls .sep { width: 1px; height: 22px; background: rgba(255,255,255,.15); margin: 0 2px; }
+  .hint { position: absolute; right: 16px; top: 14px; font: 10px var(--mono); color: var(--mute); letter-spacing: .12em; text-transform: uppercase; text-align: right; }
+
+  .layers { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .layers div { padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+  .layers h4 { margin: 0 0 6px; font: 500 13px var(--body); color: var(--amber); }
+  .layers p { margin: 0; color: var(--mute); font-size: 13px; }
+  .layers button { margin-top: 10px; font: 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--pin); background: none; border: 1px solid rgba(127,224,255,.3); border-radius: 999px; padding: 5px 10px; cursor: pointer; }
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">Hacklahoma 2027 · Where Worlds Meet · Asset study 02</div>
+  <h1>The Water</h1>
+  <p class="lede">The second asset, built on the round-two boat. The reference water isn't photographic: it's painted in long horizontal brush strokes, and light lands stroke by stroke. We tried angular plates, then painted strokes. Smooth ripples are the pick for now, and Strokes stays one click away in the lab.</p>
+
+  <section style="margin-top:56px">
+    <div class="head"><div><div class="eyebrow">Decisions for this round</div><h2>What we're choosing between</h2></div>
+      <p>The lab below lets you try every option. My recommendation is marked on each.</p></div>
+    <div class="decide">
+      <div><h4>1 · Water style</h4><ul><li class="rec">Smooth ripples, for now</li><li>Painted strokes: long, soft brush marks (kept as an option)</li></ul></div>
+      <div><h4>2 · Paint filter</h4><ul><li class="rec">On: a soft palette-knife finish over everything</li><li>Off: crisper, more digital</li></ul></div>
+      <div><h4>3 · Hero camera</h4><ul><li class="rec">High, looking down into the water</li><li>Low, at eye level</li><li>Straight down</li></ul></div>
+      <div><h4>4 · Fleet size</h4><ul><li>About 6: sparse and quiet</li><li class="rec">About 14: the reference's density</li><li>About 24: festival</li></ul></div>
+      <div><h4>5 · Interaction</h4><ul><li class="rec">Click or hover a boat to light it</li><li>Ambient only</li></ul></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><div><div class="eyebrow">01 · Reference teardown</div><h2>How the reference paints water</h2></div>
+      <p>Crops from the reference, enlarged, plus the colour measured down a strip of open water from top to bottom.</p></div>
+    <div class="ref">
+      <div class="grid g2">
+        <div class="card"><img src="ref/far.png" alt="Far water crop: dark navy with long horizontal swells" /><div class="cap"><b>Far</b><span>Near-black navy. Long, flat horizontal swells, barely lit.</span></div></div>
+        <div class="card"><img src="ref/mid.png" alt="Mid water crop: brush strokes with pale blue edges" /><div class="cap"><b>Middle</b><span>Brush strokes, much wider than deep. Pale blue light on some edges.</span></div></div>
+        <div class="card"><img src="ref/near_glow.png" alt="Near water crop: boats with orange reflection fragments" /><div class="cap"><b>Around the boats</b><span>Amber lands on whole strokes, so the warm light is broken into pieces.</span></div></div>
+        <div class="card"><img src="ref/streak.png" alt="Close crop of one boat's reflection" /><div class="cap"><b>One reflection</b><span>A dark hull shadow first, then amber fragments trailing downward.</span></div></div>
+      </div>
+      <div class="grid" style="align-content:start">
+        <ul class="obs">
+          <li><b>Strokes, not waves.</b> The surface is long horizontal brush marks. Each one holds a single tone, and they curve gently with the swell.</li>
+          <li><b>Reflections shatter.</b> A boat's reflection is the hull's dark shape, then amber pieces trailing down through the strokes. It's never a clean mirror.</li>
+          <li><b>Light pools travel.</b> Candlelight spills onto the strokes up to about a boat-length and a half away, again in pieces.</li>
+          <li><b>Moonlight is rare.</b> Only a few strokes catch a pale blue edge, which keeps the cool water from going flat.</li>
+          <li><b>A dark frame.</b> Water is darkest at the top (distance) and the bottom (foreground), and brightest in a band through the middle where the boats are.</li>
+        </ul>
+        <div>
+          <div class="eyebrow" style="margin:6px 0 0">Measured colour, top of image to bottom</div>
+          <div class="strip" id="strip"></div>
+          <div class="strip-l"><span>far</span><span>boats</span><span>foreground</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><div><div class="eyebrow">02 · Water lab</div><h2>The water, live, with the fleet</h2></div>
+      <p>Real reflections, candlelight on the water from every boat, and painted strokes that drift with the wind. Turn <b>Lit</b> off and hover or click a boat to light it. <b>Layer</b> isolates each ingredient.</p></div>
+    <div class="lab" id="lab">
+      <div class="hint">move the pointer: the camera drifts<br/>turn on Orbit to drag freely</div>
+      <div class="controls">
+        <button data-mode="smooth" aria-pressed="true">Smooth</button>
+        <button data-mode="strokes">Strokes</button>
+        <button data-t="paint" aria-pressed="true">Paint filter</button>
+        <span class="sep"></span>
+        <button data-view="hero" aria-pressed="true">High</button>
+        <button data-view="low">Low</button>
+        <button data-view="top">Top</button>
+        <button data-t="orbit">Orbit</button>
+        <span class="sep"></span>
+        <button data-t="lit" aria-pressed="true">Lit</button>
+        <label class="rng" for="count">Boats <input id="count" type="range" min="0" max="24" step="1" value="14" /></label>
+        <label class="rng" for="wind">Wind <input id="wind" type="range" min="0" max="2.5" step="0.05" value="1" /></label>
+        <label class="rng" for="scale">Stroke size <input id="scale" type="range" min="2" max="10" step="0.1" value="5" /></label>
+        <label class="rng" for="reflect">Reflection <input id="reflect" type="range" min="0" max="1.6" step="0.05" value="1" /></label>
+        <select id="layer" aria-label="Show layer">
+          <option value="0">Layer: everything</option>
+          <option value="1">Base colour</option>
+          <option value="2">Strokes</option>
+          <option value="3">Moonlight</option>
+          <option value="4">Reflection</option>
+          <option value="5">Candlelight</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><div><div class="eyebrow">03 · How it's built</div><h2>Five layers, one surface</h2></div>
+      <p>Each layer is a few lines of shader code on a single plane. Click one to isolate it in the lab.</p></div>
+    <div class="layers">
+      <div><h4>Base colour</h4><p>The measured gradient: near-black far away, lifting through the middle, dark again in the foreground. Each stroke is nudged a little lighter or darker.</p><button data-layer="1">Isolate</button></div>
+      <div><h4>Strokes</h4><p>A noise field stretched about 5× sideways and gently warped makes long brush marks, stepped into tones like a loaded brush. Stroke size and Wind control them.</p><button data-layer="2">Isolate</button></div>
+      <div><h4>Moonlight</h4><p>A crisp glint only on stroke crests facing the moon, plus a faint pale edge on the brightest strokes. It's rare on purpose.</p><button data-layer="3">Isolate</button></div>
+      <div><h4>Reflection</h4><p>A real mirror image of the scene, pulled down into vertical streaks and broken along the strokes.</p><button data-layer="4">Isolate</button></div>
+      <div><h4>Candlelight</h4><p>Every boat's flame lights the strokes around it, in pieces rather than a smooth pool. It flickers with the boat and follows Ignite.</p><button data-layer="5">Isolate</button></div>
+      <div><h4>Finish</h4><p>A Kuwahara filter, which flattens areas into strokes while keeping edges sharp, plus bloom, a dark frame top and bottom, and fine grain.</p><button data-layer="0">Show all</button></div>
+    </div>
+  </section>
+</div>
+
+<script type="module">
+  import { mountWater } from './water.js';
+
+  // measured colour profile (left strip of open water, every 75px down the reference)
+  const prof = ['#02233c','#00223b','#01243d','#023451','#022e45','#07405d','#0a405b','#25516b','#1b4057','#0e3146','#073048','#041a2c','#041b2a'];
+  document.getElementById('strip').innerHTML = prof.map((c) => `<div style="background:${c}" title="${c}"><small>${c}</small></div>`).join('');
+
+  const ui = {};
+  mountWater(document.getElementById('lab'), ui);
+  window.__water = ui;
+  const press = (sel, on) => document.querySelectorAll(sel).forEach((b) => b.setAttribute('aria-pressed', b === on));
+  document.querySelectorAll('[data-mode]').forEach((b) => b.onclick = () => { press('[data-mode]', b); ui.setMode(b.dataset.mode); });
+  document.querySelectorAll('[data-view]').forEach((b) => b.onclick = () => {
+    press('[data-view]', b); ui.setView(b.dataset.view);
+    const o = document.querySelector('[data-t=orbit]'); if (o.getAttribute('aria-pressed') === 'true') { o.setAttribute('aria-pressed', 'false'); ui.setOrbit(false); }
+  });
+  document.querySelectorAll('.controls [data-t]').forEach((b) => b.onclick = () => {
+    const v = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', v);
+    ({ paint: ui.setPaint, orbit: ui.setOrbit, lit: ui.setAllLit })[b.dataset.t](v);
+  });
+  const bind = (id, fn, delay = 0) => { let t; document.getElementById(id).oninput = (e) => { clearTimeout(t); t = setTimeout(() => fn(+e.target.value), delay); }; };
+  bind('count', ui.setCount, 80); bind('wind', ui.setWind); bind('scale', ui.setScale); bind('reflect', ui.setReflect);
+  const layerSel = document.getElementById('layer');
+  layerSel.onchange = () => ui.setLayer(+layerSel.value);
+  document.querySelectorAll('[data-layer]').forEach((b) => b.onclick = () => {
+    layerSel.value = b.dataset.layer; ui.setLayer(+b.dataset.layer);
+    document.getElementById('lab').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+</script>

@@ -1,7 +1,20 @@
+import { useCallback, useState } from 'react';
+import Nav from './components/Nav.jsx';
+import Hero from './components/Hero.jsx';
+import Spirit from './components/Spirit.jsx';
+
 export default function App() {
+  // `ready` starts the load sequence: the night fades up and each line of the hero arrives in turn
+  const [ready, setReady] = useState(false);
+  const onReady = useCallback(() => setReady(true), []);
+
   return (
-    <main className="announcement">
-      <h1>Hacklahoma 2027 will be held on February 6-7, 2027</h1>
-    </main>
+    <div className={`site${ready ? ' ready' : ''}`}>
+      <Nav />
+      <main id="top">
+        <Hero onReady={onReady} />
+        <Spirit />
+      </main>
+    </div>
   );
 }

@@ -1,0 +1,174 @@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Constellation Sky Study</title>
+<meta name="claude:viewport-fit-sides" content="cover" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500&family=DM+Mono&display=swap" rel="stylesheet" />
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>
+  /* Layout: the same study sheet as the earlier studies; the live sky over the water is the centrepiece. */
+  :root {
+    --bg: #07121c; --panel: #0b1824; --line: #17293a; --ink: #f3ead8; --mute: #8aa0b2;
+    --amber: #f2b45a; --pin: #7fe0ff;
+    --display: 'Cormorant Garamond', Georgia, serif; --body: 'DM Sans', system-ui, sans-serif; --mono: 'DM Mono', ui-monospace, Menlo, monospace;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.55 var(--body); }
+  .wrap { max-width: 1320px; margin: 0 auto; padding-block: 56px 120px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  h1, h2 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; }
+  h1 { font-size: clamp(40px, 6vw, 72px); line-height: 1; }
+  h2 { font-size: 34px; }
+  .eyebrow { font: 11px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--amber); margin-bottom: 14px; }
+  .lede { color: var(--mute); max-width: 700px; margin-top: 16px; }
+  section { margin-top: 80px; }
+  .head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+  .head p { color: var(--mute); max-width: 540px; margin: 0; }
+
+  .decide { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .decide > div { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); min-width: 0; }
+  .decide h4 { margin: 0 0 10px; font: 500 20px var(--display); }
+  .decide ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+  .decide li { color: var(--mute); font-size: 13px; padding-left: 18px; position: relative; }
+  .decide li::before { content: ''; position: absolute; left: 2px; top: 7px; width: 7px; height: 7px; border-radius: 50%; border: 1px solid var(--mute); }
+  .decide li.rec { color: var(--ink); }
+  .decide li.rec::before { background: var(--amber); border-color: var(--amber); }
+  .decide li.rec::after { content: 'recommended'; margin-left: 8px; font: 9.5px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--amber); }
+
+  .lab { position: relative; height: min(82vh, 780px); min-height: 440px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: #021a2c; }
+  .lab canvas { display: block; width: 100% !important; height: 100% !important; }
+  .controls { position: absolute; left: 14px; right: 14px; bottom: 14px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .controls button { font: 12px var(--body); color: var(--ink); background: rgba(5,15,24,.72); border: 1px solid rgba(255,255,255,.14); border-radius: 999px; padding: 7px 13px; backdrop-filter: blur(6px); cursor: pointer; }
+  .controls button:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+  .controls button[aria-pressed=true] { background: var(--amber); color: #1b1206; border-color: var(--amber); }
+  .controls .sep { width: 1px; height: 22px; background: rgba(255,255,255,.15); margin: 0 2px; }
+  .hint { position: absolute; right: 16px; top: 14px; font: 10px var(--mono); color: var(--mute); letter-spacing: .12em; text-transform: uppercase; text-align: right; }
+
+  .ref { display: grid; grid-template-columns: 300px 1fr 1fr; gap: 16px; align-items: start; }
+  @media (max-width: 900px) { .ref { grid-template-columns: 1fr; } }
+  .ref figure { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; min-width: 0; }
+  .ref img { width: 100%; display: block; }
+  .ref figcaption { padding: 12px 14px 14px; color: var(--mute); font-size: 12.5px; border-top: 1px solid var(--line); }
+  .ref figcaption b { color: var(--ink); font-weight: 500; display: block; }
+  ul.obs { margin: 16px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+  ul.obs li { padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--mute); font-size: 13px; }
+  ul.obs li b { color: var(--amber); font-weight: 500; }
+
+  .shapes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .shape { border: 1px solid var(--line); border-radius: 12px; background: var(--panel); overflow: hidden; min-width: 0; }
+  .shape canvas { display: block; width: 100%; aspect-ratio: 5 / 3; background: radial-gradient(120% 100% at 50% 0%, #0b2a44, #061624); }
+  .shape div { padding: 12px 14px 14px; border-top: 1px solid var(--line); }
+  .shape b { font: italic 500 21px var(--display); color: var(--amber); display: block; }
+  .shape span { color: var(--mute); font-size: 13px; }
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">Hacklahoma 2027 · Where Worlds Meet · Asset study 04</div>
+  <h1>The Sky Above the Water</h1>
+  <p class="lede">Constellations over the water, in the plotted style of the SASEHacks graphic and the quiet rings of the Figma. They aren't random: each one traces something that belongs to Hacklahoma. They draw themselves on, the stars twinkle, and the water reflects them.</p>
+
+  <section style="margin-top:48px">
+    <div class="head"><div><div class="eyebrow">Decisions for this round</div><h2>What we're choosing between</h2></div>
+      <p>Switch between them in the live scene below. My recommendation is marked.</p></div>
+    <div class="decide">
+      <div><h4>1 · Sky style</h4><ul><li class="rec">Blend: our constellations, a light plotted path, quiet rings</li><li>Plotted: SASEHacks-style numbered path and circles</li><li>Chart: Figma-style rings only, very quiet</li><li>Shapes: our four constellations only</li></ul></div>
+      <div><h4>2 · Labels</h4><ul><li class="rec">Coordinates (<code>3 → 524 – 224</code>), as in SASEHacks</li><li>Figma counters (<code>05 / 92</code>)</li><li>No labels</li></ul></div>
+      <div><h4>3 · Draw-on</h4><ul><li class="rec">Once, as the page loads</li><li>Always fully drawn</li></ul></div>
+      <div><h4>4 · Paint filter</h4><ul><li class="rec">Off: the sky stays crisp, the painted figure carries the painterly feel</li><li>On: softer water, but it wipes out the hairlines</li></ul></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><div><div class="eyebrow">01 · The scene</div><h2>Stars over the fleet</h2></div>
+      <p>Choose a style; <b>Replay</b> draws it on again. The sky sits far out over the water, so it reflects, and its labels are the real positions of each point.</p></div>
+    <div class="lab" id="lab">
+      <div class="hint">move the pointer: the camera drifts</div>
+      <div class="controls">
+        <button data-style="blend" aria-pressed="true">Blend</button>
+        <button data-style="plotted">Plotted</button>
+        <button data-style="chart">Chart</button>
+        <button data-style="shapes">Shapes</button>
+        <span class="sep"></span>
+        <button id="replay">Replay</button>
+        <button data-t="paint" aria-pressed="false">Paint filter</button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><div><div class="eyebrow">02 · The constellations</div><h2>Four shapes that mean something</h2></div>
+      <p>Scattered around the edges of the sky, so the middle stays clear for the headline.</p></div>
+    <div class="shapes" id="shapes"></div>
+  </section>
+
+  <section>
+    <div class="head"><div><div class="eyebrow">03 · Reference teardown</div><h2>What we took from SASEHacks and the Figma</h2></div>
+      <p>The language, not the layout: their moon, hills and type stay theirs.</p></div>
+    <div class="ref">
+      <figure><img src="ref/sasehacks.webp" alt="The SASEHacks poster: constellation lines and labels over a moonlit sky" /><figcaption><b>SASEHacks poster</b>The director's reference.</figcaption></figure>
+      <figure><img src="ref/topright.png" alt="Close-up of SASEHacks circles passing through labelled points" /><figcaption><b>Circles through points</b>Each big circle passes exactly through three stars: a circumcircle, the kind of thing geometry code draws.</figcaption></figure>
+      <figure><img src="ref/bottomleft.png" alt="Close-up of SASEHacks numbered points and dashed guides" /><figcaption><b>Numbered points</b>Labels like <code>20 → 141 – 1321</code>: a point's number, then where it is. It reads like a program plotting.</figcaption></figure>
+    </div>
+    <ul class="obs">
+      <li><b>Thin, cool lines.</b> Hairline strokes in pale blue-white, never bright. The stars carry the light.</li>
+      <li><b>Dashed guides.</b> A few long dashed lines, like crop marks or a plotting frame.</li>
+      <li><b>The Figma is quieter.</b> Two faint concentric rings, a few dots and a tiny <code>05 / 92</code> counter (see the rings in the Chart style).</li>
+      <li><b>Text stays clear.</b> In both, the busiest lines sit away from the headline.</li>
+    </ul>
+  </section>
+</div>
+
+<script type="module">
+  import { mountWater } from './water.js';
+  import { addPaintedPerson } from './painted.js';
+  import { addSky, drawSky, SHAPES } from './sky.js';
+
+  const FIG = { x: -0.95, z: 1.35 };
+  const ui = {};
+  const api = mountWater(document.getElementById('lab'), ui, {
+    count: 18, boatScale: 0.55, spread: 0.85, lightScale: 0.42,
+    exclude: [{ x: FIG.x, z: FIG.z, r: 0.55 }, { x: 0.2, z: 3.6, r: 1.9 }],
+    view: 'sky',
+    views: { sky: { pos: [0.1, 1.0, 5.2], target: [-0.25, 1.3, -2] } },
+  });
+  ui.setMode('smooth');
+  ui.setPaint(false);   // the sky's hairlines need a crisp image; the painted figure brings the painterly feel
+  addPaintedPerson(api, { url: 'person.png', x: FIG.x, z: FIG.z, height: 1.05 });
+  const sky = addSky(api, { style: 'blend' });
+  window.__sky = { api, ui, sky };
+
+  const press = (sel, on) => document.querySelectorAll(sel).forEach((b) => b.setAttribute('aria-pressed', b === on));
+  document.querySelectorAll('[data-style]').forEach((b) => b.onclick = () => { press('[data-style]', b); sky.setStyle(b.dataset.style); });
+  document.getElementById('replay').onclick = () => sky.replay();
+  document.querySelector('[data-t=paint]').onclick = (e) => { const v = e.target.getAttribute('aria-pressed') !== 'true'; e.target.setAttribute('aria-pressed', v); ui.setPaint(v); };
+
+  // small previews of each constellation
+  const meaning = {
+    vessel: 'The paper boat, traced point by point from the same model as the boats on the water.',
+    worlds: 'Two circles meeting, with stars where they cross. "Where Worlds Meet", written in the sky.',
+    spark: 'A four-point star: the spark every project starts from.',
+    bracket: 'Angle brackets and a slash: code, quietly.',
+  };
+  const box = document.getElementById('shapes');
+  document.fonts?.load('20px "DM Mono"').finally(() => {
+    for (const [key, sh] of Object.entries(SHAPES)) {
+      const pts = sh.pts.concat((sh.rings || []).flatMap(([x, y, r]) => [[x - r, y - r], [x + r, y + r]]));
+      const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
+      const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+      const span = Math.max(Math.max(...xs) - Math.min(...xs), (Math.max(...ys) - Math.min(...ys)) * 5 / 3) * 1.45;
+      const { lines, stars } = drawSky('shapes', 1, { seed: 99 });
+      const c = document.createElement('canvas'); c.width = 600; c.height = 360;
+      const g = c.getContext('2d');
+      const sx = (cx - span / 2) * 2, sy = (cy - span * 0.3) * 2, sw = span * 2, sh2 = span * 0.6 * 2;
+      g.drawImage(stars, sx, sy, sw, sh2, 0, 0, 600, 360); g.drawImage(lines, sx, sy, sw, sh2, 0, 0, 600, 360);
+      const el = document.createElement('article'); el.className = 'shape';
+      el.append(c); el.insertAdjacentHTML('beforeend', `<div><b>${sh.name}</b><span>${meaning[key]}</span></div>`);
+      box.append(el);
+    }
+  });
+</script>
