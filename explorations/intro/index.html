@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Opening Spark</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500&family=DM+Mono&display=swap" rel="stylesheet" />
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>
+  :root {
+    --night: #03101b; --bg: #07121c; --ink: #f6ecd9; --amber: #e8b86a; --amber-ink: #1b1206;
+    --display: 'Cormorant Garamond', Georgia, serif; --body: 'DM Sans', system-ui, sans-serif; --mono: 'DM Mono', ui-monospace, Menlo, monospace;
+    --gutter: max(16px, 4vw); color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  body { color: var(--ink); font: 15px/1.6 var(--body); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+
+  .nav { position: fixed; z-index: 20; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; padding: 18px var(--gutter); }
+  .wordmark { font: 500 26px/1 var(--display); text-decoration: none; }
+  .nav ul { display: flex; gap: 32px; margin: 0; padding: 0; list-style: none; font-size: 13.5px; }
+  .nav ul a { text-decoration: none; color: rgba(246,236,217,.82); }
+  .nav .right { display: flex; align-items: center; gap: 32px; }
+  .btn-sm { padding: 9px 18px; border-radius: 3px; background: var(--ink); color: var(--amber-ink); font: 500 13px var(--body); text-decoration: none; }
+  @media (max-width: 760px) { .nav ul { display: none; } }
+
+  .hero { position: relative; height: 100svh; min-height: 620px; overflow: hidden; background: #000; }
+  .scene { position: absolute; inset: 0; }
+  .scene canvas { display: block; width: 100% !important; height: 100% !important; }
+  .veil { position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(60% 42% at 50% 38%, rgba(3,10,18,.55), rgba(3,10,18,0) 70%), linear-gradient(to bottom, rgba(3,10,18,.55), rgba(3,10,18,0) 16%); }
+  .copy { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+    padding: 96px var(--gutter) 30svh; pointer-events: none; }
+  .copy a { pointer-events: auto; }
+  .eyebrow { margin: 0 0 22px; font: 11.5px/1 var(--mono); letter-spacing: .22em; text-transform: uppercase; color: var(--amber); }
+  .eyebrow span { opacity: .55; margin: 0 .6em; }
+  .kicker { margin: 0; font: italic 400 clamp(20px, 2.2vw, 28px)/1.2 var(--display); color: rgba(246,236,217,.9); }
+  h1 { margin: .04em 0 .3em; font: 500 clamp(64px, 12.6vw, 184px)/1 var(--display); letter-spacing: -.012em; }
+  .sub { margin: 0 auto; max-width: 31em; font-size: clamp(14.5px, 1.25vw, 16.5px); color: rgba(246,236,217,.82); text-wrap: balance; }
+  .cta { margin-top: 30px; display: inline-flex; padding: 15px 28px; border-radius: 3px; background: var(--amber); color: var(--amber-ink); font: 500 14.5px var(--body); text-decoration: none; }
+  .fine { margin: 16px 0 0; font-size: 12.5px; color: rgba(246,236,217,.6); }
+  .corner { position: absolute; bottom: 26px; font: 10.5px var(--mono); letter-spacing: .2em; text-transform: uppercase; color: rgba(246,236,217,.62); text-decoration: none; }
+  .corner.l { left: var(--gutter); } .corner.r { right: var(--gutter); }
+
+  /* moonlit wordmark (study 05, style A) */
+  h1 .moon { position: relative; display: inline-block; }
+  h1 .face { position: relative; background: linear-gradient(180deg, #fcf7f5 10%, #d3d2c5 95%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  h1 .halo { position: absolute; inset: 0; color: rgb(218,219,213); pointer-events: none; filter: blur(25px); opacity: .77; animation: breathe 7s ease-in-out infinite; }
+  h1 .halo.wide { filter: blur(84px); opacity: .49; animation-delay: -3s; }
+  @keyframes breathe { 0%,100% { transform: scale(1); opacity: .7; } 50% { transform: scale(1.015); opacity: .98; } }
+
+  /* the rest of the copy rises in once the light has reached it */
+  .rise { opacity: 0; transform: translateY(14px); filter: blur(6px); transition: opacity 1.4s ease, transform 1.6s cubic-bezier(.2,.7,.2,1), filter 1.4s ease; }
+  .ready .rise { opacity: 1; transform: none; filter: none; transition-delay: var(--d, 0s); }
+
+  .panel { position: fixed; z-index: 200; left: 50%; bottom: 16px; transform: translateX(-50%); width: min(620px, calc(100% - 32px));
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; padding: 12px 14px; border-radius: 10px;
+    background: rgba(4,14,24,.82); border: 1px solid rgba(246,236,217,.12); backdrop-filter: blur(10px); opacity: 0; transition: opacity .6s; pointer-events: none; }
+  .done .panel { opacity: 1; pointer-events: auto; }
+  .panel button { padding: 9px 16px; border-radius: 6px; border: 1px solid var(--amber); background: rgba(232,184,106,.12); color: var(--ink); font: 500 13px var(--body); cursor: pointer; }
+  .panel label { flex: 1 1 150px; display: grid; gap: 2px; font: 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: rgba(246,236,217,.6); }
+  .panel input { accent-color: var(--amber); width: 100%; }
+  .styles { display: flex; gap: 4px; }
+  .styles button { border-color: rgba(246,236,217,.18); background: transparent; color: rgba(246,236,217,.6); }
+  .styles button[aria-pressed="true"] { border-color: var(--amber); background: rgba(232,184,106,.12); color: var(--ink); }
+  .hint { position: fixed; z-index: 200; right: 16px; top: 14px; font: 10.5px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: rgba(246,236,217,.3); transition: opacity .6s; }
+  .ready .hint { opacity: 0; }
+</style>
+</head>
+<body>
+<header class="nav">
+  <a class="wordmark rise" style="--d:.5s" href="#">hacklahoma</a>
+  <div class="right">
+    <ul class="rise" style="--d:.65s"><li><a href="#">About</a></li><li><a href="#">The Experience</a></li><li><a href="#">FAQ</a></li></ul>
+    <a class="btn-sm rise" style="--d:.75s" href="#">Register ↗</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="scene" id="scene" aria-hidden="true"></div>
+  <div class="veil"></div>
+  <div class="copy">
+    <p class="eyebrow rise" style="--d:.1s">February 6–7, 2027<span>/</span>University of Oklahoma</p>
+    <p class="kicker rise" style="--d:.3s">Every great idea starts with a spark.</p>
+    <h1 id="hero-title"><span class="moon" id="moon">
+      <span class="halo wide" aria-hidden="true">Hacklahoma</span>
+      <span class="halo" aria-hidden="true">Hacklahoma</span>
+      <span class="face" id="face">Hacklahoma</span>
+    </span></h1>
+    <p class="sub rise" style="--d:.55s">Let your curiosity set sail. A student hackathon for big ideas, new connections, and the things you haven't imagined yet.</p>
+    <a class="cta rise" style="--d:.8s" href="#">Get event updates ↗</a>
+    <p class="fine rise" style="--d:1s">First-time hackers. Seasoned makers. Everyone aboard.</p>
+  </div>
+  <p class="corner l rise" style="--d:1.3s">01 / Where worlds meet</p>
+  <a class="corner r rise" style="--d:1.4s" href="#">Scroll to explore</a>
+</section>
+
+<p class="hint">Click or press any key to skip</p>
+<div class="panel">
+  <button id="replay">↻ Replay</button>
+  <div class="styles" role="group" aria-label="Intro style">
+    <button data-style="orbit">Orbit</button><button data-style="galaxy">Galaxy</button>
+  </div>
+  <label>Speed <input id="speed" type="range" min="0.6" max="1.5" step="0.05" value="1"></label>
+  <label>Spark count <input id="density" type="range" min="0.4" max="1.8" step="0.1" value="1"></label>
+</div>
+
+<script type="module">
+  import { createHeroScene } from './heroScene.js';
+  import { playSparkIntro } from './sparkIntro.js';
+  const $ = (id) => document.getElementById(id);
+  const root = document.documentElement;
+
+  // replay rebuilds the scene from scratch, exactly as a fresh page load would
+  let scene = null;
+  const params = new URLSearchParams(location.search);
+  let style = params.get('style') === 'galaxy' ? 'galaxy' : 'orbit';
+  const marks = () => document.querySelectorAll('.styles button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.style === style));
+  document.querySelectorAll('.styles button').forEach((b) => b.addEventListener('click', () => { style = b.dataset.style; marks(); run(); }));
+  marks();
+  async function run() {
+    root.classList.remove('ready', 'done');
+    scene?.dispose();
+    $('scene').innerHTML = '';
+    await document.fonts.load('500 100px "Cormorant Garamond"');
+    await document.fonts.ready;
+    scene = createHeroScene($('scene'), { personUrl: 'person.webp', intro: true });
+    // the scene is "ready" once it has drawn a couple of frames
+    const ready = new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    window.__intro = playSparkIntro({
+      target: $('face'), wordEl: $('moon'), hooks: scene.intro, ready,
+      speed: +$('speed').value, density: +$('density').value, style,
+      manual: params.has('manual'),
+      onReveal: () => root.classList.add('ready'),
+      onDone: () => root.classList.add('done'),
+    });
+  }
+  $('replay').addEventListener('click', run);
+  run();
+</script>
+</body>
+</html>

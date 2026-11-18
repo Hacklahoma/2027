@@ -1,6 +1,6 @@
 # Hacklahoma 2027 landing page: handoff
 
-Last updated 2026-11-18. Branch `pivot` (cut from `main`). Latest commit `bcb447f` "Build the Where Worlds Meet hero with a live night-water scene". Nothing pushed.
+Last updated 2026-11-18. Branch `pivot` (cut from `main`), pushed to `origin/pivot`. Latest work: the moonlit wordmark and the opening-animation study (on hold).
 
 ## The project
 
@@ -24,6 +24,7 @@ Layout blueprint: the Figma file (below). Content facts come from the 2026 site,
 - `src/App.jsx`: Nav, Hero, Spirit. A `ready` class on the wrapper starts the CSS load sequence.
 - `src/components/Hero.jsx`: headline copy (from the Figma) plus a lazily imported 3D scene. It fires `onReady` when the scene is up, with a 900 ms fallback.
 - `src/components/Nav.jsx`: wordmark, links, and Register. Becomes solid after scrolling past 60% of the hero.
+- The hero wordmark is **moonlit** (study 05, style A: silver-white gradient lit from above, two breathing blurred halos). Markup is `.moon > .halo.wide, .halo, .face` in `Hero.jsx`; styles in `index.css`.
 - `src/components/Spirit.jsx`: "Small sparks. Extraordinary possibilities." A placeholder for the next section.
 - `src/index.css`: all styles and tokens. Fonts are Cormorant Garamond (display), DM Sans (body) and DM Mono (labels), loaded in `index.html`.
 - `src/scene/` (framework-free three.js 0.160.0, pinned):
@@ -32,7 +33,9 @@ Layout blueprint: the Figma file (below). Content facts come from the 2026 site,
   - `boat.js`: the paper boat model (17 vertices) plus a 2D SVG renderer (`renderBoat`) and styles.
   - `paper3d.js`: the 3D boat geometry (panels bowed, folds sharp) and the paper shader (interior candle, translucency, soft folds).
   - `painted.js`: places the painted person as a camera-facing card at the waterline, with an invisible boat in their hands as a real light, plus a glow sprite.
+  - Intro hooks (off by default): `createHeroScene(el, { intro: true })` starts black with boats dark and the sky held, and returns `intro` hooks: `setOrigin(px, py)`, `setReveal(0–1)` (a soft mask in the grade pass that pours down from the origin and lights boats as it reaches them), `setGlade(0–1)` (a moonlight path of glints on the water, in `water.js`), `startSky()`.
   - `sky.js`: the constellation sky. Two canvases (lines and labels, stars) on far planes, so the water reflects them. Style "blend". It draws on over 13 s, **drifts left to right on its own clock (one turn every 5 min), fully independent of the foreground (director's request)**, and has a clearing so lines fade behind the headline.
+- `src/intro/sparkIntro.js`: the opening animation (not wired into the site yet). One three.js points overlay with all motion computed in the vertex shader; two styles: `orbit` (a lone moon-white spark, then a swarm that loops in and forms the pixel **bee** mascot with beating wings and a thin orbit ring) and `galaxy` (an ember spiral galaxy). Both condense into the wordmark, sweep it to moonlight, then drive the scene's reveal hooks. `manual: true` exposes `seek(t)` for frame-exact checks and recording.
 - `src/assets/person.webp`: the cut-out painted figure (76 KB). `person.png` is the same image, kept for the studies.
 - `vite.config.js`: output in `build/` (Netlify), `optimizeDeps.entries` limited to `index.html` (so Vite ignores `explorations/`), chunk warning set to 600.
 
@@ -47,6 +50,10 @@ Each is a standalone page served by a Python static server (see "Running"). Thei
 | 03 Figure in the water | `figure/` | https://claude.ai/artifact/PmGWNEBzwMnVrVZjYbRtJT | private |
 | 04 Constellation sky | `sky/` | https://claude.ai/artifact/1m7eqMo9eU5xxPJ4eYen1E | private |
 | Hero prototype | `hero/` | https://claude.ai/artifact/Y9iA9DY1i5awXfNc3RtGee | public link |
+| 05 Moonlit wordmark | `wordmark/` | https://claude.ai/artifact/1wEetoo2whWEorGF2DFeKD | private |
+| 06 Opening animation | `intro/` (Orbit / Galaxy switch; `?manual` for scripted stepping) | https://claude.ai/artifact/HiGNVsoqRDt9oWz4euUv9r | private |
+
+GIF previews of the intro for sharing are in `exports/` (`orbit-bee.gif` is the current direction; `orbit.gif` is the earlier two-rings version; `spark-to-moon.gif` is the galaxy). They were rendered frame by frame with headless Chrome via playwright-core, stepping `__intro.seek(t)` at 15 fps, then assembled with Pillow (600×375, shared 200-colour palette).
 
 To republish a study, publish the same file path again with `files` mapping its modules from `src/scene/`. The user changes sharing themselves via the page's Share menu.
 
@@ -56,14 +63,17 @@ To republish a study, publish the same file path again with `files` mapping its 
 - **Water:** **Smooth** ripples chosen for now. Painted strokes remain an option; angular plates were rejected.
 - **Figure:** a **person** (no "Being"), **static** (no release animation). Code-drawn figures were rejected as too "generated". The figure is an **AI-generated painting (ChatGPT)** from our prompt, cut out and placed at eye level, lower left, facing in toward the fleet. **The camera must stay near eye level** (from above, the painting reads as a flat cut-out).
 - **Sky:** Blend style (our four constellations, a light plotted path, the Figma's quiet rings), SASEHacks-style coordinate labels (`3 → 524 – 224`), and a slow sequential draw-on. The constellations mean something: The Vessel (the paper boat), Two Worlds (two circles meeting), The Spark, and The Bracket (`</>`). The director wants the starry sky to **move 100% independently** of the foreground (done).
+- **Wordmark:** moonlit, the director's "glow like the moon" request. Style A (smooth, lit from above), glow ≈ 1.4, warmth 0.25.
+- **Opening animation (on hold):** the user's lead is **Orbit with the bee**: the spark flies in alone, more follow and loop in, they form the bee as a light dot-matrix (not filled) with a faint orbit ring, then the word, then the moonlight pours onto the water and reveals the page. Rejected along the way: a 2D sparkle that wrote the word (no wow; flat; generic circular wipe), filled/overexposed bee, a dense halo disc. The pixel bee is traced in `BEE` in `sparkIntro.js` from the user's mascot image.
 - **Hero copy:** the eyebrow reads "February 6–7, 2027 / University of Oklahoma", then the italic line "Every great idea starts with a spark.", the "Hacklahoma" wordmark, the subtitle, a "Get event updates" button, and "First-time hackers. Seasoned makers. Everyone aboard." The corner labels are "01 / Where worlds meet" and "Scroll to explore".
 
 ## Open items
 
-1. **Registration link:** registration has changed from 2026. Register and Get event updates have `TODO` hrefs (`#register`, `#updates`). Ask the user for the new flow.
-2. **AI-art approval:** the figure is AI-generated. Check with Hacklahoma and OU before going public. Fallback: an illustrator's painting dropped into the same slot (same light direction, flat background, cut at the waterline).
-3. **Sponsors** have changed since 2026; there's no new list yet.
-4. `.claude/` is uncommitted (local preview config and worktrees). Keep it out of commits.
+1. **Intro not on the site yet.** To wire it: mount the scene with `intro: true`, call `playSparkIntro({ target: face, wordEl: moon, hooks: scene.intro, ready, style: 'orbit' })`, drop `.rise` from the h1 (its transform would misalign the particle word), play once per session, and keep the reduced-motion path.
+2. **Registration link:** registration has changed from 2026. Register and Get event updates have `TODO` hrefs (`#register`, `#updates`). Ask the user for the new flow.
+3. **AI-art approval:** the figure is AI-generated. Check with Hacklahoma and OU before going public. Fallback: an illustrator's painting dropped into the same slot (same light direction, flat background, cut at the waterline).
+4. **Sponsors** have changed since 2026; there's no new list yet.
+5. `.claude/` is uncommitted (local preview config and worktrees). Keep it out of commits.
 
 ## Next steps (suggested order)
 

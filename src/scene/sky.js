@@ -183,7 +183,7 @@ export function drawSky(style, progress = 1, { seed = 5, linesCanvas, starsCanva
 }
 
 /** Put the sky into a water scene: two far planes behind the fleet, reflected by the water. */
-export function addSky(api, { style = 'blend', distance = 26, width = 30, lift = 0.0, instant = false, delay = 0, clear = null, drift = 1 / 300 } = {}) {
+export function addSky(api, { style = 'blend', distance = 26, width = 30, lift = 0.0, instant = false, delay = 0, clear = null, drift = 1 / 300, hold = false } = {}) {
   // drift: how much of the sky passes per second (1/300 = one full turn every five minutes).
   // The sky moves on its own, entirely independent of the water, boats, figure and camera.
   // clear: { x, y, rx, ry } in screen fractions (y from the bottom). Lines fade inside it so a headline reads cleanly.
@@ -234,12 +234,13 @@ export function addSky(api, { style = 'blend', distance = 26, width = 30, lift =
   // instant: draw the finished sky straight away (reduced motion); delay: wait before drawing on
   fontsReady.then(() => { t0 = null; drawing = true; if (instant) startAt = -1e9; });
   let startAt = null;
+  let held = hold;   // hold: stay empty until start() (the intro hands the stars over)
 
   api.tickers.push((t) => {
     time.value = t;
     api.renderer.getDrawingBufferSize(res.value);
     offset.value = (t * drift) % 1;
-    if (drawing) {
+    if (drawing && !held) {
       if (startAt === null) startAt = t + delay;
       if (t < startAt) return;
       if (t0 === null) { t0 = startAt; lastDraw = -1; }
@@ -252,5 +253,6 @@ export function addSky(api, { style = 'blend', distance = 26, width = 30, lift =
     group,
     setStyle(s) { current = s; t0 = null; startAt = null; drawing = true; },
     replay() { t0 = null; startAt = null; drawing = true; },
+    start() { held = false; t0 = null; startAt = null; drawing = true; },
   };
 }

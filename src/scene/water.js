@@ -37,6 +37,7 @@ const WaterShader = {
     uRim: { value: new THREE.Color(PAL.rim) }, uMoonCol: { value: new THREE.Color(PAL.moon) }, uMoonDir: { value: new THREE.Vector3(-0.35, 0.75, -0.55).normalize() },
     uGlow: { value: new THREE.Color(PAL.glow) }, uSky: { value: new THREE.Color(PAL.sky) },
     uBoats: { value: Array.from({ length: MAX_BOATS }, () => new THREE.Vector4()) }, uCount: { value: 0 },
+    uGlade: { value: 0 }, uGladePos: { value: new THREE.Vector3(0, 8, -26) },   // the moon's path of light on the water
   },
   vertexShader: /* glsl */`
     uniform mat4 textureMatrix;
@@ -51,6 +52,7 @@ const WaterShader = {
     uniform sampler2D tDiffuse; uniform float uTime, uMode, uLayer, uScale, uWind, uReflect;
     uniform vec3 uFar, uMid, uNear, uRim, uMoonCol, uMoonDir, uGlow, uSky;
     uniform vec4 uBoats[MAXB]; uniform int uCount;
+    uniform float uGlade; uniform vec3 uGladePos;
     varying vec4 vUvR; varying vec3 vW;
 
     float h21(vec2 p){ return fract(sin(dot(p,vec2(41.3,289.1)))*15731.743); }
@@ -133,6 +135,15 @@ const WaterShader = {
       col = mix(col, amber, frag * .92);
       col += uGlow * wl * .12;   // a faint glow under everything near a boat
       warm = mix(vec3(0.), amber, frag);
+      // the moon path: the wordmark's light glittering on the ripples, in a column toward the viewer
+      if (uGlade > 0.) {
+        vec3 Lm = normalize(uGladePos - vW);
+        float nh = max(dot(N, normalize(Lm + V)), 0.);
+        float glint = pow(nh, 700.);
+        float sparkle = .35 + 1.3 * h21(floor(vW.xz * vec2(30., 60.)) + floor(uTime * 5.));
+        float sheen = pow(nh, 40.) * .08;
+        col += vec3(.80, .86, .95) * (glint * sparkle * 1.6 + sheen) * uGlade * smoothstep(1.5, 4., dist);
+      }
       // far water dissolves into the night sky: no visible horizon edge
       col = mix(col, uSky, smoothstep(14., 45., dist));
       // layer isolation for the breakdown
@@ -174,10 +185,11 @@ const KuwaharaShader = {
 
 // ── grade: the reference darkens hard at top and bottom; plus fine grain ──
 const GradeShader = {
-  uniforms: { tDiffuse: { value: null }, uTime: { value: 0 }, uVig: { value: 1 } },
+  uniforms: { tDiffuse: { value: null }, uTime: { value: 0 }, uVig: { value: 1 },
+    uReveal: { value: 1 }, uOrigin: { value: new THREE.Vector2(0.5, 0.6) }, uAspect: { value: 1 } },
   vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
   fragmentShader: /* glsl */`
-    uniform sampler2D tDiffuse; uniform float uTime, uVig; varying vec2 vUv;
+    uniform sampler2D tDiffuse; uniform float uTime, uVig, uReveal, uAspect; uniform vec2 uOrigin; varying vec2 vUv;
     float h(vec2 p){ return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453); }
     void main(){
       vec3 c = texture2D(tDiffuse, vUv).rgb;
@@ -185,6 +197,17 @@ const GradeShader = {
       v *= 1. - .35*pow(abs(vUv.x-.5)*2., 2.5);
       c *= mix(1., .25 + .75*v, uVig);
       c += (h(vUv*1000. + uTime) - .5) * .012;
+      // intro reveal: the scene appears where light has reached. It pours downward from the
+      // origin (the wordmark) faster than it spreads sideways, like moonlight spilling onto water.
+      if (uReveal < 1.) {
+        vec2 d = vec2((vUv.x - uOrigin.x) * uAspect, vUv.y < uOrigin.y ? (uOrigin.y - vUv.y) * .42 : (vUv.y - uOrigin.y) * 1.1);
+        d.x *= 1. + .9 * max(uOrigin.y - vUv.y, 0.);   // narrow at the bottom: a column of light, not a circle
+        float L = length(d), r = uReveal * 2.4;
+        // a wide, soft falloff: light spreading, not a shape being cut out
+        float m = 1. - smoothstep(r * .15, r, L);
+        m *= m * (3. - 2. * m);
+        c *= m;
+      }
       gl_FragColor = vec4(c, 1.);
     }`,
 };
@@ -297,7 +320,7 @@ export function mountWater(el, ui, opts = {}) {
   // anything else that lives in this scene (e.g. a figure) can hook in here
   const clickables = [];   // { objects: [Mesh], onClick() }
   const tickers = [];      // fn(t, dt)
-  const api = { scene, camera, renderer, fleet, addBoat, removeBoat, shared, tickers, clickables, water, PAL, MAX_BOATS };
+  const api = { scene, camera, renderer, fleet, addBoat, removeBoat, shared, tickers, clickables, water, PAL, MAX_BOATS, grade, WU };
 
   ui.debug = () => ({ lit: fleet.map((b) => +b.lit.toFixed(2)), target: fleet.map((b) => b.litTarget), frames });
   let frames = 0;
@@ -327,6 +350,7 @@ export function mountWater(el, ui, opts = {}) {
     KuwaharaShader.uniforms.uRes.value.set(r.width * pr, r.height * pr);
     kuwa.uniforms.uRes.value.set(r.width * pr, r.height * pr);
     camera.aspect = r.width / r.height; camera.updateProjectionMatrix();
+    grade.uniforms.uAspect.value = r.width / r.height;
   }
   const ro = new ResizeObserver(resize); ro.observe(el); resize();
 

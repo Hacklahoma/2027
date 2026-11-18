@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moonlit Wordmark</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07121c; --ink: #f6ecd9; --amber: #e8b86a; --muted: rgba(246,236,217,.6);
+    --glow: 1;              /* 0..2, set by slider */
+    --moon-hi: #fffaf0;     /* set by warmth slider */
+    --moon-lo: #cfd8dc;
+    --halo: 220, 232, 240;  /* rgb */
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: radial-gradient(120% 80% at 50% 30%, #0b2236 0%, #061624 45%, #03101a 100%), var(--bg);
+    color: var(--ink); font: 400 14px/1.5 'DM Sans', system-ui, sans-serif; overflow-x: hidden;
+  }
+  #stars { position: fixed; inset: 0; width: 100%; height: 100%; }
+  .stage {
+    position: relative; min-height: 100svh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center; padding: 80px 16px 200px;
+  }
+  .eyebrow { font: 400 11.5px 'DM Mono', monospace; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; }
+  .kicker { font: italic 400 clamp(18px, 2vw, 24px) 'Cormorant Garamond', serif; color: rgba(246,236,217,.85); margin: 0; }
+
+  .mark {
+    position: relative; margin: .04em 0 .3em; line-height: 1;
+    font: 500 clamp(56px, 12.6vw, 184px)/1 'Cormorant Garamond', serif; letter-spacing: -0.012em;
+  }
+  .mark .word { position: relative; display: inline-block; }
+  /* the halo: a blurred copy behind the letters, breathing slowly */
+  .mark .halo {
+    position: absolute; inset: 0; color: rgb(var(--halo)); pointer-events: none;
+    filter: blur(calc(18px * var(--glow))); opacity: calc(.55 * var(--glow));
+    animation: breathe 7s ease-in-out infinite;
+  }
+  .mark .halo.wide { filter: blur(calc(60px * var(--glow))); opacity: calc(.35 * var(--glow)); animation-delay: -3s; }
+  @keyframes breathe { 0%,100% { transform: scale(1); opacity: calc(.5 * var(--glow)); } 50% { transform: scale(1.015); opacity: calc(.7 * var(--glow)); } }
+
+  /* the letters themselves */
+  .mark .face { position: relative; }
+
+  /* A — Moonlight: smooth, lit from above */
+  .s-a .face {
+    background: linear-gradient(180deg, var(--moon-hi) 10%, var(--moon-lo) 95%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+
+  /* B — Lunar surface: faint maria + craters inside the letters */
+  .s-b .face {
+    background:
+      radial-gradient(60% 90% at 30% 20%, rgba(255,255,255,.55), transparent 60%),
+      var(--lunar) center / 520px auto,
+      linear-gradient(180deg, var(--moon-hi), var(--moon-lo));
+    background-blend-mode: screen, multiply, normal;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+
+  /* C — Moon on water: A plus a rippling reflection below */
+  .s-c .face {
+    background: linear-gradient(180deg, var(--moon-hi) 10%, var(--moon-lo) 95%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .reflect { display: none; }
+  .s-c .reflect {
+    display: block; position: absolute; inset: 0;
+    transform: scaleY(-.6); transform-origin: 50% 84%; pointer-events: none;
+    color: rgba(var(--halo), .5); filter: url(#ripple) blur(1.5px);
+    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,.7), transparent 75%);
+            mask-image: linear-gradient(to top, rgba(0,0,0,.7), transparent 75%);
+  }
+
+  .sub { max-width: 31em; margin: 0 auto; color: rgba(246,236,217,.8); font-size: clamp(14.5px,1.25vw,16.5px); text-wrap: balance; }
+  .s-c .mark { margin-bottom: .6em; }
+
+  /* controls */
+  .panel {
+    position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); width: min(720px, calc(100% - 32px));
+    background: rgba(4,14,24,.78); border: 1px solid rgba(246,236,217,.12); border-radius: 10px;
+    backdrop-filter: blur(10px); padding: 14px 16px; display: grid; gap: 12px;
+  }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tabs button {
+    flex: 1 1 0; min-width: 120px; padding: 9px 10px; border-radius: 6px; cursor: pointer;
+    background: transparent; color: var(--muted); border: 1px solid rgba(246,236,217,.14);
+    font: 500 13px 'DM Sans', sans-serif; text-align: left;
+  }
+  .tabs button small { display: block; font: 400 11px 'DM Mono', monospace; opacity: .7; margin-top: 2px; }
+  .tabs button[aria-pressed="true"] { color: var(--ink); border-color: var(--amber); background: rgba(232,184,106,.08); }
+  .rows { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; }
+  .rows label { display: grid; gap: 4px; font: 400 11px 'DM Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  input[type=range] { width: 100%; accent-color: var(--amber); }
+  @media (max-width: 560px) { .rows { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { .mark .halo { animation: none; } }
+</style>
+</head>
+<body class="s-b">
+<canvas id="stars" aria-hidden="true"></canvas>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="ripple" x="-5%" y="-20%" width="110%" height="140%">
+    <feTurbulence id="turb" type="fractalNoise" baseFrequency="0.004 0.09" numOctaves="2" seed="3"/>
+    <feDisplacementMap in="SourceGraphic" scale="14" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<main class="stage">
+  <p class="eyebrow">February 6–7, 2027 / University of Oklahoma</p>
+  <p class="kicker">Every great idea starts with a spark.</p>
+  <h1 class="mark">
+    <span class="word">
+      <span class="halo wide" aria-hidden="true">Hacklahoma</span>
+      <span class="halo" aria-hidden="true">Hacklahoma</span>
+      <span class="face">Hacklahoma</span>
+      <span class="reflect" aria-hidden="true">Hacklahoma</span>
+    </span>
+  </h1>
+  <p class="sub">Let your curiosity set sail. A student hackathon for big ideas, new connections, and the things you haven't imagined yet.</p>
+</main>
+
+<div class="panel">
+  <div class="tabs" role="group" aria-label="Style">
+    <button data-s="a">A · Moonlight<small>smooth, lit from above</small></button>
+    <button data-s="b" aria-pressed="true">B · Lunar surface ★<small>faint craters inside</small></button>
+    <button data-s="c">C · Moon on water<small>+ rippling reflection</small></button>
+  </div>
+  <div class="rows">
+    <label>Glow <input id="glow" type="range" min="0" max="2" step="0.05" value="1"></label>
+    <label>Warmth (silver → harvest moon) <input id="warm" type="range" min="0" max="1" step="0.01" value="0.25"></label>
+  </div>
+</div>
+
+<script>
+  // lunar texture: generated once, used as a background inside the letters (style B)
+  (function lunar() {
+    const c = document.createElement('canvas'), W = 520, H = 260; c.width = W; c.height = H;
+    const g = c.getContext('2d');
+    g.fillStyle = '#fff'; g.fillRect(0, 0, W, H);
+    let s = 7; const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
+    // maria: big soft grey patches
+    for (let i = 0; i < 9; i++) {
+      const x = r() * W, y = r() * H, rad = 40 + r() * 90;
+      const gr = g.createRadialGradient(x, y, 0, x, y, rad);
+      gr.addColorStop(0, 'rgba(120,128,138,.55)'); gr.addColorStop(1, 'rgba(120,128,138,0)');
+      g.fillStyle = gr; g.fillRect(0, 0, W, H);
+    }
+    // craters: dark rim on one side, light on the other
+    for (let i = 0; i < 70; i++) {
+      const x = r() * W, y = r() * H, rad = 2 + Math.pow(r(), 2.2) * 18;
+      g.beginPath(); g.arc(x, y, rad, 0, 7); g.fillStyle = 'rgba(150,155,165,.35)'; g.fill();
+      g.beginPath(); g.arc(x + rad * .18, y + rad * .18, rad * .85, Math.PI * .9, Math.PI * 1.9);
+      g.strokeStyle = 'rgba(90,95,105,.35)'; g.lineWidth = Math.max(1, rad * .15); g.stroke();
+    }
+    document.documentElement.style.setProperty('--lunar', `url(${c.toDataURL()})`);
+  })();
+
+  // style tabs
+  document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => {
+    document.body.className = 's-' + b.dataset.s;
+    document.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  }));
+
+  // sliders
+  const root = document.documentElement.style;
+  const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+  const hex = a => '#' + a.map(v => v.toString(16).padStart(2, '0')).join('');
+  function warmth(t) {
+    root.setProperty('--moon-hi', hex(mix([250, 252, 255], [255, 236, 200], t)));
+    root.setProperty('--moon-lo', hex(mix([196, 210, 220], [232, 184, 106], t)));
+    root.setProperty('--halo', mix([205, 225, 240], [255, 200, 130], t).join(','));
+  }
+  document.getElementById('glow').addEventListener('input', e => root.setProperty('--glow', e.target.value));
+  document.getElementById('warm').addEventListener('input', e => warmth(+e.target.value));
+  warmth(.25);
+
+  // the reflection ripples slowly (style C)
+  const turb = document.getElementById('turb');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  (function rip(t) {
+    if (document.body.classList.contains('s-c')) turb.setAttribute('baseFrequency', `0.004 ${0.08 + Math.sin(t / 1400) * 0.015}`);
+    if (!reduce) requestAnimationFrame(rip);
+  })(0);
+
+  // quiet stars
+  const cv = document.getElementById('stars'), cx = cv.getContext('2d');
+  let stars = [];
+  function size() {
+    const d = devicePixelRatio || 1; cv.width = innerWidth * d; cv.height = innerHeight * d; cx.setTransform(d, 0, 0, d, 0, 0);
+    stars = Array.from({ length: Math.round(innerWidth * innerHeight / 9000) }, () =>
+      ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight * .8, r: Math.random() * 1.1 + .2, p: Math.random() * 6 }));
+  }
+  function draw(t) {
+    cx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of stars) {
+      cx.globalAlpha = .25 + .35 * (0.5 + 0.5 * Math.sin(t / 1600 + s.p));
+      cx.fillStyle = '#f6ecd9'; cx.beginPath(); cx.arc(s.x, s.y, s.r, 0, 7); cx.fill();
+    }
+    if (!reduce) requestAnimationFrame(draw);
+  }
+  addEventListener('resize', size); size(); draw(0);
+</script>
+</body>
+</html>

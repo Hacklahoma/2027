@@ -46,7 +46,13 @@ export default function Hero({ onReady }) {
           February 6–7, 2027<span>/</span>University of Oklahoma
         </p>
         <p className="kicker rise" style={{ '--d': '1.05s' }}>Every great idea starts with a spark.</p>
-        <h1 id="hero-title" className="rise" style={{ '--d': '1.35s' }}>Hacklahoma</h1>
+        <h1 id="hero-title" className="rise" style={{ '--d': '1.35s' }}>
+          <span className="moon">
+            <span className="halo wide" aria-hidden="true">Hacklahoma</span>
+            <span className="halo" aria-hidden="true">Hacklahoma</span>
+            <span className="face">Hacklahoma</span>
+          </span>
+        </h1>
         <p className="sub rise" style={{ '--d': '2s' }}>
           Let your curiosity set sail. A student hackathon for big ideas, new connections, and the things you
           haven't imagined yet.
