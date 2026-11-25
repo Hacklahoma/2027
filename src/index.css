@@ -41,6 +41,14 @@ a { color: inherit; }
 .btn-sm:hover { box-shadow: 0 0 24px rgba(246, 236, 217, 0.25); }
 @media (max-width: 760px) { .nav ul { display: none; } .wordmark { font-size: 23px; } }
 
+/* MLH badge: hangs from the top edge in the right corner (MLH: 60–100px wide, ~10%).
+   The nav's right padding makes room so Register sits just left of it. */
+.nav { --badge: clamp(60px, 10vw, 100px); padding-right: calc(var(--gutter-r) + var(--badge) + 24px); }
+.mlh-badge { position: absolute; top: 0; right: var(--gutter-r); width: var(--badge); display: block; line-height: 0; }
+.mlh-badge img { width: 100%; height: auto; }
+.mlh-badge:focus-visible { outline: 2px solid var(--amber); outline-offset: 4px; }
+@media (max-width: 760px) { .nav { padding-right: calc(var(--gutter-r) + var(--badge) + 14px); } }
+
 /* ── hero ── */
 .hero { position: relative; height: 100svh; min-height: 620px; overflow: hidden; background: var(--night); }
 .scene { position: absolute; inset: 0; }
