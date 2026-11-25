@@ -371,7 +371,8 @@ export function mountWater(el, ui, opts = {}) {
       const drift = opts.drift ?? 1;   // 0 for reduced motion
       camera.position.lerp(tmp.set(base.x + mouse.x * 0.35 * drift, base.y + mouse.y * 0.15 * drift, base.z), 0.03);
       camera.lookAt(...v.target);
-    } else controls.update();
+      api.camRest = { pos: base, target: v.target };   // where the camera sits with no pointer (the sky pins to this)
+    } else { controls.update(); api.camRest = null; }
 
     ray.setFromCamera(ptr, camera);
     const hover = ray.intersectObjects(fleet.map((b) => b.mesh), false)[0];

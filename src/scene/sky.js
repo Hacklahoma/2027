@@ -12,6 +12,7 @@
 import * as THREE from 'three';
 
 export const W = 3000, H = 1200;
+export const PAD = 274;        // design units added each side when the sky fills the screen (canvas 4096 wide)
 export const DURATION = 13;       // seconds for the whole sky to draw itself on   // canvas size; design space = canvas / 2 (1500 × 600)
 const S = 2;                        // design → canvas scale
 
@@ -71,11 +72,19 @@ function plottedPath(R, keepClear) {
  * progress (0–1) draws the lines on; labels fade in behind them.
  * Returns two canvases: lines (lines, rings, labels) and stars.
  */
-export function drawSky(style, progress = 1, { seed = 5, linesCanvas, starsCanvas } = {}) {
-  const lc = linesCanvas || Object.assign(document.createElement('canvas'), { width: W, height: H });
-  const sc = starsCanvas || Object.assign(document.createElement('canvas'), { width: W, height: H });
+export function drawSky(style, progress = 1, { seed = 5, linesCanvas, starsCanvas, pad = 0 } = {}) {
+  // pad: extra sky (design units) on each side, holding only field stars and the guide line, so a wide
+  // screen is filled at the original star size; the composition stays centred in the middle 1500
+  const cw = (1500 + 2 * pad) * S;
+  const lc = linesCanvas || Object.assign(document.createElement('canvas'), { width: cw, height: H });
+  const sc = starsCanvas || Object.assign(document.createElement('canvas'), { width: cw, height: H });
   const L = lc.getContext('2d'), St = sc.getContext('2d');
-  L.clearRect(0, 0, W, H); St.clearRect(0, 0, W, H);
+  L.clearRect(0, 0, lc.width, H); St.clearRect(0, 0, sc.width, H);
+  L.save(); St.save(); L.translate(pad * S, 0); St.translate(pad * S, 0);
+  try { return drawSkyArt(style, progress, seed, lc, sc, L, St, pad); } finally { L.restore(); St.restore(); }
+}
+
+function drawSkyArt(style, progress, seed, lc, sc, L, St, pad) {
   const R = rng(seed);
   const ink = 'rgba(232,240,248,', mono = (px) => `${px * S}px "DM Mono", ui-monospace, Menlo, monospace`;
 
@@ -113,6 +122,15 @@ export function drawSky(style, progress = 1, { seed = 5, linesCanvas, starsCanva
     const appear = win(R() * 1.6, 2.2);   // the stars come out first, a few at a time
     star(x, y, 0.5 + R() * R() * 1.4, a * appear);
   }
+  // the padded sides: the same field, at the same density, so the edges of a wide screen aren't empty
+  if (pad > 0) {
+    const R2 = rng(seed + 77);
+    for (let i = 0, n = Math.round((260 * 2 * pad) / 1500); i < n; i++) {
+      const u = R2() * 2 * pad, x = u < pad ? u - pad : 1500 + (u - pad), y = Math.pow(R2(), 1.3) * 600;
+      const a = (0.18 + R2() * 0.55) * Math.min(1, (600 - y) / 120 + 0.3);
+      star(x, y, 0.5 + R2() * R2() * 1.4, a * win(R2() * 1.6, 2.2));
+    }
+  }
 
   const showShapes = style === 'shapes' || style === 'blend';
   const showPlotted = style === 'plotted' || style === 'blend';
@@ -123,7 +141,7 @@ export function drawSky(style, progress = 1, { seed = 5, linesCanvas, starsCanva
     const g = win(1.2, 3.5);
     line([150, 0], [150, 600], 0.22, g, [6, 6], 0.9);
     line([1350, 0], [1350, 600], 0.22, g, [6, 6], 0.9);
-    line([0, 300], [1500, 300], 0.16, g, [6, 6], 0.9);
+    line([-pad, 300], [1500 + pad, 300], 0.16, g, [6, 6], 0.9);
   }
 
   // Figma-style quiet rings
@@ -183,35 +201,41 @@ export function drawSky(style, progress = 1, { seed = 5, linesCanvas, starsCanva
 }
 
 /** Put the sky into a water scene: two far planes behind the fleet, reflected by the water. */
-export function addSky(api, { style = 'blend', distance = 26, width = 30, lift = 0.0, instant = false, delay = 0, clear = null, drift = 1 / 300, hold = false } = {}) {
+export function addSky(api, { style = 'blend', distance = 26, width = 30, lift = 0.0, instant = false, delay = 0, clear = null, drift = 1 / 300, hold = false, pinned = false, fill = false } = {}) {
+  // pinned: the sky ignores the pointer's camera drift, so the stars stay put while the water and boats shift.
+  // fill: the sky widens to cover the whole view (edges fade off-screen) instead of showing side margins.
   // drift: how much of the sky passes per second (1/300 = one full turn every five minutes).
   // The sky moves on its own, entirely independent of the water, boats, figure and camera.
   // clear: { x, y, rx, ry } in screen fractions (y from the bottom). Lines fade inside it so a headline reads cleanly.
   const height = (width * H) / W;
-  const lc = Object.assign(document.createElement('canvas'), { width: W, height: H });
-  const sc = Object.assign(document.createElement('canvas'), { width: W, height: H });
+  const pad = fill ? PAD : 0;   // fill: a wider sky (more stars at the sides), never a zoomed one
+  const cw = (1500 + 2 * pad) * S, planeW = (width * cw) / W;
+  const lc = Object.assign(document.createElement('canvas'), { width: cw, height: H });
+  const sc = Object.assign(document.createElement('canvas'), { width: cw, height: H });
   const lt = new THREE.CanvasTexture(lc), stx = new THREE.CanvasTexture(sc);
   for (const t of [lt, stx]) { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; t.wrapS = THREE.RepeatWrapping; }
   const offset = { value: 0 };
+  const side = { value: 0.12 };   // width of the soft fade at each side of the sky (narrower when fill is on)
+  const SIDE = 0.04;
   const time = { value: 0 };
   const res = { value: new THREE.Vector2(1, 1) };
   const mk = (map, twinkle) => new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-    uniforms: { map: { value: map }, uTime: time, uMirror: api.shared.uMirror, uTw: { value: twinkle ? 1 : 0 }, uFade: { value: 1 }, uOffset: offset,
+    uniforms: { map: { value: map }, uTime: time, uMirror: api.shared.uMirror, uTw: { value: twinkle ? 1 : 0 }, uFade: { value: 1 }, uOffset: offset, uSide: side,
       uRes: res, uClear: { value: new THREE.Vector4(clear ? clear.x : .5, clear ? clear.y : .5, clear ? clear.rx : 1, clear ? clear.ry : 1) }, uClearAmt: { value: clear ? (twinkle ? 0.55 : 0.92) : 0 } },
     vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
     fragmentShader: /* glsl */`
-      uniform sampler2D map; uniform float uTime, uMirror, uTw, uFade, uClearAmt, uOffset; uniform vec2 uRes; uniform vec4 uClear; varying vec2 vUv;
+      uniform sampler2D map; uniform float uTime, uMirror, uTw, uFade, uClearAmt, uOffset, uSide; uniform vec2 uRes; uniform vec4 uClear; varying vec2 vUv;
       float h(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
       void main(){
         // the sky turns slowly left to right, wrapping round seamlessly
         vec2 suv = vec2(vUv.x - uOffset, vUv.y);
         vec4 c = texture2D(map, suv);
         // stars twinkle independently: each small cell of sky gets its own slow pulse
-        vec2 cell = floor(fract(suv) * vec2(${W / 6}., ${H / 6}.));
+        vec2 cell = floor(fract(suv) * vec2(${(cw / 6).toFixed(1)}, ${(H / 6).toFixed(1)}));
         float tw = mix(1., .55 + .45*sin(uTime*(.6 + 1.6*h(cell)) + 6.28*h(cell+3.1)), uTw);
         // the sky fades toward the horizon, like the haze over the water
-        float haze = smoothstep(.0, .22, vUv.y) * smoothstep(0., .12, vUv.x) * smoothstep(1., .88, vUv.x);   // fade at the horizon and the sides
+        float haze = smoothstep(.0, .22, vUv.y) * smoothstep(0., uSide, vUv.x) * smoothstep(1., 1. - uSide, vUv.x);   // fade at the horizon and the sides
         float k = tw * haze * uFade * (uMirror > .5 ? .35 : 1.);
         // the clearing around the headline (only in the direct view, not the reflection)
         if (uMirror < .5 && uClearAmt > 0.) {
@@ -221,15 +245,37 @@ export function addSky(api, { style = 'blend', distance = 26, width = 30, lift =
         gl_FragColor = vec4(c.rgb * c.a * k, 1.);
       }`,
   });
-  const geo = new THREE.PlaneGeometry(width, height); geo.translate(0, height / 2, 0);
+  const geo = new THREE.PlaneGeometry(planeW, height); geo.translate(0, height / 2, 0);
   const linesMesh = new THREE.Mesh(geo, mk(lt, false));
   const starsMesh = new THREE.Mesh(geo, mk(stx, true));
   const group = new THREE.Group(); group.add(starsMesh, linesMesh);
   group.position.set(0, lift, -distance);
   api.scene.add(group);
+  const rest = group.matrix.clone().compose(group.position, group.quaternion, group.scale);
+  const restCam = new THREE.Camera(), M = new THREE.Matrix4();   // a Camera, so lookAt faces the same way as the real one
+  if (pinned) group.matrixAutoUpdate = false;
+
+  // keep the sky fixed on screen however the camera drifts, and wide enough to reach both edges
+  const follow = () => {
+    const cr = api.camRest, cam = api.camera;
+    if (fill && cr) {
+      const d = cr.pos.z + distance;   // camera to sky plane
+      const cx = cr.pos.x + (cr.target[0] - cr.pos.x) * (d / (cr.pos.z - cr.target[2]));   // where the view's centre meets the sky
+      // centre the (wider) sky on the view; the narrow side fades then sit beyond the screen edge
+      for (const m of [starsMesh, linesMesh]) m.position.x = cx;
+      side.value = SIDE;
+    }
+    if (!pinned) return;
+    if (!cr) { group.matrix.copy(rest); group.matrixWorldNeedsUpdate = true; return; }
+    // sky = camera now × (camera at rest)⁻¹ × sky at rest: a rigid hold, so the pointer drift never moves it
+    restCam.position.copy(cr.pos); restCam.lookAt(...cr.target); restCam.updateMatrixWorld();
+    cam.updateMatrixWorld();
+    M.copy(restCam.matrixWorld).invert().premultiply(cam.matrixWorld).multiply(rest);
+    group.matrix.copy(M); group.matrixWorldNeedsUpdate = true;
+  };
 
   let current = style, t0 = null, drawing = true, lastDraw = -1;
-  const redraw = (p) => { drawSky(current, p, { linesCanvas: lc, starsCanvas: sc }); lt.needsUpdate = true; stx.needsUpdate = true; };
+  const redraw = (p) => { drawSky(current, p, { linesCanvas: lc, starsCanvas: sc, pad }); lt.needsUpdate = true; stx.needsUpdate = true; };
   const fontsReady = (document.fonts ? Promise.all([document.fonts.load('20px "DM Mono"'), document.fonts.load('italic 20px "Cormorant Garamond"')]) : Promise.resolve()).catch(() => {});
   // instant: draw the finished sky straight away (reduced motion); delay: wait before drawing on
   fontsReady.then(() => { t0 = null; drawing = true; if (instant) startAt = -1e9; });
@@ -239,7 +285,8 @@ export function addSky(api, { style = 'blend', distance = 26, width = 30, lift =
   api.tickers.push((t) => {
     time.value = t;
     api.renderer.getDrawingBufferSize(res.value);
-    offset.value = (t * drift) % 1;
+    offset.value = (t * drift * (W / cw)) % 1;   // same speed across the sky however wide it is
+    follow();
     if (drawing && !held) {
       if (startAt === null) startAt = t + delay;
       if (t < startAt) return;

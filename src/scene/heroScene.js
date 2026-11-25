@@ -41,6 +41,7 @@ export function createHeroScene(el, { reduce = false, personUrl, intro = false }
   const sky = addSky(api, {
     style: 'blend', instant: reduce, hold: intro && !reduce, delay: 0.6, drift: reduce ? 0 : 1 / 300,
     clear: { x: 0.5, y: 0.6, rx: 0.34, ry: 0.36 },
+    pinned: true, fill: true,   // stars stay put as the pointer moves the camera; the sky reaches both screen edges
   });
 
   const frame = () => {
