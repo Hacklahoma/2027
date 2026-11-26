@@ -7,6 +7,17 @@ import { ArrowUpRight } from './ArrowUpRight.jsx';
  * The text renders immediately; the 3D scene loads in its own chunk and fades up behind it.
  * `onReady` fires when the scene is up (or has failed), to start the load sequence.
  */
+// Every face the hero uses, loaded before the reveal (but never waited on for more than 2.5s).
+const HERO_FONTS = [
+  '400 16px "DM Sans"', '500 16px "DM Sans"', '400 12px "DM Mono"',
+  '500 64px "Cormorant Garamond"', 'italic 400 24px "Cormorant Garamond"',
+];
+const fontsReady = () => {
+  if (!document.fonts?.load) return Promise.resolve();
+  const all = Promise.all(HERO_FONTS.map((f) => document.fonts.load(f))).catch(() => {});
+  return Promise.race([all, new Promise((r) => setTimeout(r, 2500))]);
+};
+
 export default function Hero({ onReady }) {
   const sceneRef = useRef(null);
 
@@ -15,13 +26,16 @@ export default function Hero({ onReady }) {
     let scene = null;
     let cancelled = false;
     // never leave the page dark, even if the scene is slow or WebGL is missing
-    const fallback = setTimeout(onReady, 900);
+    const fallback = setTimeout(onReady, 10000);   // only if something has gone wrong; the scene's own cap is 8s
 
     import('../scene/heroScene.js')
       .then(({ createHeroScene }) => {
         if (cancelled || !sceneRef.current) return;
         scene = createHeroScene(sceneRef.current, { reduce, personUrl });
-        requestAnimationFrame(() => requestAnimationFrame(onReady));
+        // reveal once the scene is warmed up (compiled and drawing) and the fonts are in, not before:
+        // Safari keeps text invisible until its font arrives, so a font landing after a line's fade had
+        // played made that line pop in instead of fading
+        Promise.all([scene.ready, fontsReady()]).then(() => { if (!cancelled) onReady(); });
       })
       .catch((err) => {
         console.warn('Hero scene unavailable, showing the plain night background.', err);
@@ -39,7 +53,10 @@ export default function Hero({ onReady }) {
     <section className="hero" aria-labelledby="hero-title">
       <div className="scene" ref={sceneRef} aria-hidden="true" />
       <div className="veil" />
-      <div className="night" />
+      <div className="night">
+        {/* a quiet spark that only appears if getting ready takes more than a moment */}
+        <span className="night-spark" aria-hidden="true" />
+      </div>
 
       <div className="copy">
         <p className="eyebrow rise" style={{ '--d': '.7s' }}>

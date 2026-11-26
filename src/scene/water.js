@@ -186,17 +186,17 @@ const KuwaharaShader = {
 // ── grade: the reference darkens hard at top and bottom; plus fine grain ──
 const GradeShader = {
   uniforms: { tDiffuse: { value: null }, uTime: { value: 0 }, uVig: { value: 1 },
-    uReveal: { value: 1 }, uOrigin: { value: new THREE.Vector2(0.5, 0.6) }, uAspect: { value: 1 } },
+    uReveal: { value: 1 }, uOrigin: { value: new THREE.Vector2(0.5, 0.6) }, uAspect: { value: 1 }, uGrain: { value: 1 } },
   vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
   fragmentShader: /* glsl */`
-    uniform sampler2D tDiffuse; uniform float uTime, uVig, uReveal, uAspect; uniform vec2 uOrigin; varying vec2 vUv;
+    uniform sampler2D tDiffuse; uniform float uTime, uVig, uReveal, uAspect, uGrain; uniform vec2 uOrigin; varying vec2 vUv;
     float h(vec2 p){ return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453); }
     void main(){
       vec3 c = texture2D(tDiffuse, vUv).rgb;
       float v = smoothstep(0., .32, vUv.y) * (1. - .35*smoothstep(.75, 1., vUv.y));
       v *= 1. - .35*pow(abs(vUv.x-.5)*2., 2.5);
       c *= mix(1., .25 + .75*v, uVig);
-      c += (h(vUv*1000. + uTime) - .5) * .012;
+      c += (h(vUv*1000. + uTime) - .5) * .012 * uGrain;
       // intro reveal: the scene appears where light has reached. It pours downward from the
       // origin (the wordmark) faster than it spreads sideways, like moonlight spilling onto water.
       if (uReveal < 1.) {
@@ -216,9 +216,13 @@ const GradeShader = {
 function rng(seed) { let s = seed; return () => (s = (s * 16807) % 2147483647) / 2147483647; }
 
 export function mountWater(el, ui, opts = {}) {
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  // opts.lite (phones): a lower render resolution and a smaller reflection, so a phone's GPU keeps up
-  renderer.setPixelRatio(Math.min(devicePixelRatio, opts.lite ? 1.25 : 1.5));
+  // opts.quality: how much work each frame does (heroScene.js picks a tier; desktop gets these defaults).
+  //   dpr: the highest pixel ratio to render at · reflect: the water reflection's size · bloomScale: the
+  //   glow's working size (a blur, so half size looks nearly the same at a quarter of the cost) ·
+  //   grain: film grain on/off · antialias: MSAA on the screen buffer
+  const Q = { dpr: 1.5, reflect: 1024, bloomScale: 1, grain: 1, antialias: true, ...(opts.quality || {}) };
+  const renderer = new THREE.WebGLRenderer({ antialias: Q.antialias });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, Q.dpr));
   el.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
@@ -245,7 +249,7 @@ export function mountWater(el, ui, opts = {}) {
 
   // ── water ──
   const water = new Reflector(new THREE.PlaneGeometry(140, 140), {
-    shader: WaterShader, textureWidth: opts.lite ? 512 : 1024, textureHeight: opts.lite ? 512 : 1024, clipBias: 0.002,
+    shader: WaterShader, textureWidth: Q.reflect, textureHeight: Q.reflect, clipBias: 0.002,
   });
   water.rotation.x = -Math.PI / 2; water.position.y = 0;
   scene.add(water);
@@ -307,7 +311,12 @@ export function mountWater(el, ui, opts = {}) {
   composer.addPass(new RenderPass(scene, camera));
   const kuwa = new ShaderPass(KuwaharaShader); composer.addPass(kuwa);
   const bloom = new UnrealBloomPass(new THREE.Vector2(512, 512), 0.7, 0.6, 0.6); composer.addPass(bloom);
+  if (Q.bloomScale !== 1) {
+    const setBloomSize = bloom.setSize.bind(bloom);
+    bloom.setSize = (w, h) => setBloomSize(Math.max(1, Math.round(w * Q.bloomScale)), Math.max(1, Math.round(h * Q.bloomScale)));
+  }
   const grade = new ShaderPass(GradeShader); composer.addPass(grade);
+  grade.uniforms.uGrain.value = Q.grain;
   composer.addPass(new OutputPass());
 
   const state = { view: 'hero', allLit: true, paint: true, orbit: false };
@@ -325,7 +334,7 @@ export function mountWater(el, ui, opts = {}) {
   // anything else that lives in this scene (e.g. a figure) can hook in here
   const clickables = [];   // { objects: [Mesh], onClick() }
   const tickers = [];      // fn(t, dt)
-  const api = { scene, camera, renderer, fleet, addBoat, removeBoat, shared, tickers, clickables, water, PAL, MAX_BOATS, grade, WU };
+  const api = { scene, camera, renderer, fleet, addBoat, removeBoat, shared, tickers, clickables, water, PAL, MAX_BOATS, grade, WU, quality: Q };
 
   ui.debug = () => ({ lit: fleet.map((b) => +b.lit.toFixed(2)), target: fleet.map((b) => b.litTarget), frames });
   let frames = 0;
@@ -360,7 +369,10 @@ export function mountWater(el, ui, opts = {}) {
   const ro = new ResizeObserver(resize); ro.observe(el); resize();
 
   let visible = true;
-  const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting)); io.observe(el);
+  // draw only while a real part of the scene is on screen: scrolling down a phone, the last fifth of the
+  // hero is the dark faded bottom, and redrawing it at 60 fps competes with the scroll itself
+  const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting && e.intersectionRatio > 0.2), { threshold: [0, 0.2, 0.21] });
+  io.observe(el);
   const clock = new THREE.Clock();
   const tmp = new THREE.Vector3();
   const base = new THREE.Vector3();

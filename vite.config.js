@@ -13,4 +13,7 @@ export default defineConfig({
   },
   // only the site itself; the design studies in explorations/ are standalone pages
   optimizeDeps: { entries: ['index.html', 'preview/index.html'] },
+  // `vite preview` is only for testing (e.g. on a phone over Wi-Fi): never let the phone cache it, or
+  // after a rebuild Safari shows a cached page that points at style files that no longer exist
+  preview: { headers: { 'Cache-Control': 'no-store' } },
 });
