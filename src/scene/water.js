@@ -217,7 +217,8 @@ function rng(seed) { let s = seed; return () => (s = (s * 16807) % 2147483647) /
 
 export function mountWater(el, ui, opts = {}) {
   const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+  // opts.lite (phones): a lower render resolution and a smaller reflection, so a phone's GPU keeps up
+  renderer.setPixelRatio(Math.min(devicePixelRatio, opts.lite ? 1.25 : 1.5));
   el.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
@@ -240,7 +241,7 @@ export function mountWater(el, ui, opts = {}) {
 
   // ── water ──
   const water = new Reflector(new THREE.PlaneGeometry(140, 140), {
-    shader: WaterShader, textureWidth: 1024, textureHeight: 1024, clipBias: 0.002,
+    shader: WaterShader, textureWidth: opts.lite ? 512 : 1024, textureHeight: opts.lite ? 512 : 1024, clipBias: 0.002,
   });
   water.rotation.x = -Math.PI / 2; water.position.y = 0;
   scene.add(water);

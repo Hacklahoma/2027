@@ -27,11 +27,16 @@ const pickView = () => {
  */
 export function createHeroScene(el, { reduce = false, personUrl, intro = false } = {}) {
   const ui = {};
+  // phones get a lighter scene (see water.js `lite`), and a portrait screen needs neither the
+  // extra-wide sky (that's for wide desktop screens) nor the desktop-sized clearing behind the headline
+  const portrait = innerWidth / innerHeight < 0.85;
+  const lite = portrait || (matchMedia('(pointer: coarse)').matches && Math.min(innerWidth, innerHeight) < 600);
   const api = mountWater(el, ui, {
     count: 18, boatScale: 0.55, spread: 0.85, lightScale: 0.42, drift: reduce ? 0 : 1,
     exclude: [{ x: FIG.x, z: FIG.z, r: 0.55 }, { x: 0.2, z: 3.6, r: 1.9 }],
     views: Object.fromEntries(Object.entries(VIEWS).map(([k, v]) => [k, { pos: v.pos, target: v.target }])),
     view: pickView(),
+    lite,
   });
   ui.setMode('smooth');
   ui.setPaint(false);   // the sky's hairlines need a crisp image; the painting carries the painterly feel
@@ -40,8 +45,8 @@ export function createHeroScene(el, { reduce = false, personUrl, intro = false }
   // the sky moves on its own (independent of everything in front of it); lines clear around the headline
   const sky = addSky(api, {
     style: 'blend', instant: reduce, hold: intro && !reduce, delay: 0.6, drift: reduce ? 0 : 1 / 300,
-    clear: { x: 0.5, y: 0.6, rx: 0.34, ry: 0.36 },
-    pinned: true, fill: true,   // stars stay put as the pointer moves the camera; the sky reaches both screen edges
+    clear: portrait ? { x: 0.5, y: 0.64, rx: 0.62, ry: 0.3 } : { x: 0.5, y: 0.6, rx: 0.34, ry: 0.36 },
+    pinned: true, fill: !portrait,   // stars stay put as the pointer moves the camera; the sky reaches both screen edges
   });
 
   const frame = () => {
