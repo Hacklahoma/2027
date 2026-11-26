@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Nav from './components/Nav.jsx';
 import Hero from './components/Hero.jsx';
+import Spirit from './components/Spirit.jsx';
 import Faq from './components/Faq.jsx';
 import Footer from './components/Footer.jsx';
 import { observeReveals } from './motion/scroll.js';
@@ -20,6 +21,7 @@ export default function App() {
       <main id="top">
         <Hero onReady={onReady} />
         <div className="page" ref={pageRef}>
+          <Spirit />
           <Faq />
           <Footer />
         </div>

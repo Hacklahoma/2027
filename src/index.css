@@ -137,7 +137,7 @@ a { color: inherit; }
    smaller text settles in just after. */
 .wrap { max-width: 1320px; margin: 0 auto; padding-left: var(--gutter); padding-right: var(--gutter-r); }
 .page { background: var(--bg); }
-.page .eyebrow { margin-bottom: 20px; font-size: 10.5px; }
+.page .eyebrow { margin: 0 0 26px; font: 500 12px/1.5 var(--body); letter-spacing: 0.16em; }
 .page h2 { margin: 0; font: 400 clamp(38px, 4.5vw, 64px)/1.06 var(--display); letter-spacing: -0.005em; }
 .page a:focus-visible, .page button:focus-visible { outline: 2px solid var(--amber); outline-offset: 4px; }
 
@@ -158,10 +158,24 @@ a { color: inherit; }
 }
 .motion [data-reveal].in .fade { opacity: 1; transform: none; }
 
+/* ── the spirit of Hacklahoma ── */
+.spirit { padding-top: 130px; padding-bottom: 40px; }
+.spirit-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 64px; align-items: start; }
+.page .spirit h2 { font-size: clamp(40px, 4.3vw, 68px); line-height: 1.06; }
+.spirit-copy { padding-top: 64px; }   /* the copy starts level with the heading, under the label */
+.spirit-copy p { margin: 0 0 1.6em; font-size: clamp(15.5px, 1.15vw, 17.5px); line-height: 1.75; color: rgba(246, 236, 217, 0.78); max-width: 32em; }
+.strip {
+  position: relative; list-style: none; margin: 96px 0 0; padding: 30px 0 0;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  font: 500 12px/1.5 var(--body); letter-spacing: 0.2em; text-transform: uppercase; color: rgba(246, 236, 217, 0.88);
+}
+.strip::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: rgba(246, 236, 217, 0.2); transform-origin: left; }
+.motion .strip::before { transform: scaleX(0); transition: transform 1.6s cubic-bezier(0.45, 0, 0.2, 1); }
+.motion .strip.in::before { transform: none; }
+
 /* ── a few things to know ── */
 .faq { padding-top: 110px; padding-bottom: 150px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 72px; align-items: start; }
 /* the left side fills its column, as in the Figma: a big heading and a larger note */
-.faq-head .eyebrow { font: 500 12px/1.5 var(--body); letter-spacing: 0.16em; margin-bottom: 26px; }
 .page .faq-head h2 { font-size: clamp(46px, 5.3vw, 84px); line-height: 1.04; }
 .faq-head { position: sticky; top: 120px; }
 .faq-note { margin: 44px 0 0; font-size: clamp(16px, 1.35vw, 19px); line-height: 1.6; color: rgba(246, 236, 217, 0.78); }
@@ -207,9 +221,13 @@ a { color: inherit; }
 @media (max-width: 900px) {
   .faq { grid-template-columns: 1fr; gap: 40px; }
   .faq-head { position: static; }
+  .spirit-grid { grid-template-columns: 1fr; gap: 28px; }
+  .spirit-copy { padding-top: 0; }
 }
 @media (max-width: 760px) {
   .faq { padding-top: 80px; padding-bottom: 110px; }
+  .spirit { padding-top: 90px; }
+  .strip { grid-template-columns: 1fr; gap: 12px; margin-top: 64px; }
   .foot-main { flex-direction: column; align-items: flex-start; }
   .foot-right { text-align: left; }
   .foot-right ul { justify-content: flex-start; }

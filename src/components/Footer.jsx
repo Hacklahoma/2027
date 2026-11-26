@@ -8,6 +8,7 @@ export default function Footer() {
         </div>
         <div className="foot-right">
           <ul>
+            <li><a href="#about">About</a></li>
             <li><a href="#faq">FAQ</a></li>
           </ul>
           <p className="foot-line">Where worlds meet.</p>
