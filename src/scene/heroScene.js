@@ -44,7 +44,9 @@ export function createHeroScene(el, { reduce = false, personUrl, intro = false }
   const person = addPaintedPerson(api, { url: personUrl, x: FIG.x, z: FIG.z, height: 1.05 });
   // the sky moves on its own (independent of everything in front of it); lines clear around the headline
   const sky = addSky(api, {
-    style: 'blend', instant: reduce, hold: intro && !reduce, delay: 0.6, drift: reduce ? 0 : 1 / 300,
+    // instant on phones: drawing the sky on re-uploads two 3000×1200 canvases ~30 times a second for 13s
+    // (about 6 GB of texture data in the first 10s), which a desktop GPU absorbs and an iPhone does not
+    style: 'blend', instant: reduce || lite, hold: intro && !reduce, delay: 0.6, drift: reduce ? 0 : 1 / 300,
     clear: portrait ? { x: 0.5, y: 0.64, rx: 0.62, ry: 0.3 } : { x: 0.5, y: 0.6, rx: 0.34, ry: 0.36 },
     pinned: true, fill: !portrait,   // stars stay put as the pointer moves the camera; the sky reaches both screen edges
   });

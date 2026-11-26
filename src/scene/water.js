@@ -225,6 +225,10 @@ export function mountWater(el, ui, opts = {}) {
   scene.background = new THREE.Color(PAL.sky);
   const camera = new THREE.PerspectiveCamera(34, 1, 0.05, 80);
   const controls = new OrbitControls(camera, renderer.domElement);
+  // OrbitControls turns touch scrolling off on the canvas ('none') even while it's disabled, which on a
+  // phone swallows every swipe that starts on the scene. Leave vertical swipes to the page unless
+  // someone actually switches orbiting on (the studies only).
+  renderer.domElement.style.touchAction = 'pan-y';
   controls.enableDamping = true; controls.maxPolarAngle = Math.PI * 0.47; controls.minDistance = 2.5; controls.maxDistance = 22;
   controls.enabled = false;
 
@@ -315,7 +319,7 @@ export function mountWater(el, ui, opts = {}) {
   ui.setCount = (n) => makeFleet(n);
   ui.setLayer = (n) => (WU.uLayer.value = n);
   ui.setView = (v) => setView(v);
-  ui.setOrbit = (v) => { state.orbit = v; controls.enabled = v; if (!v) setView(state.view); };
+  ui.setOrbit = (v) => { state.orbit = v; controls.enabled = v; renderer.domElement.style.touchAction = v ? 'none' : 'pan-y'; if (!v) setView(state.view); };
   ui.setAllLit = (v) => { state.allLit = v; fleet.forEach((b) => (b.litTarget = v ? 1 : 0)); };
 
   // anything else that lives in this scene (e.g. a figure) can hook in here
