@@ -1,0 +1,28 @@
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background: #000;
+}
+
+.announcement {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.announcement h1 {
+  margin: 0;
+  color: #fff;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  font-weight: 800;
+  font-size: clamp(0.65rem, 2.9vw, 1.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-align: center;
+  white-space: nowrap;
+}

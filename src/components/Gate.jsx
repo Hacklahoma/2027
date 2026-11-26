@@ -3,9 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 // Preview lock: the site stays behind a password until launch.
 // This is a light gate for a preview, not real security: it keeps casual visitors out,
 // but the page code is public. For real protection, use Netlify's password protection.
-// Only the SHA-256 of the password is stored here, never the word itself.
-// TODO: remove this gate (and the robots noindex in index.html) at launch.
-const HASH = 'c772111cc8ffa2c67ea53287e0b81324c98cf2c3d1c921515177d5ec9454b483';
+// Only the SHA-256 of the password is stored here, never the word itself. The check ignores case:
+// whatever is typed is lowercased first, so this is the hash of the lowercase password.
+// TODO: remove this gate (and the robots noindex in preview/index.html) at launch.
+const HASH = '2e5335b960bc215d86a3bb30d8478f4cef5c9117978ccbc63baf7fed6fa43103';
 const KEY = 'hk27-preview';
 
 const sha256 = async (text) => {
@@ -28,7 +29,7 @@ export default function Gate({ children }) {
     e.preventDefault();
     setBusy(true);
     try {
-      if ((await sha256(input.current.value.trim())) === HASH) {
+      if ((await sha256(input.current.value.trim().toLowerCase())) === HASH) {
         try { localStorage.setItem(KEY, HASH); } catch { /* private window: they'll be asked again next visit */ }
         setOpen(true);
         return;
