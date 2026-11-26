@@ -17,8 +17,6 @@ export default function Nav() {
       <a className="wordmark rise" style={{ '--d': '.9s' }} href="#top">hacklahoma</a>
       <div className="nav-right">
         <ul className="rise" style={{ '--d': '1.1s' }}>
-          <li><a href="#about">About</a></li>
-          <li><a href="#experience">The Experience</a></li>
           <li><a href="#faq">FAQ</a></li>
         </ul>
         {/* TODO: point at the new registration flow once it's settled */}

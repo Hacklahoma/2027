@@ -65,7 +65,7 @@ export default function Hero({ onReady }) {
       </div>
 
       <p className="corner l rise" style={{ '--d': '3.2s' }}>01 / Where worlds meet</p>
-      <a className="corner r rise" style={{ '--d': '3.4s' }} href="#about">
+      <a className="corner r rise" style={{ '--d': '3.4s' }} href="#faq">
         Scroll to explore <i aria-hidden="true" />
       </a>
     </section>
