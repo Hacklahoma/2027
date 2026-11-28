@@ -20,8 +20,7 @@ export default function Nav() {
           <li><a href="#about">About</a></li>
           <li><a href="#faq">FAQ</a></li>
         </ul>
-        {/* TODO: point at the new registration flow once it's settled */}
-        <a className="btn-sm rise" style={{ '--d': '1.2s' }} href="#register">Register <ArrowUpRight size={11} /></a>
+        <a className="btn-sm rise" style={{ '--d': '1.2s' }} href="https://hacksy.app/events/hack-ou/hacklahoma-2027/apply">Register <ArrowUpRight size={11} /></a>
       </div>
       {/* MLH 2027 season member badge, required top right; "gray" is MLH's navy */}
       <a
